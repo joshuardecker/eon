@@ -19,3 +19,18 @@ func (u Util) Uint32toB(inputUint uint32) []byte {
 
 	return bArray
 }
+
+// Flips / swaps the order of the inputted byte array. Returns sed flipped byte array.
+func (u Util) ByteArraySwap(byteArray []byte) []byte {
+
+	for swapStart := 0; swapStart < len(byteArray)/2; swapStart++ {
+
+		// Defines the correct swapEnd index based on the swapStart index value
+		swapEnd := len(byteArray) - swapStart - 1 // -1 is because indexes are 1 less than the length, ex: length 8's last index is [7]
+
+		// Swaps the values
+		byteArray[swapStart], byteArray[swapEnd] = byteArray[swapEnd], byteArray[swapStart]
+	}
+
+	return byteArray
+}
