@@ -35,13 +35,16 @@ func (t TargetUnpacker) Unpack(packedTarget uint32) types.UInt256 {
 	t.packedTarget = packedTarget
 
 	// Stores the first byte out of it (as this byte dictates the amount of bits the sig figs are from lowest value)
-	t.exponent = t.packedTarget >> (3 * 8)
+	t.exponent = t.packedTarget >> (3 * 8) // Gets the first byte out of it (big endian style)
 
 	// Sets the non shifted value of the target
-	t.unpackedTarget.Set(t.util.Uint32toB(t.packedTarget & 0x00ffffff)) // Masks the first byte and inputs the rest into the uint256
+	t.unpackedTarget.Set(t.util.Uint32toB(t.packedTarget & 0x00ffffff)) // Masks the first byte and inputs the rest into the uint235
+
+	// Swaps from little endian to big endian order
+	t.byteSwap()
 
 	// Shifts the value based on the exponent
-	t.unpackedTarget = t.lShift(uint(8 * (32 - t.exponent)))
+	t.unpackedTarget = t.lShift(uint(8 * (t.exponent - 3)))
 
 	return t.unpackedTarget
 }
@@ -62,8 +65,11 @@ func (t TargetUnpacker) UnpackAsBytes(packedTarget uint32) []byte {
 	// Sets the non shifted value of the target
 	t.unpackedTarget.Set(t.util.Uint32toB(t.packedTarget & 0x00ffffff)) // Masks the first byte and inputs the rest into the uint235
 
+	// Swaps from little endian to big endian order
+	t.byteSwap()
+
 	// Shifts the value based on the exponent
-	t.unpackedTarget = t.lShift(uint(8 * (32 - t.exponent)))
+	t.unpackedTarget = t.lShift(uint(8 * (t.exponent - 3)))
 
 	return t.unpackedTarget.Get()
 }
@@ -71,7 +77,24 @@ func (t TargetUnpacker) UnpackAsBytes(packedTarget uint32) []byte {
 // Function bitshifts left and returns the value for better looking code above.
 func (t TargetUnpacker) lShift(shiftAmount uint) types.UInt256 {
 
-	shiftedTarget := t.unpackedTarget.LShift(shiftAmount)
+	shiftedTarget := t.unpackedTarget.RShift(shiftAmount) // This is because the uint256 library is built on little endian, so bitshifts are opposite
 
 	return *shiftedTarget
+}
+
+// Function bitshifts right and returns the value for better looking code above.
+func (t TargetUnpacker) rShift(shiftAmount uint) types.UInt256 {
+
+	shiftedTarget := t.unpackedTarget.LShift(shiftAmount) // This is because the uint256 library is built on little endian, so bitshifts are opposite
+
+	return *shiftedTarget
+}
+
+// Swaps the order of the bytes in the unpacked target. Updates the value automatically. Returns nothing.
+func (t TargetUnpacker) byteSwap() {
+
+	swapBytes := t.unpackedTarget.Get()
+	t.util.ByteArraySwap(swapBytes)
+
+	t.unpackedTarget.Set(swapBytes)
 }
