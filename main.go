@@ -39,6 +39,7 @@ func main() {
 			fmt.Println("Hash is valid!")
 			fmt.Printf("Hash: %x\n", h)
 			fmt.Println("Nonce: ", nonce)
+			fmt.Printf("Target: %x\n", target)
 
 			break
 		}
