@@ -13,16 +13,23 @@ func main() {
 	//****
 	// Section Unpacks the target
 
+	util := new(luncheon.Util)
+
 	unpacker := new(luncheon.TargetUnpacker)
-	target := unpacker.UnpackAsBytes(0x1d00ffff)
+	target := unpacker.UnpackAsBytes(0x1d00ffff) //1d00ffff
+
+	packer := new(luncheon.TargetPacker)
+	packedTarget := packer.PackTargetBytes(target)
+	fmt.Printf("Packed Target Again: %x\n", packedTarget)
+
+	target2 := unpacker.UnpackAsBytes(packedTarget)
+	fmt.Printf("Packed Target Unpacked: %x\n", target2)
 
 	// Section Unpacks the target
 	//****
 
 	//****
 	// Starts Mining
-
-	util := new(luncheon.Util)
 
 	for nonce := uint32(0); nonce <= 0xFFFFFFFF; nonce += 1 {
 
