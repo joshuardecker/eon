@@ -1,10 +1,12 @@
 package luncheon
 
+type Util struct{}
+
 // Used for easy conversion of uint32 and []byte
-func Uint32toB(val uint32) []byte { // TODO: make not copywritted
-	r := make([]byte, 4)
+func (u Util) Uint32toB(val uint32) []byte { // TODO: make not copywritted
+	output := make([]byte, 4)
 	for i := uint32(0); i < 4; i++ {
-		r[i] = byte((val >> (8 * i)) & 0xff)
+		output[i] = byte((val >> (8 * i)) & 0xff)
 	}
-	return r
+	return output
 }

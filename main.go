@@ -21,9 +21,12 @@ func main() {
 
 	//****
 	// Starts Mining
+
+	util := new(luncheon.Util)
+
 	for nonce := uint32(0); nonce <= 0xFFFFFFFF; nonce += 1 {
 		data := []byte("Hello World")
-		data = append(data[:], luncheon.Uint32toB(nonce)...) //TODO: look up the ... opertator // Appends the nonce and data, nonce needs to be added seperate from the data cause funny
+		data = append(data[:], util.Uint32toB(nonce)...) //TODO: look up the ... opertator // Appends the nonce and data, nonce needs to be added seperate from the data cause funny
 
 		h := make([]byte, 32) // Prepares the hash var
 
