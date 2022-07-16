@@ -25,6 +25,7 @@ func main() {
 	util := new(luncheon.Util)
 
 	for nonce := uint32(0); nonce <= 0xFFFFFFFF; nonce += 1 {
+
 		data := []byte("Hello World")
 		data = append(data[:], util.Uint32toB(nonce)...) //TODO: look up the ... opertator // Appends the nonce and data, nonce needs to be added seperate from the data cause funny
 
@@ -34,6 +35,7 @@ func main() {
 
 		// Is the hash less or = to the target
 		if bytes.Compare(h, target) != 1 {
+
 			fmt.Println("Hash is valid!")
 			fmt.Printf("Hash: %x\n", h)
 			fmt.Println("Nonce: ", nonce)
@@ -41,14 +43,16 @@ func main() {
 			break
 		}
 
-		// Prints stats every 10 MH
+		// Prints stats every 10 MH's
 		if nonce%10000000 == 0 {
+
 			fmt.Println("Hashing...")
 			fmt.Printf("Hash: %x\n", h)
 			fmt.Println("Nonce: ", nonce)
 			fmt.Printf("Target: %x\n", target)
 		}
 	}
+
 	// Starts the mining
 	//****
 }
