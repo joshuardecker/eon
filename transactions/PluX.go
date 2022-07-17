@@ -29,7 +29,7 @@ func (p *PLuX) SetLuckyMiner(luckyMiner []byte) error {
 	// If input nothing / nil
 	if luckyMiner == nil {
 
-		return errors.New("Input a non nil id for the lucky miner.")
+		return errors.New("input a non nil id for the lucky miner")
 	}
 
 	p.luckyMiner = luckyMiner

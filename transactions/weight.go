@@ -2,14 +2,10 @@ package transactions
 
 import (
 	"errors"
-
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 type Weight struct {
 	weight uint32
-
-	util utilities.Util
 }
 
 func (w *Weight) WeightPLuX(tx *PLuX) error {
@@ -23,7 +19,7 @@ func (w *Weight) WeightPLuX(tx *PLuX) error {
 	// If no winning miner is stored in the transaction
 	if tx.luckyMiner == nil {
 
-		return errors.New("Cannot create a transaction with no id for the winning miner!")
+		return errors.New("cannot create a transaction with no id for the winning miner")
 	}
 
 	// Adds the bytes of the miner who discovers the block
