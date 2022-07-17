@@ -17,13 +17,13 @@ func (w *Weight) WeightPLuX(tx *PLuX) error {
 	w.weight += 4
 
 	// If no winning miner is stored in the transaction
-	if tx.luckyMiner == nil {
+	if tx.LuckyMiner == nil {
 
 		return errors.New("cannot create a transaction with no id for the winning miner")
 	}
 
 	// Adds the bytes of the miner who discovers the block
-	w.weight += uint32(len(tx.luckyMiner))
+	w.weight += uint32(len(tx.LuckyMiner))
 
 	return nil
 }

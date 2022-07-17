@@ -2,24 +2,24 @@ package transactions
 
 // The transaction that gives block reward. Only 1 of these are in each block. Has a pre-defined lock time.
 type PLuX struct {
-	blockReward uint64
+	BlockReward uint64
 
-	luckyMiner []byte
+	LuckyMiner []byte
 
-	weight Weight
+	Weight Weight
 }
 
 // A basic transaction from 1 person to another. Has a customisable lock time.
 type BLuX struct {
-	txInput []Input
-	pubKey  []byte
+	TxInput []Input
+	PubKey  []byte
 }
 
 // A more advanced transaction that will have very basic scripting functionality.
 type ALuX struct{}
 
 type Input struct {
-	blockNumber uint32
-	txHash      []byte
-	amount      uint64
+	BlockNumber uint32
+	TxHash      []byte
+	Amount      uint64
 }
