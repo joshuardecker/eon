@@ -20,6 +20,22 @@ func (u Util) Uint32toB(inputUint uint32) []byte {
 	return bArray
 }
 
+// Converts a given uint64 into a byte array.
+// Returns sed byte array.
+func (u Util) Uint64toB(inputUint uint64) []byte {
+
+	// Init the byte array
+	bArray := make([]byte, 8)
+
+	// Loops to correctly bitshift and mask to copy into the byte array.
+	for i := uint32(0); i < 8; i++ {
+
+		bArray[i] = byte((inputUint >> (8 * i)) & 0xff)
+	}
+
+	return bArray
+}
+
 // Flips / swaps the order of the inputted byte array. Returns sed flipped byte array.
 func (u Util) ByteArraySwap(byteArray []byte) []byte {
 
