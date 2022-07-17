@@ -21,7 +21,7 @@ type Miner struct {
 	currentHash    []byte
 	unpackedTarget []byte
 
-	util     utilities.Util
+	util     utilities.ByteUtil
 	unpacker utilities.TargetUnpacker
 }
 
