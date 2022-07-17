@@ -2,7 +2,6 @@ package transactions
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Sets the weight of the PLuX
@@ -11,8 +10,6 @@ func (p *PLuX) GetWeight() error {
 	weightErr := p.weight.WeightPLuX(p)
 
 	if weightErr != nil {
-
-		fmt.Println(weightErr)
 
 		return weightErr
 	}
