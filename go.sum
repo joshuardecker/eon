@@ -2,6 +2,8 @@ github.com/GoblinBear/beson v0.0.0-20191106025029-f536b6cd1586 h1:GEv7Ad3qBuHAOd
 github.com/GoblinBear/beson v0.0.0-20191106025029-f536b6cd1586/go.mod h1:K9YtB+o1nxdO4AdTzb9s3q7rRaeBSZvkrRZZIc64MIY=
 github.com/GoblinBear/beson-go v0.0.0-20191106025029-f536b6cd1586 h1:l8II3yBK/hFnLjxlm0ZATSbKpxH8MZ4xHkvBsd7z9qk=
 github.com/GoblinBear/beson-go v0.0.0-20191106025029-f536b6cd1586/go.mod h1:6Z+YImttQQWLkvQQXfjkphn9ICi1DfJ4HoplEmBoAvw=
+github.com/ethereum/go-ethereum v1.10.20 h1:75IW830ClSS40yrQC1ZCMZCt5I+zU16oqId2SiQwdQ4=
+github.com/ethereum/go-ethereum v1.10.20/go.mod h1:LWUN82TCHGpxB3En5HVmLLzPD7YSrEUFmFfN1nKkVN0=
 golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d h1:sK3txAijHtOK88l68nt020reeT1ZdKLIYetKl95FzVY=
 golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
 golang.org/x/sys v0.0.0-20220712014510-0a85c31ab51e h1:NHvCuwuS43lGnYhten69ZWqi2QOj/CiDNcKbVqwVoew=

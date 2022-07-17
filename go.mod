@@ -7,6 +7,8 @@ require (
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
 )
 
+require github.com/ethereum/go-ethereum v1.10.20 // indirect
+
 require (
 	github.com/GoblinBear/beson v0.0.0-20191106025029-f536b6cd1586
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
