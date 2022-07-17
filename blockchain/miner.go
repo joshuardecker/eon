@@ -2,7 +2,6 @@ package blockchain
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -12,7 +11,6 @@ import (
 
 // The struct that handles the mining. Uses the shake256 varient of sha3 for hashing.
 type Miner struct {
-	inputBlock      Block
 	inputBlockBytes []byte
 	packedTarget    uint32
 
@@ -23,11 +21,6 @@ type Miner struct {
 
 	util     utilities.ByteUtil
 	unpacker utilities.TargetUnpacker
-}
-
-func (m *Miner) InputBlock(inputBlock Block) {
-
-	m.inputBlock = inputBlock
 }
 
 // This function tells the miner what target to mine to. Returns an error if once occurs.
@@ -51,9 +44,9 @@ func (m *Miner) InputTarget(inputTarget uint32) error {
 }
 
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start() ([]byte, error) {
+func (m *Miner) Start(inputBlock []byte) ([]byte, error) {
 
-	m.parseBlockToBytes()
+	m.inputBlockBytes = inputBlock
 
 	// 0 is an invalid target, and this handles that
 	if m.packedTarget == 0 {
@@ -65,6 +58,7 @@ func (m *Miner) Start() ([]byte, error) {
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
 
 	fmt.Println("Mining Starting!")
+	fmt.Printf("Mining block bytes: %x\n", m.inputBlockBytes)
 
 	// The actual mining process
 	for m.nonce = 0; m.nonce <= 0xFFFFFFFF; m.nonce++ {
@@ -97,16 +91,4 @@ func (m *Miner) Start() ([]byte, error) {
 	}
 
 	return nil, errors.New("you have reached the end of the defined search space! Impressive")
-}
-
-func (m *Miner) parseBlockToBytes() {
-
-	var jsonErr error
-	m.inputBlockBytes, jsonErr = json.Marshal(m.inputBlock)
-
-	if jsonErr != nil {
-		panic(jsonErr)
-	}
-
-	fmt.Printf("Stuff: %x\n", m.inputBlockBytes)
 }
