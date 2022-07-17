@@ -21,7 +21,7 @@ type TargetUnpacker struct {
 	packedTarget uint32
 	exponent     uint32
 
-	util Util
+	util ByteUtil
 }
 
 // Unpacks the packed target input value.

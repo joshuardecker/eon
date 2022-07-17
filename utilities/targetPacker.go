@@ -16,8 +16,6 @@ type TargetPacker struct {
 	packedTarget uint32
 	exponent     uint32
 	byteIndex    uint32
-
-	util Util
 }
 
 // Takes in a uint256 and returns its packed 32 bit form.
@@ -67,7 +65,7 @@ func (t *TargetPacker) PackTargetBytes(unpackedTargetBytes []byte) (uint32, erro
 
 	// If the inputted bytes are not long enough (not a uint256)
 	if len(unpackedTargetBytes) < 32 {
-		return t.packedTarget, errors.New("Input byte array not long enough!")
+		return t.packedTarget, errors.New("input byte array not long enough")
 	}
 
 	// Save variables into struct for later use
