@@ -42,7 +42,7 @@ func main() {
 
 	miner := new(luncheon.Miner)
 
-	dataErr := miner.InputData("Hello World!!")
+	dataErr := miner.InputData("Hello World")
 
 	if dataErr != nil {
 		fmt.Println(dataErr)

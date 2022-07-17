@@ -97,8 +97,8 @@ func (m *Miner) Start() ([]byte, error) {
 			return m.currentHash, nil
 		}
 
-		// Prints stats every 50 MH
-		if m.nonce%50000000 == 0 {
+		// Prints stats every 10 MH
+		if m.nonce%10000000 == 0 {
 
 			fmt.Println("Mining...")
 			fmt.Printf("Target: %x\n", m.unpackedTarget)
