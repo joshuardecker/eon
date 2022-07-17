@@ -14,7 +14,6 @@ type Miner struct {
 	inputBlockBytes []byte
 	packedTarget    uint32
 
-	nonce          uint32
 	hashData       []byte
 	currentHash    []byte
 	unpackedTarget []byte
@@ -44,9 +43,14 @@ func (m *Miner) InputTarget(inputTarget uint32) error {
 }
 
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start(inputBlock []byte) ([]byte, error) {
+func (m *Miner) Start(b Block) ([]byte, error) {
 
-	m.inputBlockBytes = inputBlock
+	m.inputBlockBytes = b.ParseBlockToBytes()
+
+	if m.inputBlockBytes == nil {
+
+		return nil, errors.New("please input a block with data inside it")
+	}
 
 	// 0 is an invalid target, and this handles that
 	if m.packedTarget == 0 {
@@ -61,10 +65,10 @@ func (m *Miner) Start(inputBlock []byte) ([]byte, error) {
 	fmt.Printf("Mining block bytes: %x\n", m.inputBlockBytes)
 
 	// The actual mining process
-	for m.nonce = 0; m.nonce <= 0xFFFFFFFF; m.nonce++ {
+	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {
 
 		// Create the input bytes for the hash, and add the nonce
-		m.hashData = append(m.inputBlockBytes, m.util.Uint32toB(m.nonce)...)
+		m.hashData = append(m.inputBlockBytes, m.util.Uint32toB(b.Nonce)...)
 
 		// Init the size of the hash
 		m.currentHash = make([]byte, 32)
@@ -75,14 +79,15 @@ func (m *Miner) Start(inputBlock []byte) ([]byte, error) {
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
 
-			fmt.Printf("Hash Found!: %x\n", m.currentHash)
-			fmt.Println("Nonce: ", m.nonce)
+			b.SetBlockHash(m.currentHash)
+
+			b.PrintBlock()
 
 			return m.currentHash, nil
 		}
 
 		// Prints stats every 10 MH
-		if m.nonce%10000000 == 0 {
+		if b.Nonce%10000000 == 0 {
 
 			fmt.Println("Mining...")
 			fmt.Printf("Target: %x\n", m.unpackedTarget)
