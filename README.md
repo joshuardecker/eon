@@ -1,7 +1,7 @@
 Transaction Types: (LuTx's)
 
 0: Payout Luncheon Transaction (PLuX)
-- This is the transaction that the block will give as a reward to the miner who finds it. No adress the coin comes from, no scripts, and a pre-defined lock time until the miner can access it. A very simple transaction.
+- This is the transaction that the block will give as a reward to the miner who finds it. No address the coin comes from, no scripts, and a pre-defined lock time until the miner can access it. A very simple transaction.
 
 1: Basic Luncheon Transaction (BLuX)
 - This transaction is the basic transaction that will be used for most use cases. A sender uses this to send money to a receiver, and that receivers identity is unknown until they claim it to spend down the road. 
