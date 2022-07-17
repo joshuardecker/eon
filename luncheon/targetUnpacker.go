@@ -26,7 +26,7 @@ type TargetUnpacker struct {
 
 // Unpacks the packed target input value.
 // Returns a type uint256.
-func (t TargetUnpacker) Unpack(packedTarget uint32) types.UInt256 {
+func (t *TargetUnpacker) Unpack(packedTarget uint32) types.UInt256 {
 
 	// Init the t.unpackedTarget (as without the uint256 is blank rather than being 0's)
 	t.unpackedTarget = *types.NewUInt256("0", 1)
@@ -51,7 +51,7 @@ func (t TargetUnpacker) Unpack(packedTarget uint32) types.UInt256 {
 
 // Unpacks the packed target input value.
 // Returns a byte array (256 bits long).
-func (t TargetUnpacker) UnpackAsBytes(packedTarget uint32) []byte {
+func (t *TargetUnpacker) UnpackAsBytes(packedTarget uint32) []byte {
 
 	// Init the t.unpackedTarget (as without the uint256 is blank rather than being 0's)
 	t.unpackedTarget = *types.NewUInt256("0", 1)
@@ -75,7 +75,7 @@ func (t TargetUnpacker) UnpackAsBytes(packedTarget uint32) []byte {
 }
 
 // Function bitshifts left and returns the value for better looking code above.
-func (t TargetUnpacker) lShift(shiftAmount uint) types.UInt256 {
+func (t *TargetUnpacker) lShift(shiftAmount uint) types.UInt256 {
 
 	shiftedTarget := t.unpackedTarget.RShift(shiftAmount) // This is because the uint256 library is built on little endian, so bitshifts are opposite
 
@@ -83,7 +83,7 @@ func (t TargetUnpacker) lShift(shiftAmount uint) types.UInt256 {
 }
 
 // Function bitshifts right and returns the value for better looking code above.
-func (t TargetUnpacker) rShift(shiftAmount uint) types.UInt256 {
+func (t *TargetUnpacker) rShift(shiftAmount uint) types.UInt256 {
 
 	shiftedTarget := t.unpackedTarget.LShift(shiftAmount) // This is because the uint256 library is built on little endian, so bitshifts are opposite
 
@@ -91,7 +91,7 @@ func (t TargetUnpacker) rShift(shiftAmount uint) types.UInt256 {
 }
 
 // Swaps the order of the bytes in the unpacked target. Updates the value automatically. Returns nothing.
-func (t TargetUnpacker) byteSwap() {
+func (t *TargetUnpacker) byteSwap() {
 
 	swapBytes := t.unpackedTarget.Get()
 	t.util.ByteArraySwap(swapBytes)

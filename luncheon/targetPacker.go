@@ -21,7 +21,7 @@ type TargetPacker struct {
 }
 
 // Takes in a uint256 and returns its packed 32 bit form.
-func (t TargetPacker) PackTargetUint256(unpackedTarget types.UInt256) uint32 {
+func (t *TargetPacker) PackTargetUint256(unpackedTarget types.UInt256) uint32 {
 
 	// Init the packed target with a value of 0
 	t.packedTarget = 0
@@ -60,7 +60,7 @@ func (t TargetPacker) PackTargetUint256(unpackedTarget types.UInt256) uint32 {
 
 // Takes in a byte array of the uint256 and returns its packed 32 bit form.
 // Returns errors if the byte array inputted is not big enough.
-func (t TargetPacker) PackTargetBytes(unpackedTargetBytes []byte) (uint32, error) {
+func (t *TargetPacker) PackTargetBytes(unpackedTargetBytes []byte) (uint32, error) {
 
 	// Init the packed target with a value of 0
 	t.packedTarget = 0
