@@ -1,3 +1,6 @@
 package blockchain
 
-type Blockchain struct{}
+// The blockchain struct that will be the chain of blocks.
+type Blockchain struct {
+	Blocks []Block
+}
