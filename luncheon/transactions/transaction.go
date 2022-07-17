@@ -2,8 +2,7 @@ package transactions
 
 // The transaction that gives block reward. Only 1 of these are in each block. Has a pre-defined lock time.
 type PLuX struct {
-	blockRewardAndFees uint64
-	blockReward        uint64
+	blockReward uint64
 
 	luckyMiner []byte
 

@@ -39,3 +39,9 @@ func (p *PLuX) SetLuckyMiner(luckyMiner []byte) error {
 
 	return nil
 }
+
+// Adds transaction fees to the block reward
+func (p *PLuX) CalculateRewards(txFees uint64) {
+
+	p.blockReward += txFees
+}
