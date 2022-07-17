@@ -1,20 +1,22 @@
 package transactions
 
 import (
+	"encoding/json"
 	"errors"
 )
 
-// Sets the weight of the PLuX
-func (p *PLuX) GetWeight() error {
+// Gets the weight of the PLuX
+func (p *PLuX) GetWeight() uint32 {
 
-	weightErr := p.Weight.WeightPLuX(p)
+	txAsBytes, jsonErr := json.Marshal(p)
 
-	if weightErr != nil {
-
-		return weightErr
+	if jsonErr != nil {
+		panic(jsonErr)
 	}
 
-	return nil
+	p.Weight = uint32(len(txAsBytes))
+
+	return p.Weight
 }
 
 // Sets the block reward input of the PLuX

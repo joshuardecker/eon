@@ -6,7 +6,7 @@ type PLuX struct {
 
 	LuckyMiner []byte
 
-	Weight Weight
+	Weight uint32
 }
 
 // A basic transaction from 1 person to another. Has a customisable lock time.
