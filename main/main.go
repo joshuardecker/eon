@@ -48,16 +48,16 @@ func main() {
 
 	miner.InputBlock(*block)
 
-	targetErr := miner.InputTarget(0x1d00ffff)
+	targetErr := miner.InputTarget(0xffffffff) //1d00ffff
 
 	if targetErr != nil {
-		fmt.Println(targetErr)
+		panic(targetErr)
 	}
 
 	hash, minerErr := miner.Start()
 
 	if minerErr != nil {
-		fmt.Println(minerErr)
+		panic(minerErr)
 	}
 
 	fmt.Printf("Hash: %x\n", hash)

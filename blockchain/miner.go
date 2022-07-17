@@ -36,13 +36,13 @@ func (m *Miner) InputTarget(inputTarget uint32) error {
 	// 0 is an invalid target, and this handles that
 	if inputTarget == 0 {
 
-		return errors.New("Cannot input target 0!")
+		return errors.New("cannot input target 0")
 	}
 
 	// Is the target higher than the max allowed target?
 	if inputTarget > 0x1dffffff { // TODO: Find a better value and define as const elsewhere
 
-		return errors.New("Target is to large!") // TODO: Have it print max target
+		return errors.New("target is to large") // TODO: Have it print max target
 	}
 
 	m.packedTarget = inputTarget
@@ -58,7 +58,7 @@ func (m *Miner) Start() ([]byte, error) {
 	// 0 is an invalid target, and this handles that
 	if m.packedTarget == 0 {
 
-		return nil, errors.New("Please define a non 0 target with the InputTarget function!")
+		return nil, errors.New("please define a non 0 target with the InputTarget function")
 	}
 
 	// Gets the unpacked target with the unpacker struct
@@ -96,7 +96,7 @@ func (m *Miner) Start() ([]byte, error) {
 		}
 	}
 
-	return nil, errors.New("You have reached the end of the defined search space! Impressive!")
+	return nil, errors.New("you have reached the end of the defined search space! Impressive")
 }
 
 func (m *Miner) parseBlockToBytes() {
@@ -105,7 +105,7 @@ func (m *Miner) parseBlockToBytes() {
 	m.inputBlockBytes, jsonErr = json.Marshal(m.inputBlock)
 
 	if jsonErr != nil {
-		fmt.Println(jsonErr)
+		panic(jsonErr)
 	}
 
 	fmt.Printf("Stuff: %x\n", m.inputBlockBytes)
