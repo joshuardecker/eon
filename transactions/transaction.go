@@ -10,7 +10,16 @@ type PLuX struct {
 }
 
 // A basic transaction from 1 person to another. Has a customisable lock time.
-type BLuX struct{}
+type BLuX struct {
+	txInput []Input
+	pubKey  []byte
+}
 
 // A more advanced transaction that will have very basic scripting functionality.
 type ALuX struct{}
+
+type Input struct {
+	blockNumber uint32
+	txHash      []byte
+	amount      uint64
+}
