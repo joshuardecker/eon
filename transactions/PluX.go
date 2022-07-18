@@ -5,24 +5,16 @@ import (
 	"errors"
 )
 
-// Gets the weight of the PLuX
-func (p *PLuX) GetWeight() uint32 {
-
-	txAsBytes, jsonErr := json.Marshal(p)
-
-	if jsonErr != nil {
-		panic(jsonErr)
-	}
-
-	p.Weight = uint32(len(txAsBytes))
-
-	return p.Weight
-}
-
 // Sets the block reward input of the PLuX
 func (p *PLuX) SetBlockReward(blockReward uint64) {
 
 	p.BlockReward = blockReward
+}
+
+// Adds transaction fees to the block reward
+func (p *PLuX) CalculateRewards(txFees uint64) {
+
+	p.BlockReward += txFees
 }
 
 // Sets the address hash that will receive the block reward
@@ -39,8 +31,16 @@ func (p *PLuX) SetLuckyMiner(luckyMiner string) error {
 	return nil
 }
 
-// Adds transaction fees to the block reward
-func (p *PLuX) CalculateRewards(txFees uint64) {
+// Gets the weight of the PLuX
+func (p *PLuX) GetWeight() uint32 {
 
-	p.BlockReward += txFees
+	txAsBytes, jsonErr := json.Marshal(p)
+
+	if jsonErr != nil {
+		panic(jsonErr)
+	}
+
+	p.Weight = uint32(len(txAsBytes))
+
+	return p.Weight
 }

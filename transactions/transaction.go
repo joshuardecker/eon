@@ -16,6 +16,7 @@ type BLuX struct {
 	TotalCoinSent uint64
 	Signature     []byte
 	Msg           []byte
+	Fee           uint64
 
 	Weight uint32
 
@@ -28,7 +29,7 @@ type ALuX struct{}
 // The input of a transaction, aka where are you getting coin from?
 type Input struct {
 	FromBlockHeight uint32
-	TxHash          []byte
+	TxHash          string
 	Index           uint32
 }
 

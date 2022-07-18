@@ -20,6 +20,7 @@ type Miner struct {
 
 	util     utilities.ByteUtil
 	unpacker utilities.TargetUnpacker
+	utilTime utilities.Time
 }
 
 // This function tells the miner what target to mine to. Returns an error if once occurs.
@@ -67,6 +68,9 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 
 	// The actual mining process
 	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {
+
+		// Set the timestamp in the block
+		b.SetTimestamp(uint64(m.utilTime.CurrentUnix()))
 
 		// Create the input bytes for the hash, and add the nonce
 		m.hashData = append(m.inputBlockBytes, m.util.Uint32toB(b.Nonce)...)

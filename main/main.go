@@ -5,6 +5,7 @@ import (
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 func main() {
@@ -16,12 +17,17 @@ func main() {
 	msg, sig := ellip.SignRandMsg()
 	pub, _ := ellip.GetKeyPair()
 
-	if ellip.ValidateSig(pub, msg, sig) == true {
+	if ellip.ValidateSig(pub, msg, sig) {
 
 		fmt.Println("Worked!")
+
+		fmt.Println(len(pub))
 	} else {
 		fmt.Println("Didnt work")
 	}
+
+	t := new(utilities.Time)
+	t.CurrentTime()
 
 	// Test new features area
 	//****
@@ -33,7 +39,7 @@ func main() {
 	miner := new(blockchain.Miner)
 
 	block := new(blockchain.Block)
-	block.ConstructBlock()
+	//block.CreateBlock()
 
 	targetErr := miner.InputTarget(0x1dffffff) //1d00ffff
 
