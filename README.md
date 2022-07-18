@@ -7,16 +7,20 @@ Proof of Work and Mining:
 Wallets:
 - Having a wallet for Luncheon will be much simplier and easier to install than last time, even if you are not participating in the network by hosting a node or mining.
 
-Security:
-- This network will use many of the same mechanisms as bitcoin for its security, and bitcoin has been very well tested over its life span, so this blockchain should be very secure.
-
-The Peg:
-- Luncheon will no longer have a peg to real life lunches anymore, but it still will be able to be used for that. There will not be a fixed rate at which lunches can be redeemed for now, but opportunities will arise for "bidding wars" to let the highest payer get a free lunch.
+What is a node:
+- A node is simply the term for a computer who is apart of the Luncheon network. These computers will talk to each other about what is going on in the network, like when blocks are mined or new transactions are sent. The reason these are not called servers is because they arent. Any computer can be a node, and if the software existed, even your phone could be a node.
 
 Lite Nodes vs Full Nodes:
 - If you are interested in running your own node, there are two types that will be available. First is the Full Node. This node will have all features and make the most profit when paired with mining, but requires you to download the blockchain, which will very slowly grow over time. The lite node is what most users will have, as no downloading of blockchain is needed, but it will allow you to still do things like fetch your wallet balance, or send transactions. A full node will always provide better security and accuracy, but both get the job done.
 
+Security:
+- This network will use many of the same mechanisms as bitcoin for its security, and bitcoin has been very well tested over its life span, so this blockchain should be very secure.
+
+The Peg:
+- Luncheon will no longer have a value peg to real life lunches anymore, but it still will be able to be used for that. There will not be a fixed rate at which lunches can be redeemed for now, but opportunities will arise for "bidding wars" to let the highest payer get a free lunch.
+
 Future Transaction Types: (LuTx's)
+
 *Note the words coin and token here are used for the same meaning.
 
 1: Payout Luncheon Transaction (PLuX)
