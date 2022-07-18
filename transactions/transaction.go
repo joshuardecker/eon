@@ -11,15 +11,32 @@ type PLuX struct {
 
 // A basic transaction from 1 person to another. Has a customisable lock time.
 type BLuX struct {
-	TxInput []Input
-	PubKey  []byte
+	TxInput       []Input
+	PubKey        string
+	TotalCoinSent uint64
+	Signature     []byte
+	Msg           []byte
+
+	Weight uint32
+
+	TxOutput []OutPut
 }
 
 // A more advanced transaction that will have very basic scripting functionality.
 type ALuX struct{}
 
+// The input of a transaction, aka where are you getting coin from?
 type Input struct {
-	BlockNumber uint32
-	TxHash      []byte
-	Amount      uint64
+	FromBlockHeight uint32
+	TxHash          []byte
+	Index           uint32
+}
+
+// The output of a transaction, aka where is the coin going? Any scripts?
+type OutPut struct {
+	AddressTo string
+	Amount    uint64
+	Index     uint32
+
+	Script string
 }
