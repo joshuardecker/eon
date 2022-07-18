@@ -13,28 +13,30 @@ import (
 type Block struct {
 	// Things known before the new block
 	PrevHash     string
-	BlockHeight  uint32
 	PackedTarget uint32
+	BlockReward  uint64
 
 	// Things calculated after creation
-	Weight    uint32 // Represents the Weight of all transactions, and excludes block, nonce ect, as weight should be input before mining begins
 	BlockHash string
 	Nonce     uint32
 	Timestamp uint64
 
-	// Tx's
-	PLuX transactions.PLuX
-	BLuX []transactions.BLuX
-	ALuX []transactions.ALuX
+	Weight uint32 // Represents the Weight of all transactions, and excludes everything else (for obvious reason of it would changed the hash)
+
+	// Tx's (and their merkle root)
+	PLuX       transactions.PLuX
+	BLuX       []transactions.BLuX
+	ALuX       []transactions.ALuX
+	MerkleRoot string
 }
 
-// Constucts a block TODO: make this better when transactions made
-func (b *Block) InitBlock(prevHash string, blockheight uint32, packedTarget uint32) {
+// Inits a block
+func (b *Block) InitBlock(prevHash string, packedTarget uint32, blockReward uint64) {
 
 	// Init the new block
 	b.PrevHash = prevHash
-	b.BlockHeight = blockheight
 	b.PackedTarget = packedTarget
+	b.BlockReward = blockReward
 }
 
 // Calculates the weight of the block

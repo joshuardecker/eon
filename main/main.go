@@ -13,7 +13,8 @@ func main() {
 	// Test new features area
 
 	bl := new(blockchain.Blockchain)
-	fmt.Println(bl.GetBlockReward())
+
+	fmt.Println(bl.GetHeight())
 
 	// Test new features area
 	//****
@@ -26,13 +27,6 @@ func main() {
 
 	block := new(blockchain.Block)
 	//block.CreateBlock()
-
-	targetErr := miner.InputTarget(0x1dffffff) //1d00ffff
-
-	if targetErr != nil {
-
-		panic(targetErr)
-	}
 
 	_, minerErr := miner.Start(*block)
 

@@ -52,3 +52,30 @@ func (b *Blockchain) GetBlockReward() uint64 {
 	// Does not work in substitute for 2**0
 	return 200 / (2 << (halvings - 1))
 }
+
+// Updates and returns the height of the blockchain.
+func (b *Blockchain) GetHeight() uint32 {
+
+	b.height = uint32(len(b.Blocks))
+
+	return b.height
+}
+
+// Adds a block to the blockchain
+func (b *Blockchain) AddBlock(block Block) error {
+
+	if !b.verifyBlock(block) {
+
+		return errors.New("block is invalid")
+	}
+
+	b.Blocks = append(b.Blocks, block)
+
+	return nil
+}
+
+// Verifys the integrity of the block. Returns true if valid, false if not-valid.
+func (b *Blockchain) verifyBlock(block Block) bool {
+
+	return true
+}
