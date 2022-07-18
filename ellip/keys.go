@@ -19,7 +19,24 @@ func generatePrivateKey() {
 
 	saveErr := crypto.SaveECDSA("saves/key", key)
 
-	if saveErr != nil {
+	if saveErr != nil && os.IsNotExist(saveErr) {
+
+		saveErr = os.Mkdir("saves", 0750)
+
+		if saveErr != nil {
+
+			panic(saveErr)
+		}
+
+		saveErr = crypto.SaveECDSA("saves/key", key)
+
+		if saveErr != nil {
+
+			panic(saveErr)
+		}
+
+	} else if saveErr != nil {
+
 		panic(saveErr)
 	}
 }
