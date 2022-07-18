@@ -7,6 +7,22 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
+// Creates a PLuX, where your publickey is the winner of the block.
+// Will be put in your version of the block, and only the global version if you mine it first.
+// Returns errors if they occur.
+func (p *PLuX) CreatePLuX(blockReward uint64) error {
+
+	// Init the main key // This is temp, as later make it not need the main
+	mainKey := new(ellip.MainKey)
+
+	p.BlockReward = blockReward
+	p.LuckyMiner = mainKey.MainKeyHash()
+
+	p.Weight = p.GetWeight()
+
+	return nil
+}
+
 // Sets the block reward input of the PLuX
 func (p *PLuX) SetBlockReward(blockReward uint64) {
 
@@ -45,20 +61,4 @@ func (p *PLuX) GetWeight() uint32 {
 	p.Weight = uint32(len(txAsBytes))
 
 	return p.Weight
-}
-
-// Creates a PLuX, where your publickey is the winner of the block.
-// Will be put in your version of the block, and only the global version if you mine it first.
-// Returns errors if they occur.
-func (p *PLuX) CreatePLuX(blockReward uint64) error {
-
-	// Init the main key // This is temp, as later make it not need the main
-	mainKey := new(ellip.MainKey)
-
-	p.BlockReward = blockReward
-	p.LuckyMiner = mainKey.MainKeyHash()
-
-	p.Weight = p.GetWeight()
-
-	return nil
 }

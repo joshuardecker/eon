@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 )
 
 func main() {
@@ -13,8 +13,17 @@ func main() {
 	//****
 	// Test new features area
 
-	mainKey := new(ellip.MainKey)
-	mainKey.MainKeyHash()
+	blockChain := new(blockchain.Blockchain)
+	block := new(blockchain.Block)
+	plux := new(transactions.PLuX)
+
+	block.InitBlock("8f2348098a", 0x1dffffff, blockChain.GetBlockReward())
+
+	plux.CreatePLuX(blockChain.GetBlockReward())
+
+	block.AddPLuX(*plux)
+
+	fmt.Printf("Packed target: %x\n", block.PackedTarget)
 
 	// Test new features area
 	//****
@@ -25,15 +34,26 @@ func main() {
 
 	miner := new(blockchain.Miner)
 
-	block := new(blockchain.Block)
-	block.InitBlock("Cool Test", 0x1dffffff, 200)
-
-	_, minerErr := miner.Start(*block)
+	finalBlock, minerErr := miner.Start(*block)
 
 	if minerErr != nil {
 
 		panic(minerErr)
 	}
+
+	// Prints the block as a json string
+	finalBlock.PrintBlock()
+
+	blockChain.AddBlock(finalBlock)
+	blockChain.AddBlock(finalBlock)
+
+	fmt.Println(blockChain.GetHeight())
+	fmt.Println(len(blockChain.Blocks))
+
+	blockChain.RemoveBlock(0)
+
+	fmt.Println(blockChain.GetHeight())
+	fmt.Println(len(blockChain.Blocks))
 
 	// Starts the mining
 	//****

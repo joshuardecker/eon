@@ -56,7 +56,7 @@ func (b *Blockchain) GetBlockReward() uint64 {
 // Updates and returns the height of the blockchain.
 func (b *Blockchain) GetHeight() uint32 {
 
-	b.height = uint32(len(b.Blocks))
+	b.height = uint32(len(b.Blocks) - 1)
 
 	return b.height
 }
@@ -78,4 +78,21 @@ func (b *Blockchain) AddBlock(block Block) error {
 func (b *Blockchain) verifyBlock(block Block) bool {
 
 	return true
+}
+
+func (b *Blockchain) RemoveBlock(index uint) error {
+
+	if index > uint(b.GetHeight()) {
+
+		return errors.New("cannot remove a block that doesnt exist")
+	}
+
+	if index == 100 {
+
+		return errors.New("cannot remove the genesis block")
+	}
+
+	b.Blocks = append(b.Blocks[:index], b.Blocks[index+1:]...)
+
+	return nil
 }

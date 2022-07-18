@@ -44,7 +44,7 @@ func (m *Miner) inputTarget(inputTarget uint32) error {
 }
 
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start(b Block) ([]byte, error) {
+func (m *Miner) Start(b Block) (Block, error) {
 
 	// Get the block as bytes for mining
 	m.inputBlockBytes = b.ParseBlockToBytes()
@@ -52,7 +52,7 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 	// No block data?
 	if m.inputBlockBytes == nil {
 
-		return nil, errors.New("please input a block with data inside it")
+		return b, errors.New("please input a block with data inside it")
 	}
 
 	// Unpack the target stored in the block
@@ -90,10 +90,7 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 			// Set the block hash to the winning hash
 			b.SetBlockHash(m.currentHash)
 
-			// Prints the block as a json string
-			b.PrintBlock()
-
-			return m.currentHash, nil
+			return b, nil
 		}
 
 		// Prints stats every 10 MH
@@ -105,5 +102,5 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 		}
 	}
 
-	return nil, errors.New("you have reached the end of the defined search space! Impressive")
+	return b, errors.New("you have reached the end of the defined search space! Impressive")
 }
