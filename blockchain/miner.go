@@ -24,7 +24,7 @@ type Miner struct {
 }
 
 // This function tells the miner what target to mine to. Returns an error if once occurs.
-func (m *Miner) InputTarget(inputTarget uint32) error {
+func (m *Miner) inputTarget(inputTarget uint32) error {
 
 	// 0 is an invalid target, and this handles that
 	if inputTarget == 0 {
@@ -55,11 +55,7 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 		return nil, errors.New("please input a block with data inside it")
 	}
 
-	// 0 is an invalid target, and this handles that
-	if m.packedTarget == 0 {
-
-		return nil, errors.New("please define a non 0 target with the InputTarget function")
-	}
+	m.inputTarget(b.PackedTarget)
 
 	// Gets the unpacked target with the unpacker struct
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
