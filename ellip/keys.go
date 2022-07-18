@@ -131,24 +131,32 @@ func randomMessage(arraySize uint) []byte {
 	return bytesBuffer
 }
 
+// Creates a random message, hashes it, and then signs it. Returns the message hash and the signature.
 func SignRandMsg() (msgHash, sig []byte) {
 
+	// Gets the private key
 	_, privateKey := GetKeyPair()
 
+	// Generates the random message
 	msg := randomMessage(32)
 
+	// Makes and does the hash
 	msgHash = make([]byte, 32)
 	sha3.ShakeSum256(msgHash, msg)
 
+	// Signs the message
 	sig, sigErr := crypto.Sign(msgHash, privateKey)
 
+	// If an error occured
 	if sigErr != nil {
 
 		panic(sigErr)
 	}
 
+	// Init the final return sig
 	finalSig := make([]byte, 64)
 
+	// Removes the wierd v value at the end that isnt used for verifying signatures
 	for index := 0; index < 64; index++ {
 
 		finalSig[index] = sig[index]
@@ -157,6 +165,7 @@ func SignRandMsg() (msgHash, sig []byte) {
 	return msgHash, finalSig
 }
 
+// Validates a signature. Returns true if valid, false if not valid.
 func ValidateSig(publicKey, msgHash, sig []byte) bool {
 
 	return crypto.VerifySignature(publicKey, msgHash, sig)
