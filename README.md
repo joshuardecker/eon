@@ -1,5 +1,5 @@
 Welcome to the Luncheon Network Github!
-- The following document will do the best I can to explain all of the features of Luncheon while also summerizing how it works. This document should grow abd update the closer to release the project gets.
+- The following document will do the best I can to explain all of the features of Luncheon while also summerizing how it works. This document should grow and update the closer to release the project gets.
 
 Proof of Work and Mining:
 - The blockchain will be secured via a meathod called proof of work. I will explain everything you need to know about it for this in the following: Transactions are lumped together into blocks of information. The people who validate these transactions and add them to the transaction history will be mostly miners. Mining is a term used for a person who donates computational power to the network by allowing there computer to solve complex math problems. Which ever computer finds the answer to this math problem gets rewarded for it in Luncheon (the token of this blockchain) and gets there list of mined transactions added to the transaction history. This meathod works well because if the majority are good people, the network can not be outcompeted in computational power, providing a secure blockchain.
