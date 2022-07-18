@@ -3,6 +3,8 @@ package transactions
 import (
 	"encoding/json"
 	"errors"
+
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
 // Sets the block reward input of the PLuX
@@ -43,4 +45,16 @@ func (p *PLuX) GetWeight() uint32 {
 	p.Weight = uint32(len(txAsBytes))
 
 	return p.Weight
+}
+
+// Creates a PLuX, where your publickey is the winner of the block.
+// Will be put in your version of the block, and only the global version if you mine it first.
+// Returns errors if they occur.
+func (p *PLuX) CreatePLuX(blockReward uint64) error {
+
+	p.BlockReward = blockReward
+	p.LuckyMiner = ellip.PubKeyHashStr()
+	p.Weight = p.GetWeight()
+
+	return nil
 }

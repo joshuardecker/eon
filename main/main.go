@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 func main() {
@@ -14,20 +12,8 @@ func main() {
 	//****
 	// Test new features area
 
-	msg, sig := ellip.SignRandMsg()
-	pub, _ := ellip.GetKeyPair()
-
-	if ellip.ValidateSig(pub, msg, sig) {
-
-		fmt.Println("Worked!")
-
-		fmt.Println(len(pub))
-	} else {
-		fmt.Println("Didnt work")
-	}
-
-	t := new(utilities.Time)
-	t.CurrentTime()
+	bl := new(blockchain.Blockchain)
+	fmt.Println(bl.GetBlockReward())
 
 	// Test new features area
 	//****
