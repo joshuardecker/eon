@@ -55,7 +55,14 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 		return nil, errors.New("please input a block with data inside it")
 	}
 
-	m.inputTarget(b.PackedTarget)
+	// Unpack the target stored in the block
+	unpackErr := m.inputTarget(b.PackedTarget)
+
+	// If an error occured
+	if unpackErr != nil {
+
+		panic(unpackErr)
+	}
 
 	// Gets the unpacked target with the unpacker struct
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
