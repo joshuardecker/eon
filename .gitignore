@@ -11,8 +11,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# File names ignored
-key
+# Directories / File names that are ignored
+saves
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
