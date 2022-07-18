@@ -45,8 +45,10 @@ func (m *Miner) InputTarget(inputTarget uint32) error {
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
 func (m *Miner) Start(b Block) ([]byte, error) {
 
+	// Get the block as bytes for mining
 	m.inputBlockBytes = b.ParseBlockToBytes()
 
+	// No block data?
 	if m.inputBlockBytes == nil {
 
 		return nil, errors.New("please input a block with data inside it")
@@ -78,8 +80,10 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
 
+			// Set the block hash to the winning hash
 			b.SetBlockHash(m.currentHash)
 
+			// Prints the block as a json string
 			b.PrintBlock()
 
 			return m.currentHash, nil

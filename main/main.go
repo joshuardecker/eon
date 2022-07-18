@@ -17,12 +17,14 @@ func main() {
 	targetErr := miner.InputTarget(0x1dffffff) //1d00ffff
 
 	if targetErr != nil {
+
 		panic(targetErr)
 	}
 
 	_, minerErr := miner.Start(*block)
 
 	if minerErr != nil {
+
 		panic(minerErr)
 	}
 

@@ -11,55 +11,64 @@ import (
 
 // Blocks for the chain, each one containing its own transaction data to support the network.
 type Block struct {
-	blockHash    []byte
-	prevHash     []byte
-	maxWeight    uint32
-	blockHeight  uint32
-	packedTarget uint32
+	BlockHash    []byte
+	PrevHash     []byte
+	MaxWeight    uint32
+	BlockHeight  uint32
+	PackedTarget uint32
 
 	Nonce uint32
 
 	BlockRewardTx transactions.PLuX
-	basicTxs      []transactions.BLuX
-	advancedTxs   []transactions.ALuX
+	BasicTxs      []transactions.BLuX
+	AdvancedTxs   []transactions.ALuX
 }
 
+// Constucts a block TODO: make this better when transactions made
 func (b *Block) ConstructBlock() {
 
 	b.BlockRewardTx.SetLuckyMiner(ellip.PubKeyHashStr())
 	b.BlockRewardTx.SetBlockReward(200)
 	b.BlockRewardTx.GetWeight()
 
-	b.packedTarget = 0x1dffffff
+	b.PackedTarget = 0x1dffffff
 }
 
 // Takes all of the block data and gets its bytes from memory. Returns those bytes.
 func (b *Block) ParseBlockToBytes() []byte {
 
-	blockAsBytes, jsonErr := json.Marshal(*b)
+	// Gets the bytes that the block takes in memory
+	blockAsBytes, jsonErr := json.Marshal(b)
 
 	if jsonErr != nil {
+
 		panic(jsonErr)
 	}
 
 	return blockAsBytes
 }
 
+// Sets the block hash, used by the miner. Returns any errors.
 func (b *Block) SetBlockHash(inputHash []byte) error {
 
+	// Is there no / blank input?
 	if inputHash == nil {
 
 		return errors.New("please input a non empty hash")
 	}
 
-	b.blockHash = inputHash
+	// Set the input hash
+	b.BlockHash = inputHash
 
 	return nil
 }
 
+// Prints the block Json
 func (b *Block) PrintBlock() {
 
+	// Gets the bytes that the block takes in memory
 	blockJson, _ := json.Marshal(b)
 
+	// Prints the json string of the block
 	fmt.Println(string(blockJson))
 }
