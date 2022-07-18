@@ -4,7 +4,7 @@ package transactions
 type PLuX struct {
 	BlockReward uint64
 
-	LuckyMiner []byte
+	LuckyMiner string
 
 	Weight uint32
 }

@@ -62,7 +62,6 @@ func (m *Miner) Start(b Block) ([]byte, error) {
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
 
 	fmt.Println("Mining Starting!")
-	fmt.Printf("Mining block bytes: %x\n", m.inputBlockBytes)
 
 	// The actual mining process
 	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {

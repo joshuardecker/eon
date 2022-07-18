@@ -26,12 +26,12 @@ func (p *PLuX) SetBlockReward(blockReward uint64) {
 }
 
 // Sets the address hash that will receive the block reward
-func (p *PLuX) SetLuckyMiner(luckyMiner []byte) error {
+func (p *PLuX) SetLuckyMiner(luckyMiner string) error {
 
 	// If input nothing / nil
-	if luckyMiner == nil {
+	if len(luckyMiner) == 0 {
 
-		return errors.New("input a non nil id for the lucky miner")
+		return errors.New("input an id for the lucky miner")
 	}
 
 	p.LuckyMiner = luckyMiner

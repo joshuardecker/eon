@@ -1,17 +1,10 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
 func main() {
-
-	pub, priv := ellip.GetKeyPair()
-	fmt.Printf("%x\n", pub)
-	fmt.Printf("%x\n", priv)
 
 	//****
 	// Starts Mining

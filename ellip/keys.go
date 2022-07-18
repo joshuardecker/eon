@@ -4,9 +4,11 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"encoding/hex"
 	"os"
 
 	"github.com/ethereum/go-ethereum/crypto"
+	"golang.org/x/crypto/sha3"
 )
 
 func generatePrivateKey() {
@@ -72,4 +74,15 @@ func GetKeyPair() (publicKey, privateKey []byte) {
 	copy(privateKey[32-len(binaryBlob):], binaryBlob)
 
 	return publicKey, privateKey
+}
+
+func PubKeyHashStr() string {
+
+	publicKey, _ := GetKeyPair()
+
+	publicKeyHash := make([]byte, 32)
+
+	sha3.ShakeSum256(publicKeyHash, publicKey)
+
+	return hex.EncodeToString(publicKeyHash)
 }

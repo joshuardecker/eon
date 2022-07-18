@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 )
 
@@ -25,7 +26,7 @@ type Block struct {
 
 func (b *Block) ConstructBlock() {
 
-	b.BlockRewardTx.SetLuckyMiner([]byte("Joshua Decker"))
+	b.BlockRewardTx.SetLuckyMiner(ellip.PubKeyHashStr())
 	b.BlockRewardTx.SetBlockReward(200)
 	b.BlockRewardTx.GetWeight()
 
