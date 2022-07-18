@@ -26,4 +26,4 @@ Future Transaction Types: (LuTx's)
 - The basic Luncheon transaction is the transaction that will be used the most. It sends coin from one wallet to another. There can be many of these transactions per block, and that number is set by the max block size.
 
 3: Advanced Luncheon Transaction (ALuX)
-- This transaction type will have a very basic scripting ability, which put simply means the transaction can have extra arguments/fine print for the transaction to be valid. Example, the transaction will only be valid if another party pays a certin amount, and expires after 24 hours if the other person does not pay, allowing for basic contracts to be built on the platform. 
+- This transaction type will have a very basic scripting ability, which put simply means the transaction can have extra arguments/fine print for the transaction to be valid. Example, the transaction will only be valid if another party pays a certain amount, and expires after 24 hours if the other person does not pay, allowing for basic contracts to be built on the platform. 
