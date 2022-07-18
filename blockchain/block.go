@@ -17,7 +17,8 @@ type Block struct {
 	BlockHeight  uint32
 	PackedTarget uint32
 
-	Nonce uint32
+	Nonce     uint32
+	Timestamp uint32
 
 	BlockRewardTx transactions.PLuX
 	BasicTxs      []transactions.BLuX
