@@ -52,8 +52,12 @@ func (p *PLuX) GetWeight() uint32 {
 // Returns errors if they occur.
 func (p *PLuX) CreatePLuX(blockReward uint64) error {
 
+	// Init the main key // This is temp, as later make it not need the main
+	mainKey := new(ellip.MainKey)
+
 	p.BlockReward = blockReward
-	p.LuckyMiner = ellip.PubKeyHashStr()
+	p.LuckyMiner = mainKey.MainKeyHash()
+
 	p.Weight = p.GetWeight()
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
 func main() {
@@ -12,9 +13,8 @@ func main() {
 	//****
 	// Test new features area
 
-	bl := new(blockchain.Blockchain)
-
-	fmt.Println(bl.GetHeight())
+	mainKey := new(ellip.MainKey)
+	mainKey.MainKeyHash()
 
 	// Test new features area
 	//****
@@ -26,7 +26,7 @@ func main() {
 	miner := new(blockchain.Miner)
 
 	block := new(blockchain.Block)
-	//block.CreateBlock()
+	block.InitBlock("Cool Test", 0x1dffffff, 200)
 
 	_, minerErr := miner.Start(*block)
 
