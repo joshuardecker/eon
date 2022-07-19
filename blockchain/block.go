@@ -12,9 +12,9 @@ import (
 // Blocks for the chain, each one containing its own transaction data to support the network.
 type Block struct {
 	// Things known before the new block
-	PrevHash     string
-	PackedTarget uint32
-	BlockReward  uint64
+	SoftwareVersion uint32
+	PrevHash        string
+	PackedTarget    uint32
 
 	// Things calculated after creation
 	BlockHash string
@@ -31,12 +31,11 @@ type Block struct {
 }
 
 // Inits a block
-func (b *Block) InitBlock(prevHash string, packedTarget uint32, blockReward uint64) {
+func (b *Block) InitBlock(prevHash string, packedTarget uint32) {
 
 	// Init the new block
 	b.PrevHash = prevHash
 	b.PackedTarget = packedTarget
-	b.BlockReward = blockReward
 }
 
 // Calculates the weight of the block
