@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
@@ -8,6 +9,20 @@ import (
 )
 
 func main() {
+
+	//****
+	// Input Handler
+
+	test := flag.Bool("testnet", false, "activates the testnet")
+	flag.Parse()
+
+	if *test {
+
+		fmt.Println("Testnet!")
+	}
+
+	// Input Handler
+	//****
 
 	fmt.Println("*****")
 	//****
@@ -45,15 +60,6 @@ func main() {
 	finalBlock.PrintBlock()
 
 	blockChain.AddBlock(finalBlock)
-	blockChain.AddBlock(finalBlock)
-
-	fmt.Println(blockChain.GetHeight())
-	fmt.Println(len(blockChain.Blocks))
-
-	blockChain.RemoveBlock(0)
-
-	fmt.Println(blockChain.GetHeight())
-	fmt.Println(len(blockChain.Blocks))
 
 	// Starts the mining
 	//****
