@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"bytes"
+	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -10,10 +11,9 @@ import (
 )
 
 // The struct that handles the mining. Uses the shake256 varient of sha3 for hashing.
+// Here is how the miner handles block hashing. (This is the order of the append list) (adding all the info together)
+// SoftwareVersion + PrevBlockHash + MerkleRoot + Time + PackedTarget + Nonce
 type Miner struct {
-	blockBytes   []byte
-	packedTarget uint32
-
 	currentHash    []byte
 	unpackedTarget []byte
 
@@ -22,44 +22,22 @@ type Miner struct {
 	utilTime utilities.Time
 }
 
-// This function tells the miner what target to mine to. Returns an error if once occurs.
-func (m *Miner) inputTarget(inputTarget uint32) error {
-
-	// 0 is an invalid target, and this handles that
-	if inputTarget == 0 {
-
-		return errors.New("cannot input target 0")
-	}
-
-	// Is the target higher than the max allowed target?
-	if inputTarget > 0x1dffffff { // TODO: Find a better value and define as const elsewhere
-
-		return errors.New("target is to large") // TODO: Have it print max target
-	}
-
-	m.packedTarget = inputTarget
-
-	return nil
-}
-
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
 func (m *Miner) Start(b Block) (Block, error) {
 
-	// Unpack the target stored in the block
-	unpackErr := m.inputTarget(b.PackedTarget)
-
-	// If an error occured
-	if unpackErr != nil {
-
-		panic(unpackErr)
-	}
+	//****
+	// Prepare the miner
 
 	// Gets the unpacked target with the unpacker struct
-	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
+	m.unpackedTarget = m.unpacker.UnpackAsBytes(b.PackedTarget)
 
+	// Init the timer used for calculating MH/s
 	timer := m.utilTime.Timer()
 
 	fmt.Println("Mining Starting!")
+
+	// Prepare the miner
+	//****
 
 	// The actual mining process
 	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {
@@ -71,7 +49,19 @@ func (m *Miner) Start(b Block) (Block, error) {
 		b.SetTimestamp(m.utilTime.CurrentUnix())
 
 		// Get the block as bytes for mining
-		m.blockBytes = b.ParseBlockToBytes()
+		softwareVersion := m.util.Uint32toB(b.SoftwareVersion)
+		prevBlockHash, _ := hex.DecodeString(b.BlockHash)
+		merkleRoot, _ := hex.DecodeString(b.MerkleRoot)
+		blockTime := m.util.Uint64toB(b.Timestamp)
+		packedTargetBytes := m.util.Uint32toB(b.PackedTarget)
+		nonceBytes := m.util.Uint32toB(b.Nonce)
+
+		// Shove them together (into softwareVerion var bc it is first declared)
+		softwareVersion = append(softwareVersion, prevBlockHash...)
+		softwareVersion = append(softwareVersion, merkleRoot...)
+		softwareVersion = append(softwareVersion, blockTime...)
+		softwareVersion = append(softwareVersion, packedTargetBytes...)
+		softwareVersion = append(softwareVersion, nonceBytes...)
 
 		// Init the size of the hash
 		m.currentHash = make([]byte, 32)
@@ -83,7 +73,7 @@ func (m *Miner) Start(b Block) (Block, error) {
 		// Mining
 
 		// Hash the data
-		sha3.ShakeSum256(m.currentHash, m.blockBytes)
+		sha3.ShakeSum256(m.currentHash, softwareVersion)
 
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {

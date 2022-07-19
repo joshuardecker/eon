@@ -36,7 +36,7 @@ func main() {
 	block := new(blockchain.Block)
 	plux := new(transactions.PLuX)
 
-	block.InitBlock("8f2348098a", 0x1d0fffff, blockChain.GetBlockReward())
+	block.InitBlock("8f2348098a", 0x1d0fffff)
 
 	plux.CreatePLuX(blockChain.GetBlockReward())
 
