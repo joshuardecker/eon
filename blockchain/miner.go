@@ -11,10 +11,9 @@ import (
 
 // The struct that handles the mining. Uses the shake256 varient of sha3 for hashing.
 type Miner struct {
-	inputBlockBytes []byte
-	packedTarget    uint32
+	blockBytes   []byte
+	packedTarget uint32
 
-	hashData       []byte
 	currentHash    []byte
 	unpackedTarget []byte
 
@@ -46,15 +45,6 @@ func (m *Miner) inputTarget(inputTarget uint32) error {
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
 func (m *Miner) Start(b Block) (Block, error) {
 
-	// Get the block as bytes for mining
-	m.inputBlockBytes = b.ParseBlockToBytes()
-
-	// No block data?
-	if m.inputBlockBytes == nil {
-
-		return b, errors.New("please input a block with data inside it")
-	}
-
 	// Unpack the target stored in the block
 	unpackErr := m.inputTarget(b.PackedTarget)
 
@@ -72,17 +62,26 @@ func (m *Miner) Start(b Block) (Block, error) {
 	// The actual mining process
 	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {
 
-		// Set the timestamp in the block
-		b.SetTimestamp(uint64(m.utilTime.CurrentUnix()))
+		//****
+		// Var changes
 
-		// Create the input bytes for the hash, and add the nonce
-		m.hashData = append(m.inputBlockBytes, m.util.Uint32toB(b.Nonce)...)
+		// Set the timestamp in the block
+		b.SetTimestamp(m.utilTime.CurrentUnix())
+
+		// Get the block as bytes for mining
+		m.blockBytes = b.ParseBlockToBytes()
 
 		// Init the size of the hash
 		m.currentHash = make([]byte, 32)
 
+		// Var changes
+		//****
+
+		//****
+		// Mining
+
 		// Hash the data
-		sha3.ShakeSum256(m.currentHash, m.hashData)
+		sha3.ShakeSum256(m.currentHash, m.blockBytes)
 
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
@@ -100,6 +99,9 @@ func (m *Miner) Start(b Block) (Block, error) {
 			fmt.Printf("Target: %x\n", m.unpackedTarget)
 			fmt.Printf("Last Hash: %x\n", m.currentHash)
 		}
+
+		// Mining
+		//****
 	}
 
 	return b, errors.New("you have reached the end of the defined search space! Impressive")
