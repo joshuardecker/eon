@@ -12,7 +12,7 @@ import (
 
 // The struct that handles the mining. Uses the shake256 varient of sha3 for hashing.
 // Here is how the miner handles block hashing. (This is the order of the append list) (adding all the info together)
-// SoftwareVersion + PrevBlockHash + MerkleRoot + Time + PackedTarget + Nonce
+// SoftwareVersion + PrevBlockHash + MerkleRoot + PackedTarget + Time + Nonce
 type Miner struct {
 	currentHash    []byte
 	unpackedTarget []byte
@@ -43,10 +43,10 @@ func (m *Miner) Start(b Block) (Block, error) {
 	for b.Nonce = 0; b.Nonce <= 0xFFFFFFFF; b.Nonce++ {
 
 		//****
-		// Var changes
+		// Var changes in the process
 
 		// Set the timestamp in the block
-		b.SetTimestamp(m.utilTime.CurrentUnix())
+		b.Timestamp = m.utilTime.CurrentUnix()
 
 		// Get the block as bytes for mining
 		softwareVersion := m.util.Uint32toB(b.SoftwareVersion)
@@ -59,14 +59,14 @@ func (m *Miner) Start(b Block) (Block, error) {
 		// Shove them together (into softwareVerion var bc it is first declared)
 		softwareVersion = append(softwareVersion, prevBlockHash...)
 		softwareVersion = append(softwareVersion, merkleRoot...)
-		softwareVersion = append(softwareVersion, blockTime...)
 		softwareVersion = append(softwareVersion, packedTargetBytes...)
+		softwareVersion = append(softwareVersion, blockTime...)
 		softwareVersion = append(softwareVersion, nonceBytes...)
 
 		// Init the size of the hash
 		m.currentHash = make([]byte, 32)
 
-		// Var changes
+		// Var changes in the process
 		//****
 
 		//****
@@ -79,7 +79,7 @@ func (m *Miner) Start(b Block) (Block, error) {
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
 
 			// Set the block hash to the winning hash
-			b.SetBlockHash(m.currentHash)
+			b.BlockHash = hex.EncodeToString(m.currentHash)
 
 			return b, nil
 		}

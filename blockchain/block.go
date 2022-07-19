@@ -1,9 +1,7 @@
 package blockchain
 
 import (
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
@@ -69,28 +67,7 @@ func (b *Block) GetWeight() {
 	b.Weight += uint32(len(byteArray))
 }
 
-// Sets the block hash found by the miner. Returns any errors.
-func (b *Block) SetBlockHash(inputHash []byte) error {
-
-	// Is there no / blank input?
-	if inputHash == nil {
-
-		return errors.New("please input a non empty hash")
-	}
-
-	// Set the input hash
-	b.BlockHash = hex.EncodeToString(inputHash)
-
-	return nil
-}
-
 // Nonce is already handled by the miner //
-
-// Takes in a unix timestamp. Blocks will use unix in seconds.
-func (b *Block) SetTimestamp(unixTime uint64) {
-
-	b.Timestamp = unixTime
-}
 
 // Adds the PLuX tranaction to the block. Returns errors.
 func (b *Block) AddPLuX(p transactions.PLuX) error {
