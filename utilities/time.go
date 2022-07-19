@@ -4,7 +4,10 @@ import (
 	"time"
 )
 
-type Time struct{}
+type Time struct {
+	timerLog   uint64
+	timerValue uint64
+}
 
 // Function returns the current unix time in seconds.
 func (t *Time) CurrentUnix() uint64 {
@@ -22,4 +25,13 @@ func (t *Time) CurrentUnixMilli() uint64 {
 func (t *Time) CurrentTime() time.Time {
 
 	return time.Now().Round(time.Second)
+}
+
+func (t *Time) Timer() uint64 {
+
+	t.timerLog = t.timerValue
+
+	t.timerValue = t.CurrentUnix()
+
+	return t.timerValue - t.timerLog
 }

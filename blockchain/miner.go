@@ -57,6 +57,8 @@ func (m *Miner) Start(b Block) (Block, error) {
 	// Gets the unpacked target with the unpacker struct
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(m.packedTarget)
 
+	timer := m.utilTime.Timer()
+
 	fmt.Println("Mining Starting!")
 
 	// The actual mining process
@@ -95,9 +97,16 @@ func (m *Miner) Start(b Block) (Block, error) {
 		// Prints stats every 10 MH
 		if b.Nonce%10000000 == 0 {
 
-			fmt.Println("Mining...")
-			fmt.Printf("Target: %x\n", m.unpackedTarget)
-			fmt.Printf("Last Hash: %x\n", m.currentHash)
+			timer = m.utilTime.Timer()
+
+			if timer != 0 {
+
+				fmt.Printf("Mining...\n")
+				fmt.Printf("Target: %x\n", m.unpackedTarget)
+				fmt.Printf("Last Hash: %x\n", m.currentHash)
+
+				fmt.Println("Average Hashing Speed: ", ((10000000/timer)*60)/1000000, " MH / per minute.")
+			}
 		}
 
 		// Mining
