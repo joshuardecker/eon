@@ -6,6 +6,7 @@ import (
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 func main() {
@@ -28,11 +29,14 @@ func main() {
 	//****
 	// Test new features area
 
+	timeUtil := new(utilities.Time)
+	fmt.Println(timeUtil.CurrentTime())
+
 	blockChain := new(blockchain.Blockchain)
 	block := new(blockchain.Block)
 	plux := new(transactions.PLuX)
 
-	block.InitBlock("8f2348098a", 0x1dffffff, blockChain.GetBlockReward())
+	block.InitBlock("8f2348098a", 0x1d0fffff, blockChain.GetBlockReward())
 
 	plux.CreatePLuX(blockChain.GetBlockReward())
 
@@ -63,4 +67,6 @@ func main() {
 
 	// Starts the mining
 	//****
+
+	fmt.Println(timeUtil.CurrentTime())
 }
