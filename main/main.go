@@ -39,18 +39,10 @@ func main() {
 	fmt.Println("*****")
 
 	//****
-	// Block init
+	// Starts Mining
 
 	blockChain := new(blockchain.Blockchain)
 	block := new(blockchain.Block)
-
-	block.InitBlock("8f2348098a", 0x1d0fffff) // Right now 1d0fffff is pretty balanced starting target
-
-	// Block init
-	//****
-
-	//****
-	// Starts Mining
 
 	miner := new(blockchain.Miner)
 
