@@ -12,6 +12,8 @@ type Blockchain struct {
 	maxWeight uint32
 }
 
+// Inits the blockchain struct, including defining constants.
+// Returns if any errors occured.
 func (b *Blockchain) InitBlockchain() error {
 
 	if len(b.Blocks) != 0 || b.height != 0 {
@@ -54,6 +56,7 @@ func (b *Blockchain) GetBlockReward() uint64 {
 }
 
 // Updates and returns the height of the blockchain.
+// Returns a uint32 of the blockchain height.
 func (b *Blockchain) GetHeight() uint32 {
 
 	b.height = uint32(len(b.Blocks) - 1)
@@ -61,7 +64,9 @@ func (b *Blockchain) GetHeight() uint32 {
 	return b.height
 }
 
-// Adds a block to the blockchain
+// This function adds a block to the blockchain.
+// Inputs are the block being added.
+// Returns any errors.
 func (b *Blockchain) AddBlock(block Block) error {
 
 	if !b.verifyBlock(block) {
@@ -74,42 +79,9 @@ func (b *Blockchain) AddBlock(block Block) error {
 	return nil
 }
 
-// Determines whether the Block is valid.
-// Returns a bool, true if valid, and false if invalid.
-func (b *Blockchain) verifyBlock(block Block) bool {
+// This function removes the last block from the blockchain.
+// Returns nothing.
+func (b *Blockchain) RemoveBlock() {
 
-	//****
-	// Check the PLuX
-
-	if block.PLuX.BlockReward != b.GetBlockReward() { // TODO: add get tx fees func
-
-		return false
-	}
-
-	if block.PLuX.Weight != block.PLuX.GetWeight() {
-
-		return false
-	}
-
-	// Check the PLuX
-	//****
-
-	return true
-}
-
-func (b *Blockchain) RemoveBlock(index uint) error {
-
-	if index > uint(b.GetHeight()) {
-
-		return errors.New("cannot remove a block that doesnt exist")
-	}
-
-	if index == 100 {
-
-		return errors.New("cannot remove the genesis block")
-	}
-
-	b.Blocks = append(b.Blocks[:index], b.Blocks[index+1:]...)
-
-	return nil
+	b.Blocks = append(b.Blocks[:b.GetHeight()], b.Blocks[b.GetHeight()+1:]...)
 }

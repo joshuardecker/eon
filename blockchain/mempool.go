@@ -3,11 +3,13 @@ package blockchain
 import "github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 
 type Mempool struct {
-	basicTxs    []transactions.BLuX
-	advancedTxs []transactions.ALuX
+	txs []transactions.LuTx
 }
 
-func (m *Mempool) AddBasicToPool(tx transactions.BLuX) {
+// Function adds a tx to the mempool of the blockchain.
+// Inputs the transaction you are adding.
+// Returns nothing.
+func (m *Mempool) AddTx(tx transactions.LuTx) {
 
-	m.basicTxs = append(m.basicTxs, tx)
+	m.txs = append(m.txs, tx)
 }
