@@ -12,7 +12,11 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
+// Function gets and if needed generates a public and private key pair.
+// Input the save file name to get / make the key pair.
+// Returns the public key, and then the private key.
 func GetKeyPair(saveName string) ([]byte, ecdsa.PrivateKey) {
+
 	// Load the private key
 	privateKey, readErr := crypto.LoadECDSA("saves/" + saveName)
 
@@ -47,7 +51,10 @@ func GetKeyPair(saveName string) ([]byte, ecdsa.PrivateKey) {
 	return publicKey, *privateKey
 }
 
-// Generates and saves the main private key locally. Returns nothing.
+// Generates and saves a new private key into the saveName provided.
+// Input needed is the name of the new key save.
+// Function only intended to be used by GetKeyPair().
+// Returns nothing.
 func generateRandPrivKey(saveName string) {
 
 	// Create the key
@@ -90,7 +97,10 @@ func generateRandPrivKey(saveName string) {
 	}
 }
 
-// Creates a random message, hashes it, and then signs it. Returns the message hash and the signature.
+// This function signs a hash of a randomly generated message.
+// The hashing and randomness is used for security.
+// Input is the private key that will be used to sign the message.
+// Output is the hash of the message, and then the signature.
 func SignRandMsg(privKey *ecdsa.PrivateKey) (msgHash, sig []byte) {
 
 	// Generates the random message
@@ -121,7 +131,9 @@ func SignRandMsg(privKey *ecdsa.PrivateKey) (msgHash, sig []byte) {
 	return msgHash, finalSig
 }
 
-// Gives a random message with only a size (bytes returned) input needed. Returns a byte array of the random message.
+// Function makes a random message.
+// Inputs the size of the byte array returned.
+// Returns the random message as a byte array.
 func randomMessage(arraySize uint) []byte {
 
 	// Creates the byte buffer
@@ -139,12 +151,15 @@ func randomMessage(arraySize uint) []byte {
 	return bytesBuffer
 }
 
-// Get the hash of your public key. Returns a string of the hex of the hashed public key.
+// Hashes the public key inputted for extra security.
+// Input a public key to be hashed.
+// Outputs the hex string of the public key.
 func PubKeyHashStr(pubKey []byte) string {
 
+	// Empty public key?
 	if len(pubKey) == 0 {
 
-		panic("inputa non empty pubKey into PubKeyHashStr")
+		panic("input non empty pubKey into PubKeyHashStr")
 	}
 
 	// Define the hash
@@ -156,7 +171,8 @@ func PubKeyHashStr(pubKey []byte) string {
 	return hex.EncodeToString(publicKeyHash)
 }
 
-// Validates a signature. Returns true if valid, false if not valid.
+// Validates a signature.
+// Returns true if valid, false if not valid.
 func ValidateSig(publicKey, msgHash, sig []byte) bool {
 
 	return crypto.VerifySignature(publicKey, msgHash, sig)
