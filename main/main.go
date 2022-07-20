@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
@@ -44,13 +43,8 @@ func main() {
 
 	blockChain := new(blockchain.Blockchain)
 	block := new(blockchain.Block)
-	plux := new(transactions.PLuX)
 
 	block.InitBlock("8f2348098a", 0x1d0fffff) // Right now 1d0fffff is pretty balanced starting target
-
-	plux.CreatePLuX(blockChain.GetBlockReward())
-
-	block.AddPLuX(*plux)
 
 	// Block init
 	//****
