@@ -74,8 +74,25 @@ func (b *Blockchain) AddBlock(block Block) error {
 	return nil
 }
 
-// Verifys the integrity of the block. Returns true if valid, false if not-valid.
+// Determines whether the Block is valid.
+// Returns a bool, true if valid, and false if invalid.
 func (b *Blockchain) verifyBlock(block Block) bool {
+
+	//****
+	// Check the PLuX
+
+	if block.PLuX.BlockReward != b.GetBlockReward() { // TODO: add get tx fees func
+
+		return false
+	}
+
+	if block.PLuX.Weight != block.PLuX.GetWeight() {
+
+		return false
+	}
+
+	// Check the PLuX
+	//****
 
 	return true
 }
