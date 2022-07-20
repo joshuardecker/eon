@@ -2,6 +2,11 @@ github.com/GoblinBear/beson v0.0.0-20191106025029-f536b6cd1586 h1:GEv7Ad3qBuHAOd
 github.com/GoblinBear/beson v0.0.0-20191106025029-f536b6cd1586/go.mod h1:K9YtB+o1nxdO4AdTzb9s3q7rRaeBSZvkrRZZIc64MIY=
 github.com/GoblinBear/beson-go v0.0.0-20191106025029-f536b6cd1586 h1:l8II3yBK/hFnLjxlm0ZATSbKpxH8MZ4xHkvBsd7z9qk=
 github.com/GoblinBear/beson-go v0.0.0-20191106025029-f536b6cd1586/go.mod h1:6Z+YImttQQWLkvQQXfjkphn9ICi1DfJ4HoplEmBoAvw=
+github.com/btcsuite/btcd/btcec/v2 v2.2.0 h1:fzn1qaOt32TuLjFlkzYSsBC35Q3KUjT1SwPxiMSCF5k=
+github.com/btcsuite/btcd/btcec/v2 v2.2.0/go.mod h1:U7MHm051Al6XmscBQ0BoNydpOTsFAn707034b5nY8zU=
+github.com/decred/dcrd/crypto/blake256 v1.0.0/go.mod h1:sQl2p6Y26YV+ZOcSTP6thNdn47hh8kt6rqSlvmrXFAc=
+github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 h1:YLtO71vCjJRCBcrPMtQ9nqBsqpA1m5sE92cU+pd5Mcc=
+github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1/go.mod h1:hyedUtir6IdtD/7lIxGeCxkaw7y45JueMRL4DIyJDKs=
 github.com/ethereum/go-ethereum v1.10.20 h1:75IW830ClSS40yrQC1ZCMZCt5I+zU16oqId2SiQwdQ4=
 github.com/ethereum/go-ethereum v1.10.20/go.mod h1:LWUN82TCHGpxB3En5HVmLLzPD7YSrEUFmFfN1nKkVN0=
 golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d h1:sK3txAijHtOK88l68nt020reeT1ZdKLIYetKl95FzVY=

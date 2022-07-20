@@ -9,6 +9,9 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
+// To make a windows copy: GOOS=windows GOARCH=amd64 go build -o luncheon.exe main/main.go
+// Website I got this from: https://freshman.tech/snippets/go/cross-compile-go-programs/
+
 func main() {
 
 	//****
@@ -32,21 +35,25 @@ func main() {
 	timeUtil := new(utilities.Time)
 	fmt.Println(timeUtil.CurrentTime())
 
+	// Test new features area
+	//****
+	fmt.Println("*****")
+
+	//****
+	// Block init
+
 	blockChain := new(blockchain.Blockchain)
 	block := new(blockchain.Block)
 	plux := new(transactions.PLuX)
 
-	block.InitBlock("8f2348098a", 0x1d0fffff)
+	block.InitBlock("8f2348098a", 0x1d0fffff) // Right now 1d0fffff is pretty balanced starting target
 
 	plux.CreatePLuX(blockChain.GetBlockReward())
 
 	block.AddPLuX(*plux)
 
-	fmt.Printf("Packed target: %x\n", block.PackedTarget)
-
-	// Test new features area
+	// Block init
 	//****
-	fmt.Println("*****")
 
 	//****
 	// Starts Mining
