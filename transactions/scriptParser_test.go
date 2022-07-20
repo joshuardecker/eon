@@ -7,9 +7,17 @@ import (
 
 func TestScripting(t *testing.T) {
 
-	fmt.Println(ScriptParse("TXID 123 HELLO SELF HELLO HELLO"))
+	str := "TXID 123 HELLO SELF HELLO HELLO TXID 123 TXID 123 SELF HELLO"
 
-	for i := 0; i < 25000000; i++ {
-		ScriptParse("TXID 123 HELLO SELF HELLO HELLO")
-	}
+	script := ScriptParse(str)
+	fmt.Println("Script: ", script)
+
+	scriptStr := ScriptToStr(script)
+	fmt.Println("Script Str: ", scriptStr)
+
+	script = ScriptParse(scriptStr)
+	fmt.Println("Script: ", script)
+
+	scriptStr = ScriptToStr(script)
+	fmt.Println("Script Str: ", scriptStr)
 }

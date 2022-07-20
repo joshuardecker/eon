@@ -1,6 +1,8 @@
 package transactions
 
-import "strings"
+import (
+	"strings"
+)
 
 // Script flags that will have a proceeding value
 var keyWordsValuePair []string = []string{
@@ -47,7 +49,15 @@ func ScriptParse(inputScript string) []string {
 
 		// If the string is a flag that needs a proceeding value
 		case 1:
-			index += 2
+
+			// If there is only one value left, aka the flag has no coorisponding value
+			if leng-index == 1 {
+
+				args = removeString(args, index)
+			} else {
+
+				index += 2
+			}
 
 		// If the string is a flag with no proceeding value
 		case 2:
@@ -98,4 +108,24 @@ func checkKeyWord(word string) uint {
 	}
 
 	return 0
+}
+
+// Function takes a given script and converts it back into a single string.
+// Input is a script.
+// Returns this string.
+func ScriptToStr(script []string) string {
+
+	// Saves the length so it doesnt have to be recalculated every loop
+	leng := len(script)
+
+	// Define the script string
+	var scriptStr string
+
+	// Comvert the script into the script string
+	for index := 0; index < leng; index++ {
+
+		scriptStr += (script[index] + " ")
+	}
+
+	return scriptStr
 }

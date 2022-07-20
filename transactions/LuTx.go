@@ -7,5 +7,5 @@ type LuTx struct {
 }
 
 type txScript struct {
-	script string
+	scriptStr string
 }
