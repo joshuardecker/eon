@@ -2,6 +2,9 @@ package blockchain
 
 import (
 	"errors"
+
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 )
 
 // The blockchain struct that will be the chain of blocks.
@@ -27,6 +30,27 @@ func (b *Blockchain) InitBlockchain() error {
 	// Create the genisis block
 
 	return nil
+}
+
+// This function creates the blockreward transaction.
+// It will use your main key as the receiver.
+// Input is the current block reward.
+// Returns the created transaction.
+func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
+
+	tx := new(transactions.LuTx)
+	key := new(ellip.MainKey)
+
+	pubKey := key.MainKeyHash()
+	bReward := string(b.GetBlockReward())
+
+	sc := "PUBKH " + pubKey + " "
+	sc = "AMT " + bReward + " "
+	sc = "TIML 25"
+
+	tx.AddScriptStr(sc, false)
+
+	return *tx
 }
 
 // Returns the current block reward.
@@ -69,7 +93,7 @@ func (b *Blockchain) GetHeight() uint32 {
 // Returns any errors.
 func (b *Blockchain) AddBlock(block Block) error {
 
-	if !b.verifyBlock(block) {
+	if !b.VerifyBlock(block) {
 
 		return errors.New("block is invalid")
 	}
@@ -85,3 +109,7 @@ func (b *Blockchain) RemoveBlock() {
 
 	b.Blocks = append(b.Blocks[:b.GetHeight()], b.Blocks[b.GetHeight()+1:]...)
 }
+
+// Determines whether the block is valid.
+// Returns a bool, true if valid, and false if invalid.
+func (b *Blockchain) VerifyBlock(block Block) bool { return true }
