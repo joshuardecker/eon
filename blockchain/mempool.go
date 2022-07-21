@@ -89,7 +89,7 @@ func (m *Mempool) CheckTxFlags(txIndex int) bool {
 	for index := 0; index < len(tx.InScripts); index += 1 {
 
 		// Parse the input scriptstr into a script
-		inputScript := transactions.ScriptParse(tx.InScripts[index].ScriptStr)
+		inputScript := transactions.StrToScript(tx.InScripts[index].ScriptStr)
 
 		// Check keyword, starting at index 0, aka "TXID"
 		keyWordIndex := 0
@@ -123,7 +123,7 @@ func (m *Mempool) CheckTxFlags(txIndex int) bool {
 	for index := 0; index < len(tx.OutScripts); index += 1 {
 
 		// Parse the input scriptstr into a script
-		outScript := transactions.ScriptParse(tx.OutScripts[index].ScriptStr)
+		outScript := transactions.StrToScript(tx.OutScripts[index].ScriptStr)
 
 		// Check keyword, starting at index 2, aka "PUBK"
 		keyWordIndex := 2
