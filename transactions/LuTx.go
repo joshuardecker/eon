@@ -4,13 +4,13 @@ import "encoding/json"
 
 // This struct are the tx's on the Luncheon Network.
 type LuTx struct {
-	InScripts []scriptStr
+	InScripts []ScriptStr
 
-	OutScripts []scriptStr
+	OutScripts []ScriptStr
 }
 
 // This struct is the transaction script or scripts
-type scriptStr struct {
+type ScriptStr struct {
 	ScriptStr string
 }
 
@@ -22,7 +22,7 @@ type scriptStr struct {
 // Returns nothing.
 func (l *LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
-	tScript := new(scriptStr)
+	tScript := new(ScriptStr)
 	tScript.ScriptStr = scriptstr
 
 	if scriptType {
