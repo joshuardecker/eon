@@ -42,11 +42,11 @@ func main() {
 	// Starts Mining
 
 	blockChain := new(blockchain.Blockchain)
-	block := new(blockchain.Block)
-
 	miner := new(blockchain.Miner)
 
-	finalBlock, minerErr := miner.Start(*block)
+	blockChain.InitBlockchain()
+
+	finalBlock, minerErr := miner.Start(blockChain.Blocks[0])
 
 	if minerErr != nil {
 

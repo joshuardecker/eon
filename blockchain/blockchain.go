@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
@@ -16,6 +17,7 @@ type Blockchain struct {
 }
 
 // Inits the blockchain struct, including defining constants.
+// Creates the genisis block.
 // Returns if any errors occured.
 func (b *Blockchain) InitBlockchain() error {
 
@@ -24,10 +26,27 @@ func (b *Blockchain) InitBlockchain() error {
 		return errors.New("cannot init a blockchain when one already exists on this struct")
 	}
 
-	b.maxWeight = 1000000 // 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
+	// 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
+	b.maxWeight = 1000000
+
 	b.height = 0
 
-	// Create the genisis block
+	// Create the genisis block:
+	genisisB := new(Block)
+
+	// Manually sets the variables of the genisis block
+	genisisB.SoftwareVersion = 1
+	genisisB.PrevHash = "CoolGenisisBLock"
+	genisisB.PackedTarget = 0x1d0fffff
+
+	// Adds the genisis tx
+	genisisB.Txs = append(genisisB.Txs, b.CreateBlockRewardTx())
+
+	// Gets the merkle root
+	genisisB.MerkleRoot = genisisB.GetMerkleRoot()
+
+	// Adds the genisis block to the blockchain
+	b.AddBlock(*genisisB)
 
 	return nil
 }
@@ -38,16 +57,20 @@ func (b *Blockchain) InitBlockchain() error {
 // Returns the created transaction.
 func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
 
+	// Init new types
 	tx := new(transactions.LuTx)
 	key := new(ellip.MainKey)
 
+	// Init vars for the outscript of the genisis tx
 	pubKey := key.MainKeyHash()
-	bReward := string(rune(b.GetBlockReward()))
+	bReward := strconv.FormatUint(b.GetBlockReward(), 10)
 
+	// Creates the output script string
 	sc := "PUBKH " + pubKey + " "
-	sc = "AMT " + bReward + " "
-	sc = "TIML 25"
+	sc += "AMT " + bReward + " "
+	sc += "TIML 25"
 
+	// Adds the script to the tx
 	tx.AddScriptStr(sc, false)
 
 	return *tx
