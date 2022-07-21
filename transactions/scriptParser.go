@@ -27,7 +27,7 @@ var keyWordsNoPair []string = []string{
 // It also sorts each script flag and value into an individual spot in an array.
 // Example if inputted "TXID 123", TXID will be in index 0 of the array, and 123 at index 1.
 // Returns the string array of the parsed script with junk removed.
-func ScriptParse(inputScript string) []string {
+func StrToScript(inputScript string) []string {
 
 	// This is the input script thats had everything moved into an array. Sorts each item by a " " occuring.
 	// Example "test1 test2". Test1 is now in the array at index 0, and test2 is at index 1 because it was split at the " ".
@@ -52,11 +52,19 @@ func ScriptParse(inputScript string) []string {
 		// If the string is a flag that needs a proceeding value
 		case 1:
 
-			// If there is only one value left, aka the flag has no coorisponding value
 			if leng-index == 1 {
+				// If there is only one value left, aka the flag has no coorisponding value
 
 				args = removeString(args, index)
+				leng -= 1
+
+			} else if checkKeyWord(args[index+1]) == 1 {
+				// If the value of this flag is another flag, aka invalid
+
+				args = removeString(args, index)
+				leng -= 1
 			} else {
+				// If everything is good, include this flag and its value
 
 				index += 2
 			}
