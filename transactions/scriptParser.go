@@ -13,6 +13,7 @@ var keyWordsValuePair []string = []string{
 	"SIG",      // The signature of the tx
 	"AMT",      // Amount of luncheon a tx is sending
 	"TIML",     // How long (in block #) this person must wait to spend their coin
+	"FEE",      // The fee in luncheon, that the tx will pay to a miner for mining it
 }
 
 // Script flags without a proceeding value
