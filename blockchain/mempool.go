@@ -4,6 +4,7 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 )
 
+// The mempool struct, containing all the tx's waiting to be added to the next available block.
 type Mempool struct {
 	Txs []transactions.LuTx
 }
@@ -23,33 +24,45 @@ func (m *Mempool) RemoveTx(index int) {
 	m.Txs = append(m.Txs[:index], m.Txs[index+1:]...)
 }
 
-func (m *Mempool) GetTx() any {
+// This function is a basic way to get tx from the mempool.
+// Returns a tx first, which is empty if there were no valid tx in the mempool.
+// Second returns a bool, true if a valid tx was gotten, false if no valid tx was gotten.
+func (m *Mempool) GetTx() (transactions.LuTx, bool) {
 
+	// Save a copy of the length, as to not need to call the len func every loop
 	leng := len(m.Txs)
 
+	// No tx in the mempool?
 	if leng == 0 {
 
-		return false
+		return transactions.LuTx{}, false
 	}
 
+	// Begins the search
 	for index := 0; index < leng; index += 1 {
 
+		// If a valid tx was found
 		if m.CheckTxFlags(index) {
 
 			tx := m.Txs[index]
+
+			// Remove the tx from the mempool, as it has been gotten
 			m.RemoveTx(index)
 
-			return tx
+			return tx, true
 		} else {
 
+			// Romoves a tx and so the leng is now -1
 			m.RemoveTx(index)
+			leng -= 1
 
 			// So when it loops, it will be the same index value
 			index -= 1
 		}
 	}
 
-	return false
+	// Returns this is all tx were invalid in the mempool
+	return transactions.LuTx{}, false
 }
 
 // This function checks whether a transaction has the correct flags or not.
