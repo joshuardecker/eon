@@ -1,5 +1,7 @@
 package transactions
 
+import "encoding/json"
+
 // This struct are the tx's on the Luncheon Network.
 type LuTx struct {
 	inScripts []scriptStr
@@ -32,4 +34,18 @@ func (l LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
 		l.outScripts = append(l.outScripts, *tScript)
 	}
+}
+
+// Function converts the tx into bytes.
+// Returns the byte array of the tx.
+func (l LuTx) AsBytes() []byte {
+
+	lAsBytes, jsonErr := json.Marshal(l)
+
+	if jsonErr != nil {
+
+		panic(jsonErr)
+	}
+
+	return lAsBytes
 }
