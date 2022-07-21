@@ -20,7 +20,7 @@ type scriptStr struct {
 // Enter true to add the scriptStr to the inScripts on the tx.
 // Enter false to add the scriptStr to the outScripts on the tx.
 // Returns nothing.
-func (l LuTx) AddScriptStr(scriptstr string, scriptType bool) {
+func (l *LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
 	tScript := new(scriptStr)
 	tScript.ScriptStr = scriptstr
@@ -38,7 +38,7 @@ func (l LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
 // Function converts the tx into bytes.
 // Returns the byte array of the tx.
-func (l LuTx) AsBytes() []byte {
+func (l *LuTx) AsBytes() []byte {
 
 	lAsBytes, jsonErr := json.Marshal(l)
 
