@@ -28,15 +28,5 @@ Security:
 The Peg:
 - Luncheon will no longer have a value peg to real life lunches anymore, but it still will be able to be used for that. There will not be a fixed rate at which lunches can be redeemed for now, but opportunities will arise for "bidding wars" to let the highest payer get a free lunch.
 
-Future Transaction Types: (LuTx's)
-
-*Note the words coin and token here are used for the same meaning.
-
-1: Payout Luncheon Transaction (PLuX)
-- This is the simplest of the transaction types. This is the transaction in the block that gives the block reward tokens to the person who mined the block first. It does not come from anyone or anywhere, it just appears out of no-where, therefore adding coin to the economy that previously did not exist. There is only one of these per block, as only one person can initially get the block reward.
-
-2: Basic Luncheon Transaction (BLuX)
-- The basic Luncheon transaction is the transaction that will be used the most. It sends coin from one wallet to another. There can be many of these transactions per block, and that number is set by the max block size.
-
-3: Advanced Luncheon Transaction (ALuX)
-- This transaction is the most advanced of the three. It is similar to transaction type 2, where one person is sending tokens to another, but the difference here is that this transaction has a scripting ability with it. By that I mean with some typing, similar to coding, you can give logic to this transaction. Heres an example: You and a friend want to both pay a person for something you will buy from them, and you want to split the cost 50/50, so you set up an ALuX that will pay 50% of the cost if your friend also pays 50%, that way if they chicken out of paying, you dont lose your money and not get what you are trying to buy from the person selling whatever you were splitting with the friend 50/50. This is not the only thing the scripting will allow you to do, this is simply one example of what it can do.
+How transactions work:
+Coming Soon!
