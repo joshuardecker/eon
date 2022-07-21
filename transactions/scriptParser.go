@@ -6,7 +6,8 @@ import (
 
 // Script flags that will have a proceeding value
 var keyWordsValuePair []string = []string{
-	"TXID",     //Tx id hash
+	"BLKN",     // Block number, aka the block height
+	"TXID",     // Tx id hash
 	"OUTINDEX", // The index of the output you are point to in a tx
 	"PUBKH",    // The pubKey hash
 	"PUBK",     // The full pubKey
