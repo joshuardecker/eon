@@ -42,7 +42,3 @@ func (b *Block) PrintBlock() {
 	// Prints the json string of the block
 	fmt.Println(string(blockJson))
 }
-
-// Determines whether the block is valid.
-// Returns a bool, true if valid, and false if invalid.
-func (b *Blockchain) verifyBlock(block Block) bool { return true }

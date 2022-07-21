@@ -42,7 +42,7 @@ func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
 	key := new(ellip.MainKey)
 
 	pubKey := key.MainKeyHash()
-	bReward := string(b.GetBlockReward())
+	bReward := string(rune(b.GetBlockReward()))
 
 	sc := "PUBKH " + pubKey + " "
 	sc = "AMT " + bReward + " "

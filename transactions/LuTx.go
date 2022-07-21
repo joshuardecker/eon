@@ -4,9 +4,9 @@ import "encoding/json"
 
 // This struct are the tx's on the Luncheon Network.
 type LuTx struct {
-	inScripts []scriptStr
+	InScripts []scriptStr
 
-	outScripts []scriptStr
+	OutScripts []scriptStr
 }
 
 // This struct is the transaction script or scripts
@@ -27,12 +27,12 @@ func (l *LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
 	if scriptType {
 
-		l.inScripts = append(l.inScripts, *tScript)
+		l.InScripts = append(l.InScripts, *tScript)
 	}
 
 	if !scriptType {
 
-		l.outScripts = append(l.outScripts, *tScript)
+		l.OutScripts = append(l.OutScripts, *tScript)
 	}
 }
 
