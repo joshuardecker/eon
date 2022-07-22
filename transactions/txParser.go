@@ -15,7 +15,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 	pubKey []byte, signature []byte, pubKeyHash string, amount uint64) {
 
 	//****
-	// Get the inputScript data
+	// Get the InputScript data
 
 	// Loops through all of the inputScripts
 	for index := 0; index < len(tx.InScripts); index += 1 {
@@ -70,11 +70,11 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 		}
 	}
 
-	// Get the inputScript data
+	// Get the InputScript data
 	//****
 
 	//****
-	// Get the outputScript data
+	// Get the OutputScript data
 
 	script := StrToScript(tx.OutScripts.ScriptStr)
 
@@ -136,7 +136,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 		}
 	}
 
-	// Get the outputScript data
+	// Get the OutputScript data
 	//****
 
 	return true, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
