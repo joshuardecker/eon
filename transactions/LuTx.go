@@ -6,7 +6,7 @@ import "encoding/json"
 type LuTx struct {
 	InScripts []ScriptStr
 
-	OutScripts []ScriptStr
+	OutScripts ScriptStr
 }
 
 // This struct is the transaction script or scripts
@@ -32,7 +32,7 @@ func (l *LuTx) AddScriptStr(scriptstr string, scriptType bool) {
 
 	if !scriptType {
 
-		l.OutScripts = append(l.OutScripts, *tScript)
+		l.OutScripts = *tScript
 	}
 }
 
