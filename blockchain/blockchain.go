@@ -136,3 +136,16 @@ func (b *Blockchain) RemoveBlock() {
 // Determines whether the block is valid.
 // Returns a bool, true if valid, and false if invalid.
 func (b *Blockchain) VerifyBlock(block Block) bool { return true }
+
+// This function gets a block at a specified index.
+// Returns the block and true if this was successful.
+// If the index is invalid, it will return a empty block and false.
+func (b *Blockchain) GetBlock(blockNum uint32) (Block, bool) {
+
+	if blockNum > b.GetHeight() {
+
+		return Block{}, false
+	}
+
+	return b.Blocks[blockNum], true
+}
