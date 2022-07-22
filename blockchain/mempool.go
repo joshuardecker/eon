@@ -74,13 +74,13 @@ func (m *Mempool) CheckTxFlags(txIndex int) bool {
 
 	// Define what we are looking for
 	var keyWords []string = []string{
+		"BLKN",     // Input
 		"TXID",     // Input
 		"OUTINDEX", // Input
 		"PUBK",     // Output
 		"SIG",      // Output
 		"PUBKH",    // Output
 		"AMT",      // Output
-		"SELF",     // Output, but later check
 	}
 
 	//****
@@ -107,8 +107,8 @@ func (m *Mempool) CheckTxFlags(txIndex int) bool {
 			}
 		}
 
-		// Since we were looking for checking for 2 input flags, it must equal 2
-		if keyWordIndex != 2 {
+		// Since we were looking for checking for 3 input flags, it must equal 3
+		if keyWordIndex != 3 {
 
 			return false
 		}
@@ -120,32 +120,29 @@ func (m *Mempool) CheckTxFlags(txIndex int) bool {
 	//****
 	// Check output scripts
 
-	for index := 0; index < len(tx.OutScripts); index += 1 {
+	// Parse the input scriptstr into a script
+	outScript := transactions.StrToScript(tx.OutScripts.ScriptStr)
 
-		// Parse the input scriptstr into a script
-		outScript := transactions.StrToScript(tx.OutScripts[index].ScriptStr)
+	// Check keyword, starting at index 2, aka "PUBK"
+	keyWordIndex := 2
 
-		// Check keyword, starting at index 2, aka "PUBK"
-		keyWordIndex := 2
+	// Check through the whole scipt
+	for nIndex := 0; nIndex < len(outScript); nIndex += 1 {
 
-		// Check through the whole scipt
-		for nIndex := 0; nIndex < len(outScript); nIndex += 1 {
+		// If the correct word was found
+		if outScript[nIndex] == keyWords[keyWordIndex] {
 
-			// If the correct word was found
-			if outScript[nIndex] == keyWords[keyWordIndex] {
+			keyWordIndex += 1
 
-				keyWordIndex += 1
-
-				// When loops again, it will equal 0
-				nIndex = -1
-			}
+			// When loops again, it will equal 0
+			nIndex = -1
 		}
+	}
 
-		// Since we were looking for checking for 4 input flags, it must equal 6 (4 + the starting value 2 = 6)
-		if keyWordIndex != 6 {
+	// Since we were looking for checking for 4 input flags, it must equal 6 (4 + the starting value 3 = 7)
+	if keyWordIndex != 7 {
 
-			return false
-		}
+		return false
 	}
 
 	// Check output scripts
