@@ -18,9 +18,7 @@ var keyWordsValuePair []string = []string{
 }
 
 // Script flags without a proceeding value
-var keyWordsNoPair []string = []string{
-	"SELF",
-}
+var keyWordsNoPair []string = []string{}
 
 // This function takes in a script string and parses it.
 // It will remove junk that isnt a valid flag or value after a flag.
