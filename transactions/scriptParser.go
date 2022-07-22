@@ -75,6 +75,8 @@ func StrToScript(inputScript string) []string {
 		}
 	}
 
+	args = removeCopyFlags(args)
+
 	return args
 }
 
@@ -118,6 +120,77 @@ func checkKeyWord(word string) uint {
 	}
 
 	return 0
+}
+
+// Removes all of the copy flags.
+// Starts from index 0, so the flags closest to index 0 will be kept,
+// the extra copys removed from the script.
+// Input is the script.
+// Output is the script without the extra of the same flags.
+func removeCopyFlags(script []string) []string {
+
+	// Used to identify if the same flag has been used
+	var flagFound bool
+
+	// Saves the length so it doesnt need to be recalculated
+	leng := len(keyWordsValuePair)
+	scriptLeng := len(script)
+
+	// Check all of the words in keyWordsValuePair
+	for index := 0; index < leng; index += 1 {
+
+		// Checks the whole script
+		for nIndex := 0; nIndex < scriptLeng; nIndex += 1 {
+
+			if keyWordsValuePair[index] == script[nIndex] && !flagFound {
+				// When the flag is used the first time
+
+				flagFound = true
+			} else if keyWordsValuePair[index] == script[nIndex] && flagFound {
+				// When the same flag is used again
+
+				// Remove the copy and its value pair
+				script = removeString(script, uint(nIndex))
+				script = removeString(script, uint(nIndex))
+
+				scriptLeng -= 2
+
+				nIndex -= 1
+			}
+		}
+
+		flagFound = false
+	}
+
+	// Saves the length so it doesnt need to be recalculated
+	leng = len(keyWordsNoPair)
+
+	// Check all of the words in keyWordsValuePair
+	for index := 0; index < leng; index += 1 {
+
+		// Checks the whole script
+		for nIndex := 0; nIndex < scriptLeng; nIndex += 1 {
+
+			if keyWordsNoPair[index] == script[nIndex] && !flagFound {
+				// When the flag is used the first time
+
+				flagFound = true
+			} else if keyWordsNoPair[index] == script[nIndex] && flagFound {
+				// When the same flag is used again
+
+				// Remove the extra flag
+				script = removeString(script, uint(nIndex))
+
+				scriptLeng -= 1
+
+				nIndex -= 1
+			}
+		}
+
+		flagFound = false
+	}
+
+	return script
 }
 
 // Function takes a given script and converts it back into a single string.
