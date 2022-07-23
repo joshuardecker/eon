@@ -11,7 +11,7 @@ import (
 // and there output indexes.
 // Next returns the public key in the tx, the signature, the hash of the public key
 // where the coin is going, and the amount of coin going there.
-func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string, outputIndex []uint64,
+func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string,
 	pubKey []byte, signature []byte, pubKeyHash string, amount uint64) {
 
 	//****
@@ -32,7 +32,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 				if err != nil {
 
-					return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+					return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 				}
 
 				blockNumber = append(blockNumber, bN)
@@ -45,25 +45,10 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 				if len(script[nIndex+1]) != 64 {
 
-					return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+					return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 				}
 
 				txId = append(txId, script[nIndex+1])
-
-				nIndex += 1
-			}
-
-			// The output index of the input transaction
-			if script[nIndex] == "OUTINDEX" {
-
-				oX, err := strconv.ParseUint(script[nIndex+1], 10, 32)
-
-				if err != nil {
-
-					return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
-				}
-
-				outputIndex = append(outputIndex, oX)
 
 				nIndex += 1
 			}
@@ -87,7 +72,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 			if err != nil {
 
-				return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+				return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 			}
 
 			pubKey = pK
@@ -101,7 +86,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 			if err != nil {
 
-				return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+				return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 			}
 
 			signature = sG
@@ -113,7 +98,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 			if len(script[nIndex+1]) != 64 {
 
-				return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+				return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 			}
 
 			pubKeyHash = script[nIndex+1]
@@ -127,7 +112,7 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 
 			if err != nil {
 
-				return false, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+				return false, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 			}
 
 			amount = aT
@@ -139,5 +124,5 @@ func TransactionParser(tx LuTx) (valid bool, blockNumber []uint64, txId []string
 	// Get the OutputScript data
 	//****
 
-	return true, blockNumber, txId, outputIndex, pubKey, signature, pubKeyHash, amount
+	return true, blockNumber, txId, pubKey, signature, pubKeyHash, amount
 }
