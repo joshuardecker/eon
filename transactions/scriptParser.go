@@ -5,17 +5,7 @@ import (
 )
 
 // Script flags that will have a proceeding value
-var keyWordsValuePair []string = []string{
-	"BLKN",  // Block number, aka the block height
-	"TXID",  // Tx id hash
-	"PUBKH", // The pubKey hash
-	"PUBK",  // The full pubKey
-	"SIG",   // The signature of the tx
-	"AMT",   // Amount of luncheon a tx is sending
-	"TIML",  // How long (in block #) this person must wait to spend their coin
-	"FEE",   // The fee in luncheon, that the tx will pay to a miner for mining it
-	"NTXID", // THe new tx id
-}
+var keyWordsValuePair []string = []string{}
 
 // Script flags without a proceeding value
 var keyWordsNoPair []string = []string{}

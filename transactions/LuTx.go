@@ -1,39 +1,37 @@
 package transactions
 
-import "encoding/json"
+import (
+	"encoding/hex"
+	"encoding/json"
+
+	"golang.org/x/crypto/sha3"
+)
 
 // This struct are the tx's on the Luncheon Network.
 type LuTx struct {
-	InScripts []ScriptStr
+	txFrom string
+	txTo   string
+	value  uint64
 
-	OutScripts ScriptStr
+	script string
+
+	nonce     uint32
+	fee       uint64
+	signature string
 }
 
-// This struct is the transaction script or scripts
-type ScriptStr struct {
-	ScriptStr string
-}
-
-// This function adds a scriptStr to the tx scriptStrs.
-// First input is the scriptStr thats being added.
-// The second is a bool.
-// Enter true to add the scriptStr to the inScripts on the tx.
-// Enter false to add the scriptStr to the outScripts on the tx.
+// Sets the script of the tx.
+// If a blank script is entered, nothing is inputted into the tx.
 // Returns nothing.
-func (l *LuTx) AddScriptStr(scriptstr string, scriptType bool) {
+func (l *LuTx) AddScriptStr(scriptstr string) {
 
-	tScript := new(ScriptStr)
-	tScript.ScriptStr = scriptstr
+	if len(scriptstr) == 0 {
 
-	if scriptType {
-
-		l.InScripts = append(l.InScripts, *tScript)
+		return
 	}
 
-	if !scriptType {
-
-		l.OutScripts = *tScript
-	}
+	// Runs the tx through the scripter and back out to remove any junk
+	l.script = ScriptToStr(StrToScript(scriptstr))
 }
 
 // Function converts the tx into bytes.
@@ -48,4 +46,14 @@ func (l *LuTx) AsBytes() []byte {
 	}
 
 	return lAsBytes
+}
+
+// This function calculates the hash of the transaction.
+// Returns the string hex of the transaction hash.
+func (l *LuTx) HashTx() string {
+
+	hash := make([]byte, 32)
+	sha3.ShakeSum256(hash, l.AsBytes())
+
+	return hex.EncodeToString(hash)
 }
