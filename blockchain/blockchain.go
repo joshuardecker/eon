@@ -2,9 +2,7 @@ package blockchain
 
 import (
 	"errors"
-	"strconv"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 )
 
@@ -57,23 +55,8 @@ func (b *Blockchain) InitBlockchain() error {
 // Returns the created transaction.
 func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
 
-	// Init new types
-	tx := new(transactions.LuTx)
-	key := new(ellip.MainKey)
-
-	// Init vars for the outscript of the genisis tx
-	pubKey := key.MainKeyHash()
-	bReward := strconv.FormatUint(b.GetBlockReward(), 10)
-
-	// Creates the output script string
-	sc := "PUBKH " + pubKey + " "
-	sc += "AMT " + bReward + " "
-	sc += "TIML 25"
-
-	// Adds the script to the tx
-	tx.AddScriptStr(sc, false)
-
-	return *tx
+	// TODO, fix this
+	return transactions.LuTx{}
 }
 
 // Returns the current block reward.

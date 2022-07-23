@@ -16,9 +16,9 @@ func TestMerkle(t *testing.T) {
 	tx2 := new(transactions.LuTx)
 	tx3 := new(transactions.LuTx)
 
-	tx1.AddScriptStr("PUBKH 123", false)
-	tx2.AddScriptStr("PUBKH 124", false)
-	tx3.AddScriptStr("PUBKH 125", false)
+	tx1.AddScriptStr("PUBKH 123")
+	tx2.AddScriptStr("PUBKH 124")
+	tx3.AddScriptStr("PUBKH 125")
 
 	// By hand way
 
