@@ -14,6 +14,7 @@ var keyWordsValuePair []string = []string{
 	"AMT",   // Amount of luncheon a tx is sending
 	"TIML",  // How long (in block #) this person must wait to spend their coin
 	"FEE",   // The fee in luncheon, that the tx will pay to a miner for mining it
+	"NTXID", // THe new tx id
 }
 
 // Script flags without a proceeding value
