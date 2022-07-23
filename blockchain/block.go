@@ -10,17 +10,18 @@ import (
 // Represents the blocks on the blockchain.
 // Each instance of this struct is its own block.
 type Block struct {
-	SoftwareVersion uint32
+	SoftwareVersion string
 	PrevHash        string
 	PackedTarget    uint32
 
+	MerkleRoot string
+	Txs        []transactions.LuTx
+
+	Miner     string
 	Nonce     uint32
 	Timestamp uint64
 
 	BlockHash string
-
-	MerkleRoot string
-	Txs        []transactions.LuTx
 }
 
 // Creates a new block.
