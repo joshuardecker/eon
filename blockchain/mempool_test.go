@@ -14,7 +14,7 @@ func TestMempoolCheck(t *testing.T) {
 	tx3 := new(transactions.LuTx) // Invalid, but trickier
 	tx4 := new(transactions.LuTx) // Valid, but trickier
 
-	tx1.AddScriptStr("TXID 123 OUTINDEX 456", true)
+	tx1.AddScriptStr("TXID 123 OUTINDEX 456 BLKN 123", true)
 	tx1.AddScriptStr("PUBK 123 SIG 456 PUBKH 789 AMT 50", false)
 
 	tx2.AddScriptStr("TXID 123", true)
@@ -23,8 +23,8 @@ func TestMempoolCheck(t *testing.T) {
 	tx3.AddScriptStr("TXID 123 OUTINDEX 456", true)
 	tx3.AddScriptStr("PUBK 123", false)
 
-	tx4.AddScriptStr("OUTINDEX 456 TXID 123 COOL COOL", true)
-	tx3.AddScriptStr("SIG 456 PUBK 123 TEST PUBKH 789 AMT 50", false)
+	tx4.AddScriptStr("OUTINDEX 456 TXID 123 COOL COOL BLKN 789", true)
+	tx4.AddScriptStr("SIG 456 PUBK 123 TEST PUBKH 789 AMT 50", false)
 
 	m := new(Mempool)
 
@@ -45,13 +45,13 @@ func TestGetTx(t *testing.T) {
 	tx2 := new(transactions.LuTx) // Invalid
 	tx3 := new(transactions.LuTx) // Valid
 
-	tx1.AddScriptStr("TXID 123 OUTINDEX 456", true)
+	tx1.AddScriptStr("BLKN 123 TXID 123 OUTINDEX 456", true)
 	tx1.AddScriptStr("PUBK 123 SIG 456 PUBKH 789 AMT 50", false)
 
 	tx2.AddScriptStr("TXID 123 TEST", true)
 	tx2.AddScriptStr("PUBK 123", false)
 
-	tx3.AddScriptStr("OUTINDEX 456 TXID 123", true)
+	tx3.AddScriptStr("OUTINDEX 456 TXID 123 BLKN 456", true)
 	tx3.AddScriptStr("AMT 50 PUBK 123 SIG 456 PUBKH 789", false)
 
 	m := new(Mempool)
@@ -60,17 +60,31 @@ func TestGetTx(t *testing.T) {
 	m.AddTx(*tx2)
 	m.AddTx(*tx3)
 
-	_, err1 := m.GetTx()
-	_, err2 := m.GetTx()
-	_, err3 := m.GetTx()
+	_, err1 := m.GetTx() // Should return true
+	_, err2 := m.GetTx() // Should return true
+	_, err3 := m.GetTx() // Should return false
 
-	if !err1 || !err2 {
+	if err1 {
 
-		fmt.Println("Only got one tx!")
+		fmt.Println("Worked!")
+	} else {
+
+		fmt.Println("Didnt work!")
+	}
+
+	if err2 {
+
+		fmt.Println("Worked!")
+	} else {
+
+		fmt.Println("Didnt work!")
 	}
 
 	if !err3 {
 
 		fmt.Println("Worked!")
+	} else {
+
+		fmt.Println("Didnt work!")
 	}
 }
