@@ -25,7 +25,7 @@ func (m *MainKey) GetMainKeyPair() {
 // Signs a message with the main keys.
 // Also does not need keys to be loaded / generated before hand.
 // Returns the hash of the message and the signature of that hash.
-func (m *MainKey) SignMsgWithMain() (msgHash, sig []byte) {
+func (m *MainKey) SignRandMsg() (msgHash, sig []byte) {
 
 	// If the keys have not been loaded.
 	if !m.loaded {
@@ -58,4 +58,15 @@ func (m *MainKey) GetPubKeyStr() string {
 	}
 
 	return hex.EncodeToString(m.pubKey)
+}
+
+// This function signs an inpuutes message with the main private key.
+// Returns the hash of the message, and the signature of that hash.
+func (m *MainKey) SignMsg(msg []byte) (msgHash, sig []byte) {
+
+	if !m.loaded {
+		m.GetMainKeyPair()
+	}
+
+	return SignMsg(&m.privKey, msg)
 }
