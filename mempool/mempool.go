@@ -1,8 +1,12 @@
 package blockchain
 
 import (
+	"encoding/hex"
+
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
+	"golang.org/x/crypto/sha3"
 )
 
 // The mempool struct, containing all the tx's waiting to be added to the next available block.
@@ -24,15 +28,40 @@ func Init(wal *wallet.Wallet) Mempool {
 }
 
 // Function adds a tx to the mempool of the blockchain.
-// Inputs the transaction you are adding.
-// Returns nothing.
-func (m *Mempool) AddTx(tx transactions.LuTx) {
+// Inputs the tx you are adding.
+// Returns true if successfully added, false if tx was invalid.
+func (m *Mempool) AddTx(tx transactions.LuTx) bool {
 
 	// If the tx has a spendable amount of coin from the persons balance
-	if m.wal.CheckTxAmount(tx) {
+	if !m.wal.CheckTxAmount(tx) {
 
-		m.Txs = append(m.Txs, tx)
+		return false
 	}
+
+	// If the tx has the wrong nonce value
+	if tx.Nonce != m.wal.ScanChainForNonce(tx.TxFrom) {
+
+		return false
+	}
+
+	// Remove the sig from the tx and save it, as to get the tx hash input data
+	signature, _ := hex.DecodeString(tx.Signature)
+	tx.Signature = ""
+
+	txBytes := tx.AsBytes()
+	txHash := make([]byte, 32)
+	pubKey, _ := hex.DecodeString(tx.TxFrom)
+
+	sha3.ShakeSum256(txHash, txBytes)
+
+	// If the signature is not valid
+	if !ellip.ValidateSig(pubKey, txHash, signature) {
+
+		return false
+	}
+
+	m.Txs = append(m.Txs, tx)
+	return true
 }
 
 // This function removes a tx from the mempool.
