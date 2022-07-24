@@ -131,6 +131,37 @@ func SignRandMsg(privKey *ecdsa.PrivateKey) (msgHash, sig []byte) {
 	return msgHash, finalSig
 }
 
+// This function signs a hash of a inputted message.
+// The hashing and randomness is used for security.
+// Input is the private key that will be used to sign the message, and the actual message.
+// Output is the hash of the message, and then the signature.
+func SignMsg(privKey *ecdsa.PrivateKey, msg []byte) (msgHash, sig []byte) {
+
+	// Makes and does the hash
+	msgHash = make([]byte, 32)
+	sha3.ShakeSum256(msgHash, msg)
+
+	// Signs the message
+	sig, sigErr := crypto.Sign(msgHash, privKey)
+
+	// If an error occured
+	if sigErr != nil {
+
+		panic(sigErr)
+	}
+
+	// Init the final return sig
+	finalSig := make([]byte, 64)
+
+	// Removes the wierd v value at the end that isnt used for verifying signatures
+	for index := 0; index < 64; index++ {
+
+		finalSig[index] = sig[index]
+	}
+
+	return msgHash, finalSig
+}
+
 // Function makes a random message.
 // Inputs the size of the byte array returned.
 // Returns the random message as a byte array.
