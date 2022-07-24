@@ -16,8 +16,8 @@ type LuTx struct {
 	Script string
 
 	Nonce     uint32
-	Fee       uint64
 	Signature string
+	Fee       uint64
 }
 
 // Sets the script of the tx.
