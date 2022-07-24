@@ -74,24 +74,10 @@ func (w *Wallet) ScanChainForNonce(pubKey string) (nonce uint32) {
 	return nonce
 }
 
-// Checks the the tx has enough balance to send a transaction.
-// Returns true if yes, and false if no.
-func (w *Wallet) CheckTxAmount(tx transactions.LuTx) bool {
-
-	if (tx.Value + tx.Fee) > w.ScanChainForBalance(tx.TxFrom) {
-
-		return false
-	}
-
-	return true
-}
-
 // This function creates a tx and verifys it.
 // Inputs are the publicKey the tx is going to, and the amount of Luncheon that is being sent.
 // Outputs are the tx, which if empty, means that the amount specified is not possible with your balance.
-func (w *Wallet) CreateTx(toPub string, amount uint64) transactions.LuTx {
-
-	tx := new(transactions.LuTx)
+func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 
 	// Say the tx is from you
 	tx.TxFrom = w.mainKey.GetPubKeyStr()
@@ -109,5 +95,5 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) transactions.LuTx {
 	_, sig := w.mainKey.SignMsg(txBytes)
 	tx.Signature = hex.EncodeToString(sig)
 
-	return *tx
+	return tx
 }

@@ -1,4 +1,4 @@
-package blockchain
+package mempool
 
 import (
 	"encoding/hex"
@@ -33,7 +33,7 @@ func Init(wal *wallet.Wallet) Mempool {
 func (m *Mempool) AddTx(tx transactions.LuTx) bool {
 
 	// If the tx has a spendable amount of coin from the persons balance
-	if !m.wal.CheckTxAmount(tx) {
+	if (tx.Value + tx.Fee) > m.wal.ScanChainForBalance(tx.TxFrom) {
 
 		return false
 	}
