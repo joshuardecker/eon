@@ -57,3 +57,17 @@ func (l *LuTx) HashTx() string {
 
 	return hex.EncodeToString(hash)
 }
+
+// This function gets the weight of the transaction.
+// Returns the weight in a uint32.
+func (l *LuTx) GetWeight() uint32 {
+
+	lAsBytes, jsonErr := json.Marshal(l)
+
+	if jsonErr != nil {
+
+		panic(jsonErr)
+	}
+
+	return uint32(len(lAsBytes))
+}
