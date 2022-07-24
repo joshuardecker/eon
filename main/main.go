@@ -17,7 +17,7 @@ func main() {
 	//****
 	// Input Handler
 
-	test := flag.Bool("testnet", false, "activates the testnet")
+	test := flag.Bool("testnet", false, "Activates the Testnet")
 	flag.Parse()
 
 	if *test {
