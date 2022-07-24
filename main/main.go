@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
 )
 
 // To make a windows copy: GOOS=windows GOARCH=amd64 go build -o luncheon.exe main/main.go
@@ -31,9 +32,6 @@ func main() {
 	//****
 	// Test new features area
 
-	timeUtil := new(utilities.Time)
-	fmt.Println(timeUtil.CurrentTime())
-
 	// Test new features area
 	//****
 	fmt.Println("*****")
@@ -41,25 +39,17 @@ func main() {
 	//****
 	// Starts Mining
 
-	blockChain := new(blockchain.Blockchain)
+	bc := blockchain.InitBlockchain()
 	miner := new(blockchain.Miner)
+	wal := wallet.Init(&bc)
+	key := new(ellip.MainKey)
 
-	blockChain.InitBlockchain()
+	miner.Start(&bc.Blocks[0])
 
-	finalBlock, minerErr := miner.Start(blockChain.Blocks[0])
+	bc.Blocks[0].PrintBlock()
 
-	if minerErr != nil {
-
-		panic(minerErr)
-	}
-
-	// Prints the block as a json string
-	finalBlock.PrintBlock()
-
-	blockChain.AddBlock(finalBlock)
+	fmt.Println("Balance:", wal.ScanChainForBalance(key.GetPubKeyStr()))
 
 	// Starts the mining
 	//****
-
-	fmt.Println(timeUtil.CurrentTime())
 }

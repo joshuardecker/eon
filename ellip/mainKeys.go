@@ -2,6 +2,7 @@ package ellip
 
 import (
 	"crypto/ecdsa"
+	"encoding/hex"
 )
 
 // The main key used by nodes.
@@ -46,4 +47,15 @@ func (m *MainKey) MainKeyHash() string {
 	}
 
 	return PubKeyHashStr(m.pubKey)
+}
+
+// This function gets and returns the hex string version of the public key.
+func (m *MainKey) GetPubKeyStr() string {
+
+	if !m.loaded {
+
+		m.GetMainKeyPair()
+	}
+
+	return hex.EncodeToString(m.pubKey)
 }

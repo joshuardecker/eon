@@ -9,15 +9,15 @@ import (
 
 // This struct are the tx's on the Luncheon Network.
 type LuTx struct {
-	txFrom string
-	txTo   string
-	value  uint64
+	TxFrom string
+	TxTo   string
+	Value  uint64
 
-	script string
+	Script string
 
-	nonce     uint32
-	fee       uint64
-	signature string
+	Nonce     uint32
+	Fee       uint64
+	Signature string
 }
 
 // Sets the script of the tx.
@@ -31,7 +31,7 @@ func (l *LuTx) AddScriptStr(scriptstr string) {
 	}
 
 	// Runs the tx through the scripter and back out to remove any junk
-	l.script = ScriptToStr(StrToScript(scriptstr))
+	l.Script = ScriptToStr(StrToScript(scriptstr))
 }
 
 // Function converts the tx into bytes.

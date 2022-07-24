@@ -23,7 +23,7 @@ type Miner struct {
 }
 
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start(b Block) (Block, error) {
+func (m *Miner) Start(b *Block) error {
 
 	//****
 	// Prepare the miner
@@ -81,7 +81,7 @@ func (m *Miner) Start(b Block) (Block, error) {
 			// Set the block hash to the winning hash
 			b.BlockHash = hex.EncodeToString(m.currentHash)
 
-			return b, nil
+			return nil
 		}
 
 		// Prints stats every 10 MH
@@ -103,5 +103,5 @@ func (m *Miner) Start(b Block) (Block, error) {
 		//****
 	}
 
-	return b, errors.New("you have reached the end of the defined search space! Impressive")
+	return errors.New("you have reached the end of the defined search space! Impressive")
 }

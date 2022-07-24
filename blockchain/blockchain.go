@@ -3,7 +3,7 @@ package blockchain
 import (
 	"errors"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
 // The blockchain struct that will be the chain of blocks.
@@ -17,16 +17,14 @@ type Blockchain struct {
 // Inits the blockchain struct, including defining constants.
 // Creates the genisis block.
 // Returns if any errors occured.
-func (b *Blockchain) InitBlockchain() error {
+func InitBlockchain() Blockchain {
 
-	if len(b.Blocks) != 0 || b.height != 0 {
+	// Create a blockchain instance
+	b := new(Blockchain)
 
-		return errors.New("cannot init a blockchain when one already exists on this struct")
-	}
-
+	// BLockchain var init
 	// 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
 	b.maxWeight = 1000000
-
 	b.height = 0
 
 	// Create the genisis block:
@@ -35,28 +33,18 @@ func (b *Blockchain) InitBlockchain() error {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = 1
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1d0fffff
+	genisisB.PackedTarget = 0x1dffffff
 
-	// Adds the genisis tx
-	genisisB.Txs = append(genisisB.Txs, b.CreateBlockRewardTx())
+	// Get the main public key ready
+	mainKeys := new(ellip.MainKey)
 
-	// Gets the merkle root
-	genisisB.MerkleRoot = genisisB.GetMerkleRoot()
+	// Adds the genisis reward miner (you)
+	genisisB.Miner = mainKeys.GetPubKeyStr()
 
 	// Adds the genisis block to the blockchain
 	b.AddBlock(*genisisB)
 
-	return nil
-}
-
-// This function creates the blockreward transaction.
-// It will use your main key as the receiver.
-// Input is the current block reward.
-// Returns the created transaction.
-func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
-
-	// TODO, fix this
-	return transactions.LuTx{}
+	return *b
 }
 
 // Returns the current block reward.
@@ -68,9 +56,9 @@ func (b *Blockchain) CreateBlockRewardTx() transactions.LuTx {
 // Will fully dry-up in 7 years, the first block of year 8 will have zero reward.
 // The total amount of coins that can exist is 208,663,200, which means 10 of these coins
 // can be considered as rare, in terms of total in existance, as 1 btc.
-func (b *Blockchain) GetBlockReward() uint64 {
+func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 
-	halvings := b.height / 525600
+	halvings := height / 525600
 
 	// If no halvings have happened
 	if halvings == 0 {
