@@ -63,14 +63,14 @@ func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 	// If no halvings have happened
 	if halvings == 0 {
 
-		// The default block reward
-		return 200
+		// The default block reward (the * 1000000 is to convert LNCH to LUNCHEON)
+		return 200 * 1000000
 	}
 
 	// If 1 or more halvings have happened
 	// The << operator here acts as an easy way to do "to the power of" or **
 	// Does not work in substitute for 2**0
-	return 200 / (2 << (halvings - 1))
+	return (200 / (2 << (halvings - 1))) * 1000000
 }
 
 // Updates and returns the height of the blockchain.
