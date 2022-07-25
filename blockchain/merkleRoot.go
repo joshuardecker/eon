@@ -14,6 +14,12 @@ func (b *Block) GetMerkleRoot() string {
 	// Init the length
 	leng := len(b.Txs)
 
+	// If there are no txs
+	if leng == 0 {
+
+		return ""
+	}
+
 	// Save a copy of the tx's
 	txCopy := b.Txs
 
