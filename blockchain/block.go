@@ -41,7 +41,7 @@ func (b *Blockchain) CreateBlock(blockMinerId string) Block {
 	// Pack in the block information
 	block.SoftwareVersion = client.SoftwareVersion
 	block.PrevHash = b.Blocks[b.GetHeight()].BlockHash
-	block.PackedTarget = 0x1d0fffff
+	block.PackedTarget = b.CalculatePackedTarget(uint(len(b.Blocks)))
 	block.Miner = blockMinerId
 
 	return *block
