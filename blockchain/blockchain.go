@@ -3,6 +3,7 @@ package blockchain
 import (
 	"errors"
 
+	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
 
@@ -31,7 +32,7 @@ func InitBlockchain() Blockchain {
 	genisisB := new(Block)
 
 	// Manually sets the variables of the genisis block
-	genisisB.SoftwareVersion = 1
+	genisisB.SoftwareVersion = client.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
 	genisisB.PackedTarget = 0x1dffffff
 

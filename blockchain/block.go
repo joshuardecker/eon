@@ -10,7 +10,7 @@ import (
 // Represents the blocks on the blockchain.
 // Each instance of this struct is its own block.
 type Block struct {
-	SoftwareVersion uint32
+	SoftwareVersion string
 	PrevHash        string
 	PackedTarget    uint32
 	Miner           string
