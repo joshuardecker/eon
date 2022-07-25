@@ -60,7 +60,7 @@ func (l *LuTx) HashTx() string {
 
 // This function gets the weight of the transaction.
 // Returns the weight in a uint32.
-func (l *LuTx) GetWeight() uint32 {
+func (l *LuTx) GetWeight() uint {
 
 	lAsBytes, jsonErr := json.Marshal(l)
 
@@ -69,5 +69,5 @@ func (l *LuTx) GetWeight() uint32 {
 		panic(jsonErr)
 	}
 
-	return uint32(len(lAsBytes))
+	return uint(len(lAsBytes))
 }
