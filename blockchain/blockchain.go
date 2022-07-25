@@ -1,8 +1,6 @@
 package blockchain
 
 import (
-	"errors"
-
 	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 )
@@ -83,18 +81,10 @@ func (b *Blockchain) GetHeight() uint {
 }
 
 // This function adds a block to the blockchain.
-// Inputs are the block being added.
-// Returns any errors.
-func (b *Blockchain) AddBlock(block Block) error {
-
-	if !b.VerifyBlock(block) {
-
-		return errors.New("block is invalid")
-	}
+// Input is the block thats being added.
+func (b *Blockchain) AddBlock(block Block) {
 
 	b.Blocks = append(b.Blocks, block)
-
-	return nil
 }
 
 // This function removes the last block from the blockchain.
@@ -102,13 +92,6 @@ func (b *Blockchain) AddBlock(block Block) error {
 func (b *Blockchain) RemoveBlock() {
 
 	b.Blocks = append(b.Blocks[:b.GetHeight()], b.Blocks[b.GetHeight()+1:]...)
-}
-
-// Determines whether the block is valid.
-// Returns a bool, true if valid, and false if invalid.
-func (b *Blockchain) VerifyBlock(block Block) bool {
-
-	return true
 }
 
 // This function gets a block at a specified index.
