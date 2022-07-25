@@ -7,6 +7,7 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"golang.org/x/crypto/sha3"
 )
 
 // The version of the software here
@@ -96,4 +97,36 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 	tx.Signature = hex.EncodeToString(sig)
 
 	return tx
+}
+
+// Function calculates whether the tx input is valid or not.
+// Input is the tx.
+// Returns true if valid, false if not valid.
+func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
+
+	// If the tx has a spendable amount of coin from the persons balance
+	if (tx.Value + tx.Fee) > w.ScanChainForBalance(tx.TxFrom) {
+
+		return false
+	}
+
+	// If the tx has the wrong nonce value
+	if tx.Nonce != w.ScanChainForNonce(tx.TxFrom) {
+
+		return false
+	}
+
+	// Remove the sig from the tx and save it, as to get the tx hash input data
+	signature, _ := hex.DecodeString(tx.Signature)
+	tx.Signature = ""
+
+	txBytes := tx.AsBytes()
+	txHash := make([]byte, 32)
+	pubKey, _ := hex.DecodeString(tx.TxFrom)
+
+	sha3.ShakeSum256(txHash, txBytes)
+
+	// If the signature is not valid
+	// If this is true, than the tx is true
+	return ellip.ValidateSig(pubKey, txHash, signature)
 }
