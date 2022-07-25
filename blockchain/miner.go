@@ -51,7 +51,7 @@ func (m *Miner) Start(b *Block) error {
 
 		// Get the block as bytes for mining
 		softwareVersion := []byte(client.SoftwareVersion)
-		prevBlockHash, _ := hex.DecodeString(b.BlockHash)
+		prevBlockHash, _ := hex.DecodeString(b.PrevHash)
 		merkleRoot, _ := hex.DecodeString(b.MerkleRoot)
 		blockTime := m.util.Uint64toB(b.Timestamp)
 		packedTargetBytes := m.util.Uint32toB(b.PackedTarget)

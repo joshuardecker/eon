@@ -7,6 +7,7 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -132,4 +133,79 @@ func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 	// If the signature is not valid
 	// If this is true, than the tx is true
 	return ellip.ValidateSig(pubKey, txHash, signature)
+}
+
+func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
+
+	// If it is the genisis block
+	if len(w.chain.Blocks) == 0 {
+
+		return true
+	}
+
+	bytesUtil := new(utilities.ByteUtil)
+
+	// Check the Block hash
+	softwareVersion := []byte(block.SoftwareVersion)
+	prevBlockHash, _ := hex.DecodeString(block.BlockHash)
+	merkleRoot, _ := hex.DecodeString(block.MerkleRoot)
+	blockTime := bytesUtil.Uint64toB(block.Timestamp)
+	packedTargetBytes := bytesUtil.Uint32toB(block.PackedTarget)
+	nonceBytes := bytesUtil.Uint32toB(block.Nonce)
+
+	// Shove them together (into softwareVerion bc it is first declared)
+	softwareVersion = append(softwareVersion, prevBlockHash...)
+	softwareVersion = append(softwareVersion, merkleRoot...)
+	softwareVersion = append(softwareVersion, packedTargetBytes...)
+	softwareVersion = append(softwareVersion, blockTime...)
+	softwareVersion = append(softwareVersion, nonceBytes...)
+
+	hash := make([]byte, 32)
+
+	// Hash the data
+	sha3.ShakeSum256(hash, softwareVersion)
+
+	// If the blockhash is invalid
+	if hex.EncodeToString(hash) != block.BlockHash {
+
+		return false
+	}
+
+	// Check if the block points to the previous block
+	if block.PrevHash != w.chain.Blocks[w.chain.GetHeight()].BlockHash {
+
+		return false
+	}
+
+	timeUtil := new(utilities.Time)
+
+	// Check if the timestamp is valid
+	// TODO: make more advanced
+	if block.Timestamp < w.chain.Blocks[w.chain.GetHeight()].Timestamp || block.Timestamp > timeUtil.CurrentUnix() {
+
+		return false
+	}
+
+	// Check if the target is correct
+	if block.PackedTarget != w.chain.CalculatePackedTarget(uint(len(w.chain.Blocks))) {
+
+		return false
+	}
+
+	// Check the merkle root
+	if block.MerkleRoot != block.GetMerkleRoot() {
+
+		return false
+	}
+
+	// Check the txs
+	for index := 0; index < len(block.Txs); index += 1 {
+
+		if !w.VerifyTx(block.Txs[index]) {
+
+			return false
+		}
+	}
+
+	return true
 }
