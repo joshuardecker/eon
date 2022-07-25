@@ -109,6 +109,10 @@ func (b *Blockchain) GetBlock(blockNum uint) (Block, bool) {
 	return b.Blocks[blockNum], true
 }
 
+// Calculates the packed target of a block.
+// Expects what the block number will be, not what the current highest block is.
+// So if this is used to see what the target of a new block will be, input what block height it will be.
+// Returns the packed target of the block.
 func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 
 	if blockNumber > b.GetHeight() {
