@@ -11,9 +11,11 @@ import (
 type Blockchain struct {
 	Blocks []Block
 
-	height    uint32
-	maxWeight uint32
+	height uint
 }
+
+// 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
+var MaxWeight uint = 1000000
 
 // Inits the blockchain struct, including defining constants.
 // Creates the genisis block.
@@ -23,9 +25,6 @@ func InitBlockchain() Blockchain {
 	// Create a blockchain instance
 	b := new(Blockchain)
 
-	// BLockchain var init
-	// 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
-	b.maxWeight = 1000000
 	b.height = 0
 
 	// Create the genisis block:
@@ -34,7 +33,7 @@ func InitBlockchain() Blockchain {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = client.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1dffffff
+	genisisB.PackedTarget = 0x1d0fffff
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
@@ -76,9 +75,9 @@ func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 
 // Updates and returns the height of the blockchain.
 // Returns a uint32 of the blockchain height.
-func (b *Blockchain) GetHeight() uint32 {
+func (b *Blockchain) GetHeight() uint {
 
-	b.height = uint32(len(b.Blocks) - 1)
+	b.height = uint(len(b.Blocks) - 1)
 
 	return b.height
 }
@@ -107,12 +106,15 @@ func (b *Blockchain) RemoveBlock() {
 
 // Determines whether the block is valid.
 // Returns a bool, true if valid, and false if invalid.
-func (b *Blockchain) VerifyBlock(block Block) bool { return true }
+func (b *Blockchain) VerifyBlock(block Block) bool {
+
+	return true
+}
 
 // This function gets a block at a specified index.
 // Returns the block and true if this was successful.
 // If the index is invalid, it will return a empty block and false.
-func (b *Blockchain) GetBlock(blockNum uint32) (Block, bool) {
+func (b *Blockchain) GetBlock(blockNum uint) (Block, bool) {
 
 	if blockNum > b.GetHeight() {
 
