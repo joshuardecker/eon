@@ -19,6 +19,9 @@ type Wallet struct {
 	mainKey ellip.MainKey
 }
 
+// Initialize a wallet by calling this function.
+// Input is the blockchain the wallet is on.
+// Returns a new wallet.
 func Init(b *blockchain.Blockchain) Wallet {
 
 	w := new(Wallet)
