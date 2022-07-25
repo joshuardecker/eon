@@ -33,7 +33,7 @@ func InitBlockchain() Blockchain {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = client.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1d0fffff
+	genisisB.PackedTarget = 0x1dffffff
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
@@ -42,7 +42,7 @@ func InitBlockchain() Blockchain {
 	genisisB.Miner = mainKeys.GetPubKeyStr()
 
 	// Adds the genisis block to the blockchain
-	b.AddBlock(*genisisB)
+	b.AddBlock(genisisB)
 
 	return *b
 }
@@ -84,9 +84,9 @@ func (b *Blockchain) GetHeight() uint {
 
 // This function adds a block to the blockchain.
 // Input is the block thats being added.
-func (b *Blockchain) AddBlock(block Block) {
+func (b *Blockchain) AddBlock(block *Block) {
 
-	b.Blocks = append(b.Blocks, block)
+	b.Blocks = append(b.Blocks, *block)
 }
 
 // This function removes the last block from the blockchain.
@@ -115,7 +115,7 @@ func (b *Blockchain) GetBlock(blockNum uint) (Block, bool) {
 // Returns the packed target of the block.
 func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 
-	if blockNumber > b.GetHeight() {
+	if blockNumber > uint(len(b.Blocks)) {
 
 		return 0
 	}

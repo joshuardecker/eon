@@ -3,6 +3,7 @@ package wallet
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
@@ -135,7 +136,10 @@ func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 	return ellip.ValidateSig(pubKey, txHash, signature)
 }
 
-func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
+// Verifies of the block inputted is valid or not.
+// Input is the block being verified.
+// Returns true if it is valid, false if not valid.
+func (w *Wallet) VerifyBlock(block *blockchain.Block) bool {
 
 	// If it is the genisis block
 	if len(w.chain.Blocks) == 0 {
@@ -147,7 +151,7 @@ func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
 
 	// Check the Block hash
 	softwareVersion := []byte(block.SoftwareVersion)
-	prevBlockHash, _ := hex.DecodeString(block.BlockHash)
+	prevBlockHash, _ := hex.DecodeString(block.PrevHash)
 	merkleRoot, _ := hex.DecodeString(block.MerkleRoot)
 	blockTime := bytesUtil.Uint64toB(block.Timestamp)
 	packedTargetBytes := bytesUtil.Uint32toB(block.PackedTarget)
@@ -168,12 +172,14 @@ func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
 	// If the blockhash is invalid
 	if hex.EncodeToString(hash) != block.BlockHash {
 
+		fmt.Println(hex.EncodeToString(hash))
 		return false
 	}
 
 	// Check if the block points to the previous block
 	if block.PrevHash != w.chain.Blocks[w.chain.GetHeight()].BlockHash {
 
+		fmt.Println("Invalid prev block hash!")
 		return false
 	}
 
@@ -183,18 +189,21 @@ func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
 	// TODO: make more advanced
 	if block.Timestamp < w.chain.Blocks[w.chain.GetHeight()].Timestamp || block.Timestamp > timeUtil.CurrentUnix() {
 
+		fmt.Println("Invalid time stamp!")
 		return false
 	}
 
 	// Check if the target is correct
 	if block.PackedTarget != w.chain.CalculatePackedTarget(uint(len(w.chain.Blocks))) {
 
+		fmt.Println("Invalid target!")
 		return false
 	}
 
 	// Check the merkle root
 	if block.MerkleRoot != block.GetMerkleRoot() {
 
+		fmt.Println("Invalid merkle root!")
 		return false
 	}
 
@@ -203,6 +212,7 @@ func (w *Wallet) VerifyBlock(block blockchain.Block) bool {
 
 		if !w.VerifyTx(block.Txs[index]) {
 
+			fmt.Println("Invalid txs!")
 			return false
 		}
 	}
