@@ -1,8 +1,10 @@
 package blockchain
 
 import (
+	"github.com/GoblinBear/beson/types"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 // The blockchain struct that will be the chain of blocks.
@@ -105,4 +107,37 @@ func (b *Blockchain) GetBlock(blockNum uint) (Block, bool) {
 	}
 
 	return b.Blocks[blockNum], true
+}
+
+func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
+
+	if blockNumber > b.GetHeight() {
+
+		return 0
+	}
+
+	// If block time is 1 minute, this will happen once a week
+	if blockNumber%10080 == 0 {
+
+		unPacker := new(utilities.TargetUnpacker)
+		packer := new(utilities.TargetPacker)
+		byteUtil := new(utilities.ByteUtil)
+		time := b.Blocks[blockNumber-1].Timestamp - b.Blocks[blockNumber-10080].Timestamp
+
+		newMultiplier := 10080 / time
+
+		// Convert this to a uint256
+		bigNewMultiplier := *types.NewUInt256("0", 1)
+		bigNewMultiplier.Set(byteUtil.Uint64toB(newMultiplier))
+
+		// Convert the current target to uint256
+		target := unPacker.Unpack(b.Blocks[blockNumber-1].PackedTarget)
+
+		// Apply the multiplier to the current target to get the new target
+		newTarget := target.Multiply(&bigNewMultiplier)
+
+		return packer.PackTargetUint256(*newTarget)
+	}
+
+	return b.Blocks[blockNumber-1].PackedTarget
 }
