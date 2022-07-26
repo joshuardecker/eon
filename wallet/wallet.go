@@ -138,7 +138,8 @@ func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 }
 
 // Verifies of the block inputted is valid or not.
-// Input is the block being verified.
+// Input is the block being verified. The second input is a bool that determines whether a block should have the same software version as you.
+// Input true to have it check, false to have it just check the block normally.
 // Returns true if it is valid, false if not valid.
 func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool) bool {
 
@@ -226,6 +227,47 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 			return false
 		}
 	}
+
+	return true
+}
+
+func (w *Wallet) VerifyBlockchain() bool {
+
+	// Is only valid if no blocks are in the chain
+	if len(w.chain.Blocks) == 0 {
+
+		return true
+	}
+
+	//****
+	// Check the genisis block:
+
+	if len(w.chain.Blocks[0].Txs) != 0 {
+
+		return false
+	}
+
+	if w.chain.Blocks[0].PackedTarget != 0x1d0fffff {
+
+		return false
+	}
+
+	// Check the genisis block
+	//****
+
+	//****
+	// Checks the rest of the blocks
+
+	for blockIndex := 1; blockIndex < len(w.chain.Blocks); blockIndex += 1 {
+
+		if !w.VerifyBlock(&w.chain.Blocks[blockIndex], false) {
+
+			return false
+		}
+	}
+
+	// Checks the rest of the blocks
+	//****
 
 	return true
 }
