@@ -89,7 +89,7 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 	tx.Nonce = w.ScanChainForNonce(tx.TxFrom)
 
 	// Simple calculation to get a tx fee
-	tx.Fee = uint64((tx.GetWeight() + 64) * 1000) // The +64 is to add the weight of the signature
+	tx.Fee = uint64((tx.GetWeight() + 64) * 100) // The +64 is to add the weight of the signature
 
 	txBytes, _ := json.Marshal(tx)
 
