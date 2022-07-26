@@ -33,7 +33,7 @@ func InitBlockchain() Blockchain {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = client.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1dffffff
+	genisisB.PackedTarget = 0x1d0fffff
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
