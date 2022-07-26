@@ -1,6 +1,9 @@
 package blockchain
 
 import (
+	"encoding/json"
+	"os"
+
 	"github.com/GoblinBear/beson/types"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
@@ -32,7 +35,7 @@ func InitBlockchain() Blockchain {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = utilities.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1d0fffff
+	genisisB.PackedTarget = 0x1dffffff
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
@@ -69,6 +72,7 @@ func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 	// If 1 or more halvings have happened
 	// The << operator here acts as an easy way to do "to the power of" or **
 	// Does not work in substitute for 2**0
+	// Also the * 1 million is to covert LNCH to LUNCHEON
 	return (200 / (2 << (halvings - 1))) * 1000000
 }
 
@@ -143,4 +147,53 @@ func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 	}
 
 	return b.Blocks[blockNumber-1].PackedTarget
+}
+
+// This function saves the blockchain to the computers hard-disk.
+// Input is the name of the blockchain being saved.
+// Returns nothing.
+func (b *Blockchain) SaveBlockchain(bcName string) {
+
+	err := os.WriteFile("saves/"+bcName+".json", b.AsBytes(), 0750)
+
+	if err != nil {
+
+		panic(err)
+	}
+}
+
+// Loads a saved blockchain.
+// Input is the name of the blockchain.
+// Returns nothing.
+func (b *Blockchain) LoadBlockchain(bcName string) {
+
+	bAsBytes, err := os.ReadFile("saves/" + bcName + ".json")
+
+	if err != nil {
+
+		panic(err)
+	}
+
+	// Convert the data to a blockchain from json
+	err = json.Unmarshal(bAsBytes, b)
+
+	if err != nil {
+
+		panic(err)
+	}
+}
+
+// Converts the blockchain into its bytes,
+// Returns the byte slice of the blockchain.
+func (b *Blockchain) AsBytes() []byte {
+
+	// Get the byte slice
+	bAsBytes, err := json.Marshal(b)
+
+	if err != nil {
+
+		panic(err)
+	}
+
+	return bAsBytes
 }
