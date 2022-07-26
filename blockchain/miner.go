@@ -34,7 +34,7 @@ func (m *Miner) Start(b *Block) error {
 	// Init the timer used for calculating MH/s
 	timer := m.utilTime.Timer()
 
-	fmt.Println("Mining Starting!")
+	fmt.Println("Mining New Block!")
 
 	// Prepare the miner
 	//****
