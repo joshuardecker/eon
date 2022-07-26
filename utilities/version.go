@@ -1,4 +1,4 @@
 package utilities
 
 // The version of the software here
-var SoftwareVersion string = "v0.1"
+var SoftwareVersion string = "v0.1B"
