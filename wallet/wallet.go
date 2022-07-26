@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
@@ -139,12 +140,21 @@ func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 // Verifies of the block inputted is valid or not.
 // Input is the block being verified.
 // Returns true if it is valid, false if not valid.
-func (w *Wallet) VerifyBlock(block *blockchain.Block) bool {
+func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool) bool {
 
 	// If it is the genisis block
-	if len(w.chain.Blocks) == 0 {
+	if len(w.chain.Blocks) == 1 {
 
 		return true
+	}
+
+	// Checks if the software version, if the func is told to do so
+	if checkSoftwareVersion {
+
+		if block.SoftwareVersion != client.SoftwareVersion {
+
+			return false
+		}
 	}
 
 	bytesUtil := new(utilities.ByteUtil)
