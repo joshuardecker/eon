@@ -23,6 +23,6 @@ func TestCreateTx(t *testing.T) {
 
 	tx := wal.CreateTx("kaimorton123", 2000)
 
-	test := mem.AddTx(tx)
+	test := mem.AddTx(&tx)
 	fmt.Println("Added tx:", test)
 }
