@@ -48,7 +48,10 @@ func main() {
 
 	bc.Blocks[0].PrintBlock()
 
-	fmt.Println("Balance:", wal.ScanChainForBalance(key.GetPubKeyStr()))
+	block2 := bc.CreateBlock(key.GetPubKeyStr())
+	miner.Start(&block2)
+
+	fmt.Println("Block Valid:", wal.VerifyBlock(&block2, true))
 
 	// Starts the mining
 	//****
