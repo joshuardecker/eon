@@ -50,23 +50,15 @@ func (b *Blockchain) CreateBlock(blockMinerId string) Block {
 // This function adds a slice of tx to the block.
 // Input is the tx slice.
 // Returns a bool, true if the tx were added, false if not.
-func (b *Block) AddTx(tx []transactions.LuTx) bool {
-
-	txWeight := uint(0)
-
-	// Get the total weight of all the input txs
-	for txIndex := 0; txIndex < len(tx); txIndex += 1 {
-
-		txWeight += tx[txIndex].GetWeight()
-	}
+func (b *Block) AddTx(tx transactions.LuTx) bool {
 
 	// If the block weight + the new tx total weight is greater than the max weight
-	if (txWeight + b.GetWeight()) > MaxWeight {
+	if (tx.GetWeight() + b.GetWeight()) > MaxWeight {
 
 		return false
 	}
 
-	b.Txs = append(b.Txs, tx...)
+	b.Txs = append(b.Txs, tx)
 
 	b.MerkleRoot = b.GetMerkleRoot()
 
