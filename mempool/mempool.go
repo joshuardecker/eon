@@ -26,12 +26,12 @@ func Init(wal *wallet.Wallet) Mempool {
 // Function adds a tx to the mempool of the blockchain.
 // Inputs the tx you are adding.
 // Returns true if successfully added, false if tx was invalid.
-func (m *Mempool) AddTx(tx transactions.LuTx) bool {
+func (m *Mempool) AddTx(tx *transactions.LuTx) bool {
 
 	// If the tx is valid
-	if m.wal.VerifyTx(tx) {
+	if m.wal.VerifyTx(*tx) {
 
-		m.Txs = append(m.Txs, tx)
+		m.Txs = append(m.Txs, *tx)
 		return true
 	}
 
