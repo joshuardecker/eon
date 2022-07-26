@@ -131,7 +131,7 @@ func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 		byteUtil := new(utilities.ByteUtil)
 		time := b.Blocks[blockNumber-1].Timestamp - b.Blocks[blockNumber-10080].Timestamp
 
-		newMultiplier := 10080 / time
+		newMultiplier := (10080 * 60) / time // The *60 converts to seconds
 
 		// Convert this to a uint256
 		bigNewMultiplier := *types.NewUInt256("0", 1)
