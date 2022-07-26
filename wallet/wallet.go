@@ -37,7 +37,7 @@ func (w *Wallet) ScanChainForBalance(pubKey string) (balance uint64) {
 	for index := 0; index < len(w.chain.Blocks); index += 1 {
 
 		// Check if they got the block reward
-		if w.chain.Blocks[index].Miner == pubKey {
+		if w.chain.Blocks[index].Miner == pubKey && (index+10) < int(w.chain.GetHeight()) {
 
 			balance += w.chain.GetBlockReward(uint32(index))
 		}
