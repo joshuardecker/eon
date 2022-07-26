@@ -2,7 +2,6 @@ package blockchain
 
 import (
 	"github.com/GoblinBear/beson/types"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
@@ -31,7 +30,7 @@ func InitBlockchain() Blockchain {
 	genisisB := new(Block)
 
 	// Manually sets the variables of the genisis block
-	genisisB.SoftwareVersion = client.SoftwareVersion
+	genisisB.SoftwareVersion = utilities.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
 	genisisB.PackedTarget = 0x1d0fffff
 

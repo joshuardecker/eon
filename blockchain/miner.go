@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 	"golang.org/x/crypto/sha3"
 )
@@ -50,7 +49,7 @@ func (m *Miner) Start(b *Block) error {
 		b.Timestamp = m.utilTime.CurrentUnix()
 
 		// Get the block as bytes for mining
-		softwareVersion := []byte(client.SoftwareVersion)
+		softwareVersion := []byte(utilities.SoftwareVersion)
 		prevBlockHash, _ := hex.DecodeString(b.PrevHash)
 		merkleRoot, _ := hex.DecodeString(b.MerkleRoot)
 		blockTime := m.util.Uint64toB(b.Timestamp)

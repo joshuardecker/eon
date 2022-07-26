@@ -6,19 +6,14 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 	"golang.org/x/crypto/sha3"
 )
 
-// The version of the software here
-var SoftwareVersion string = "v1"
-
 type Wallet struct {
 	chain   *blockchain.Blockchain
-	version string
 	mainKey ellip.MainKey
 }
 
@@ -30,7 +25,6 @@ func Init(b *blockchain.Blockchain) Wallet {
 	w := new(Wallet)
 
 	w.chain = b
-	w.version = SoftwareVersion
 
 	return *w
 }
@@ -152,7 +146,7 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	// Checks if the software version, if the func is told to do so
 	if checkSoftwareVersion {
 
-		if block.SoftwareVersion != client.SoftwareVersion {
+		if block.SoftwareVersion != utilities.SoftwareVersion {
 
 			return false
 		}

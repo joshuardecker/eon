@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
 )
 
 // Represents the blocks on the blockchain.
@@ -39,7 +39,7 @@ func (b *Blockchain) CreateBlock(blockMinerId string) Block {
 	block := new(Block)
 
 	// Pack in the block information
-	block.SoftwareVersion = client.SoftwareVersion
+	block.SoftwareVersion = utilities.SoftwareVersion
 	block.PrevHash = b.Blocks[b.GetHeight()].BlockHash
 	block.PackedTarget = b.CalculatePackedTarget(uint(len(b.Blocks)))
 	block.Miner = blockMinerId
