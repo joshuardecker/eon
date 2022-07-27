@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
+	"github.com/TwiN/go-color"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -16,6 +17,7 @@ import (
 type Miner struct {
 	currentHash    []byte
 	unpackedTarget []byte
+	blocksFound    uint
 
 	util     utilities.ByteUtil
 	unpacker utilities.TargetUnpacker
@@ -23,7 +25,7 @@ type Miner struct {
 }
 
 // Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start(b *Block) error {
+func (m *Miner) Start(b *Block, difficulty uint64) error {
 
 	//****
 	// Prepare the miner
@@ -34,7 +36,7 @@ func (m *Miner) Start(b *Block) error {
 	// Init the timer used for calculating MH/s
 	timer := m.utilTime.Timer()
 
-	fmt.Println("Mining New Block!")
+	fmt.Println("[MINER]:", color.Colorize(color.Yellow, "New Block!"))
 
 	// Prepare the miner
 	//****
@@ -81,21 +83,29 @@ func (m *Miner) Start(b *Block) error {
 			// Set the block hash to the winning hash
 			b.BlockHash = hex.EncodeToString(m.currentHash)
 
+			fmt.Println("[MINER]:", color.Colorize(color.Green, "Block Found!"))
+
+			m.blocksFound += 1
+
 			return nil
 		}
 
-		// Prints stats every 10 MH
+		// Prints stats every 10 MHs
 		if b.Nonce%10000000 == 0 {
 
 			timer = m.utilTime.Timer()
 
 			if timer != 0 {
 
-				fmt.Printf("Mining...\n")
-				fmt.Printf("Target: %x\n", m.unpackedTarget)
-				fmt.Printf("Last Hash: %x\n", m.currentHash)
+				fmt.Println("!==========!")
 
-				fmt.Println("Average Hashing Speed: ", ((10000000/timer)*60)/1000000, " MH / per minute.")
+				fmt.Println("[MINER]:", color.Colorize(color.Yellow, "Mining..."))
+				fmt.Println("[MINER]:", m.utilTime.CurrentTime())
+				fmt.Printf("[MINER]: Heres a random of the hashes: %x\n", m.currentHash)
+				fmt.Println("[MINER]: Current Difficulty:", difficulty, "| Blocks Found:", m.blocksFound)
+				fmt.Println("[MINER]: Average Hashing Speed: ", ((10000000/timer)*60)/1000000, " MH / per minute.")
+
+				fmt.Println("!==========!")
 			}
 		}
 
