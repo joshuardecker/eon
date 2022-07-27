@@ -47,7 +47,8 @@ func (s Server) AddTx(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		w.WriteHeader(http.StatusBadRequest)
+		// Tells the client that the tx was not accepted
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
@@ -58,10 +59,14 @@ func (s Server) AddTx(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 
-		w.WriteHeader(http.StatusBadRequest)
+		// Tells the client that the tx was not accepted
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
 	// Add the tx to the mempool
 	s.mem.AddTx(tx)
+
+	// Tells the client that the tx was accepted
+	w.WriteHeader(http.StatusAccepted)
 }
