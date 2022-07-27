@@ -3,6 +3,7 @@ package node
 import (
 	"bytes"
 	"fmt"
+	"net"
 	"net/http"
 
 	"github.com/TwiN/go-color"
@@ -124,4 +125,24 @@ func (s *Server) SendDataToAll(path string, data *bytes.Buffer) {
 			fmt.Println(color.Colorize(color.Red, "[NODE]: Potensial Error: Peer responded with a negative http status code"))
 		}
 	}
+}
+
+// This function gets the outbound ip of the machine running this software.
+// This will be used as the ip the node is known for.
+// Returns the string ip of this node.
+func GetOutboundIP() string {
+
+	connection, conErr := net.Dial("udp", "8.8.8.8:80")
+
+	if conErr != nil {
+
+		fmt.Println(color.Colorize(color.Red, "[NODE]: Error: "+conErr.Error()))
+	}
+
+	// Close the connection when the function ends
+	defer connection.Close()
+
+	localIp := connection.LocalAddr().(*net.UDPAddr)
+
+	return localIp.IP.String()
 }
