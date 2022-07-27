@@ -21,19 +21,19 @@ func main() {
 	//****
 	// Input Handler
 
-	localServer := flag.Bool("local", false, "Starts a locally hosted testnet")
-	localServerTx := flag.Bool("localTx", false, "Sends a tx on the local testnet")
+	localNode := flag.Bool("local", false, "Starts a locally hosted testnet")
+	localNodeTx := flag.Bool("localTx", false, "Sends a tx on the local testnet")
 
 	flag.Parse()
 
-	if *localServer {
+	// Init vars needed for the blockchain processes below
+	bc := blockchain.InitBlockchain()
+	wallet := wallet.Init(&bc)
+	mem := mempool.Init(&wallet)
+	miner := new(blockchain.Miner)
+	keys := new(ellip.MainKey)
 
-		// Init everything needed for the local testnet
-		bc := blockchain.InitBlockchain()
-		wallet := wallet.Init(&bc)
-		mem := mempool.Init(&wallet)
-		miner := new(blockchain.Miner)
-		keys := new(ellip.MainKey)
+	if *localNode {
 
 		serverMux := node.Init(&mem)
 		mux := serverMux.InitMux()
@@ -43,15 +43,12 @@ func main() {
 
 		go node.LocalNodeMining(&bc, &mem, miner, keys)
 
+		bc.GetDifficulty()
+
 		fmt.Scanln()
 	}
 
-	if *localServerTx {
-
-		bc := blockchain.InitBlockchain()
-		bc.LoadBlockchain("localBlockchain")
-
-		wallet := wallet.Init(&bc)
+	if *localNodeTx {
 
 		tx := wallet.CreateTx("kaimort123", 10)
 		txBuffer := bytes.NewBuffer(tx.AsBytes())

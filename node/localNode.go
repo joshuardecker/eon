@@ -35,9 +35,6 @@ func LocalNodeMining(bc *blockchain.Blockchain, mem *mempool.Mempool, miner *blo
 		// Start mining
 		miner.Start(&block, bc.GetDifficulty())
 
-		// Print the mined block
-		block.PrintBlock()
-
 		// Add the newly mined block
 		bc.AddBlock(&block)
 
