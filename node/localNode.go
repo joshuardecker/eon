@@ -12,7 +12,7 @@ import (
 func LocalNodeMining(bc *blockchain.Blockchain, mem *mempool.Mempool, miner *blockchain.Miner, keys *ellip.MainKey) {
 
 	// Mine the genisis block
-	miner.Start(&bc.Blocks[0])
+	miner.Start(&bc.Blocks[0], bc.GetDifficulty())
 
 	// Create an endless loop of blockchaining
 	for {
@@ -33,7 +33,7 @@ func LocalNodeMining(bc *blockchain.Blockchain, mem *mempool.Mempool, miner *blo
 		}
 
 		// Start mining
-		miner.Start(&block)
+		miner.Start(&block, bc.GetDifficulty())
 
 		// Print the mined block
 		block.PrintBlock()
