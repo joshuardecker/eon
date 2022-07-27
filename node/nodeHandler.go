@@ -11,6 +11,8 @@ import (
 
 type Server struct {
 	mem *mempool.Mempool
+
+	Peers []string
 }
 
 // Inits the ServerClient.
@@ -26,7 +28,7 @@ func Init(mempool *mempool.Mempool) Server {
 
 // Initiates the mux for the server.
 // Returns the ServerMux of all of the Handled functions of the client.
-func (s Server) InitMux() http.ServeMux {
+func (s *Server) InitMux() http.ServeMux {
 
 	mux := http.NewServeMux()
 
@@ -40,7 +42,7 @@ func (s Server) InitMux() http.ServeMux {
 // Inputs are the requests and writer from the http request.
 // Returns nothing.
 // Accessed by "/tx".
-func (s Server) AddTx(w http.ResponseWriter, r *http.Request) {
+func (s *Server) AddTx(w http.ResponseWriter, r *http.Request) {
 
 	// Get the body of the http message.
 	body, err := ioutil.ReadAll(r.Body)
