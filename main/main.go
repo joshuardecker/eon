@@ -88,18 +88,20 @@ func main() {
 			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error:"+err.Error()))
 			return
 
-		} //else if userAmount > balance {
+		}
 
-		//fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: cannot send more than your balance"))
-		//return
-		//}
+		if userAmount > balance {
+
+			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: cannot send more than your balance"))
+			return
+		}
 
 		tx := wallet.CreateTx(userToKey, userAmount)
 
 		txBuffer := bytes.NewBuffer(tx.AsBytes())
 
 		// Contact the node
-		resp, httpErr := http.Post("http://localhost:1919/tx", "simpleTx", txBuffer)
+		resp, httpErr := http.Post("http://localhost:1919/tx", "data/json", txBuffer)
 
 		// Was there an error in contacting the node
 		if httpErr != nil {
@@ -118,6 +120,9 @@ func main() {
 		fmt.Println(color.Colorize(color.Green, "[TRANSACTION]: Transaction Accepted by Node!"))
 
 		fmt.Println("!==========!")
+	} else {
+
+		fmt.Println("Type 'luncheon -help' to get a list of the possible commands.")
 	}
 
 	// Input Handler
