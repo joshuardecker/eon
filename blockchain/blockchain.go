@@ -1,6 +1,7 @@
 package blockchain
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"os"
 
@@ -35,7 +36,7 @@ func InitBlockchain() Blockchain {
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = utilities.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1dffffff
+	genisisB.PackedTarget = 0x1d0fffff
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
@@ -142,6 +143,13 @@ func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 
 		// Apply the multiplier to the current target to get the new target
 		newTarget := target.Multiply(&bigNewMultiplier)
+		maxTarget := unPacker.Unpack(0x1d0fffff)
+
+		// If the target is larger than the max allowed target
+		if newTarget.Compare(&maxTarget) == 1 {
+
+			return 0x1d0fffff
+		}
 
 		return packer.PackTargetUint256(*newTarget)
 	}
@@ -196,4 +204,34 @@ func (b *Blockchain) AsBytes() []byte {
 	}
 
 	return bAsBytes
+}
+
+// This function gets the current difficulty of the blockchain.
+// No inputs required and returns the uint64 of the current difficulty.
+func (b *Blockchain) GetDifficulty() uint64 {
+
+	unpacker := new(utilities.TargetUnpacker)
+
+	currentTarget := unpacker.Unpack(b.Blocks[b.GetHeight()].PackedTarget)
+	genisisTarget := unpacker.Unpack(0x1d0fffff)
+
+	difficulty := genisisTarget.Divide(&currentTarget)
+
+	// Returns the uint256 as a uint64 from little endian order
+	return binary.LittleEndian.Uint64(difficulty.ToBytes())
+}
+
+// This function gets the difficulty of a specific block from the blockchain.
+// Only input is the block number and returns the uint64 of that blocks difficulty.
+func (b *Blockchain) GetDifficultyOfBlock(blockN uint) uint64 {
+
+	unpacker := new(utilities.TargetUnpacker)
+
+	currentTarget := unpacker.Unpack(b.Blocks[blockN].PackedTarget)
+	genisisTarget := unpacker.Unpack(0x1d0fffff)
+
+	difficulty := genisisTarget.Divide(&currentTarget)
+
+	// Returns the uint256 as a uint64 from little endian order
+	return binary.LittleEndian.Uint64(difficulty.ToBytes())
 }
