@@ -7,51 +7,11 @@ import (
 	"net/http"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/client"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/mempool"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/node"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
 )
-
-func Test(bc *blockchain.Blockchain, mem *mempool.Mempool) {
-
-	miner := new(blockchain.Miner)
-	keys := new(ellip.MainKey)
-
-	// Mine the genisis block
-	miner.Start(&bc.Blocks[0])
-
-	// Create an endless loop of blockchaining
-	for {
-
-		// Create the new block
-		block := bc.CreateBlock(keys.GetPubKeyStr())
-
-		// Add the txs
-		for txIndex := 0; txIndex < len(mem.Txs); txIndex += 1 {
-
-			tx := mem.GetTx()
-
-			if !block.AddTx(tx) {
-
-				mem.AddTx(&tx)
-				break
-			}
-		}
-
-		// Start mining
-		miner.Start(&block)
-
-		// Print the mined block
-		block.PrintBlock()
-
-		// Add the newly mined block
-		bc.AddBlock(&block)
-
-		// Save the blockchain
-		bc.SaveBlockchain("localBlockchain")
-	}
-}
 
 // To make a windows copy: GOOS=windows GOARCH=amd64 go build -o luncheon.exe main/main.go
 // Website I got this from: https://freshman.tech/snippets/go/cross-compile-go-programs/
@@ -72,14 +32,16 @@ func main() {
 		bc := blockchain.InitBlockchain()
 		wallet := wallet.Init(&bc)
 		mem := mempool.Init(&wallet)
+		miner := new(blockchain.Miner)
+		keys := new(ellip.MainKey)
 
-		serverMux := client.Init(&mem)
+		serverMux := node.Init(&mem)
 		mux := serverMux.InitMux()
 
 		// Run the server locally, and as a go routine, the sudo multi threading.
 		go http.ListenAndServe(":1919", &mux)
 
-		go Test(&bc, &mem)
+		go node.LocalNodeMining(&bc, &mem, miner, keys)
 
 		fmt.Scanln()
 	}
