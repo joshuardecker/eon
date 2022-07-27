@@ -11,6 +11,7 @@ import (
 	"github.com/Sucks-To-Suck/LuncheonNetwork/mempool"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/node"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
+	"github.com/TwiN/go-color"
 )
 
 // To make a windows copy: GOOS=windows GOARCH=amd64 go build -o luncheon.exe main/main.go
@@ -41,40 +42,84 @@ func main() {
 		// Run the server locally, and as a go routine, the sudo multi threading.
 		go http.ListenAndServe(":1919", &mux)
 
+		// Also start the blockchain process.
 		go node.LocalNodeMining(&bc, &mem, miner, keys)
 
-		bc.GetDifficulty()
-
+		// Used to make the program not close, so it waits for user input to stop
 		fmt.Scanln()
-	}
 
-	if *localNodeTx {
+	} else if *localNodeTx {
 
-		tx := wallet.CreateTx("kaimort123", 10)
-		txBuffer := bytes.NewBuffer(tx.AsBytes())
+		fmt.Println("!==========!")
 
-		_, err := http.Post("http://localhost:1919/tx", "tx/text", txBuffer)
+		// Load the local blockchain
+		bc.LoadBlockchain("localBlockchain")
 
+		// Get and print the available balance
+		balance := wallet.ScanChainForBalance(keys.GetPubKeyStr())
+		fmt.Println("Available Balance:", balance/1000000)
+
+		if balance == 0 {
+
+			fmt.Println("!==========!")
+			return
+		}
+
+		fmt.Println("Where is this transaction going?")
+
+		var userToKey string
+		_, err := fmt.Scanln(&userToKey)
+
+		// Was there an err getting the users input
 		if err != nil {
 
-			panic(err)
+			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error:"+err.Error()))
+			return
 		}
+
+		fmt.Println("How much is being sent?")
+
+		var userAmount uint64
+		_, err = fmt.Scanln(&userAmount)
+
+		// Was there an err getting the users input
+		if err != nil {
+
+			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error:"+err.Error()))
+			return
+
+		} //else if userAmount > balance {
+
+		//fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: cannot send more than your balance"))
+		//return
+		//}
+
+		tx := wallet.CreateTx(userToKey, userAmount)
+
+		txBuffer := bytes.NewBuffer(tx.AsBytes())
+
+		// Contact the node
+		resp, httpErr := http.Post("http://localhost:1919/tx", "simpleTx", txBuffer)
+
+		// Was there an error in contacting the node
+		if httpErr != nil {
+
+			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: "+httpErr.Error()))
+			return
+		}
+
+		// If the node did not respond with the accepted status
+		if resp.StatusCode != http.StatusAccepted {
+
+			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: transaction not accepted by node. Http err"+resp.Status))
+			return
+		}
+
+		fmt.Println(color.Colorize(color.Green, "[TRANSACTION]: Transaction Accepted by Node!"))
+
+		fmt.Println("!==========!")
 	}
 
 	// Input Handler
-	//****
-
-	fmt.Println("*****")
-	//****
-	// Test new features area
-
-	// Test new features area
-	//****
-	fmt.Println("*****")
-
-	//****
-	// Starts Mining
-
-	// Starts the mining
 	//****
 }
