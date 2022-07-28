@@ -184,7 +184,6 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	// Check if the block points to the previous block
 	if block.PrevHash != w.chain.Blocks[w.chain.GetHeight()].BlockHash {
 
-		fmt.Println("Invalid prev block hash!")
 		return false
 	}
 
@@ -194,31 +193,28 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	// TODO: make more advanced
 	if block.Timestamp < w.chain.Blocks[w.chain.GetHeight()].Timestamp || block.Timestamp > timeUtil.CurrentUnix() {
 
-		fmt.Println("Invalid time stamp!")
 		return false
 	}
 
 	// Check if the target is correct
 	if block.PackedTarget != w.chain.CalculatePackedTarget(uint(len(w.chain.Blocks))) {
 
-		fmt.Println("Invalid target!")
 		return false
 	}
 
 	// Check the merkle root
 	if block.MerkleRoot != block.GetMerkleRoot() {
 
-		fmt.Println("Invalid merkle root!")
 		return false
 	}
 
 	// Check the txs
 	for index := 0; index < len(block.Txs); index += 1 {
 
+		// If the tx is not valid, just remove it
 		if !w.VerifyTx(block.Txs[index]) {
 
-			fmt.Println("Invalid txs!")
-			return false
+			block.RemoveTx(uint(index))
 		}
 	}
 
