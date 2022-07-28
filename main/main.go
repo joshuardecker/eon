@@ -36,14 +36,15 @@ func main() {
 
 	if *localNode {
 
-		serverMux := node.Init(&mem)
-		mux := serverMux.InitMux()
+		localNode := node.Init(&bc, &mem, false, &wallet)
+		mux := localNode.InitMux()
 
 		// Run the server locally, and as a go routine, the sudo multi threading.
-		go http.ListenAndServe(":1919", &mux)
+		go http.ListenAndServe(":8180", &mux)
 
-		// Also start the blockchain process.
-		go node.LocalNodeMining(&bc, &mem, miner, keys)
+		// Also start the node mining process.
+		nodeMiner := node.InitNodeMiner(localNode, &bc, &mem, miner, keys, &wallet, "local")
+		go nodeMiner.StartMining()
 
 		// Used to make the program not close, so it waits for user input to stop
 		fmt.Scanln()

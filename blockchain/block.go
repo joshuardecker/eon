@@ -79,6 +79,21 @@ func (b *Block) GetWeight() uint {
 	return uint(len(blockAsBytes))
 }
 
+// Converts the block into its bytes,
+// Returns the byte slice of the block.
+func (b *Block) AsBytes() []byte {
+
+	// Get the byte slice
+	bAsBytes, err := json.Marshal(b)
+
+	if err != nil {
+
+		panic(err)
+	}
+
+	return bAsBytes
+}
+
 // Prints the block as a string in JSON format.
 // Returns nothing.
 func (b *Block) PrintBlock() {

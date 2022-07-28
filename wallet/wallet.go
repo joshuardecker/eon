@@ -36,7 +36,7 @@ func (w *Wallet) ScanChainForBalance(pubKey string) (balance uint64) {
 	// Scans the blockchain, starting from the newest block to the first
 	for index := 0; index < len(w.chain.Blocks); index += 1 {
 
-		// Check if they got the block reward
+		// Check if they got the block reward (+10 makes the miner wait at least 10 blocks before it can be spent)
 		if w.chain.Blocks[index].Miner == pubKey && (index+10) < int(w.chain.GetHeight()) {
 
 			balance += w.chain.GetBlockReward(uint32(index))
@@ -105,7 +105,7 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 
 	// If the tx has a spendable amount of coin from the persons balance
-	if (tx.Value + tx.Fee) > w.ScanChainForBalance(tx.TxFrom) {
+	if w.ScanChainForBalance(tx.TxFrom)-(tx.Value+tx.Fee) > 0 {
 
 		return false
 	}
@@ -225,6 +225,8 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	return true
 }
 
+// Verifys whether the blockchain attached to the wallet is valid or not.
+// Returns true if valid, false if invalid.
 func (w *Wallet) VerifyBlockchain() bool {
 
 	// Is only valid if no blocks are in the chain

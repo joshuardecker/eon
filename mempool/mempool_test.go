@@ -17,7 +17,7 @@ func TestCreateTx(t *testing.T) {
 	wal := wallet.Init(&bc)
 	mem := Init(&wal)
 
-	miner.Start(&bc.Blocks[0], bc.GetDifficulty())
+	miner.Start(&bc.Blocks[0], &bc, bc.GetDifficulty())
 
 	fmt.Println("Balance:", wal.ScanChainForBalance(key.GetPubKeyStr()))
 

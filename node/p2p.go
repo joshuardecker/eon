@@ -11,15 +11,37 @@ import (
 
 // This function adds a node to your copy of peers.
 // If they are unresponsive, they will not be added.
-// Input is the ip of the node being added.
+// Input is the ip of the node being added, and whether this is on the mainnet. Set true if this node is on the mainnet.
 // Output is a bool. Returns true if the peer was added, false if not.
-func (s *Server) AddNode(nodeIp string) bool {
+func (n *Node) AddNode(nodeIp string, mainnet bool) bool {
+
+	// Split the ip and port sent from the http get response
+	host, _, splitErr := net.SplitHostPort(nodeIp)
+
+	if splitErr != nil {
+
+		fmt.Println(color.Colorize(color.Red, "[NODE]: Node port could not be split. Error:"+splitErr.Error()))
+		return false
+	}
+
+	if mainnet {
+		// If node is on the mainnet
+
+		nodeIp = net.JoinHostPort(host, "8181")
+		fmt.Println(color.Colorize(color.Green, "[NODE]: Node added to the mainnet"))
+
+	} else {
+		// If the node is on the testnet
+
+		nodeIp = net.JoinHostPort(host, "8180")
+		fmt.Println(color.Colorize(color.Green, "[NODE]: Node added to the testnet"))
+	}
 
 	resp, httpErr := http.Get(nodeIp + "/status")
 
 	if httpErr != nil {
 
-		fmt.Println(color.Colorize(color.Red, "[NODE]: Error: "+httpErr.Error()))
+		fmt.Println(color.Colorize(color.Red, "[NODE]: Non-Node attempted to join the network. Error: "+httpErr.Error()))
 		return false
 	}
 
@@ -29,7 +51,7 @@ func (s *Server) AddNode(nodeIp string) bool {
 		return false
 	}
 
-	s.Peers = append(s.Peers, nodeIp)
+	n.Peers = append(n.Peers, nodeIp)
 
 	return true
 }
@@ -37,15 +59,15 @@ func (s *Server) AddNode(nodeIp string) bool {
 // This function removes a peer from the list.
 // Input is the ip of the node.
 // Returns true if they were removed, false if they were not on the list of peers.
-func (s *Server) RemoveNode(nodeIp string) bool {
+func (n *Node) RemoveNode(nodeIp string) bool {
 
 	// Search for the node
-	for index := 0; index < len(s.Peers); index += 1 {
+	for index := 0; index < len(n.Peers); index += 1 {
 
 		// Removes the node
-		if s.Peers[index] == nodeIp {
+		if n.Peers[index] == nodeIp {
 
-			s.Peers = append(s.Peers[:index], s.Peers[index+1:]...)
+			n.Peers = append(n.Peers[:index], n.Peers[index+1:]...)
 			return true
 		}
 	}
@@ -56,7 +78,7 @@ func (s *Server) RemoveNode(nodeIp string) bool {
 // This function senda data to a node of choice.
 // Inputs are the nodes ip, the path the func will transmit to, ex "/tx", and the data.
 // Returns a bool, true if successful, false if not successful.
-func (s *Server) SendData(nodeIp string, path string, data *bytes.Buffer) bool {
+func (n *Node) SendData(nodeIp string, path string, data *bytes.Buffer) bool {
 
 	resp, httpErr := http.Post(nodeIp+path, "data/json", data)
 
@@ -64,7 +86,7 @@ func (s *Server) SendData(nodeIp string, path string, data *bytes.Buffer) bool {
 
 		fmt.Println(color.Colorize(color.Red, "[NODE]: Error: "+httpErr.Error()))
 
-		if s.RemoveNode(nodeIp) {
+		if n.RemoveNode(nodeIp) {
 			// If the node was known/saved
 
 			fmt.Println(color.Colorize(color.Red, "[NODE]: Non-responsive node removed"))
@@ -92,18 +114,18 @@ func (s *Server) SendData(nodeIp string, path string, data *bytes.Buffer) bool {
 // This function sends data to all known peers.
 // Inputs are the path being transmitted to, ex "/tx", and the data being sent.
 // Returns nothing.
-func (s *Server) SendDataToAll(path string, data *bytes.Buffer) {
+func (n *Node) SendDataToAll(path string, data *bytes.Buffer) {
 
 	// Loops through all of the known peers.
-	for index := 0; index < len(s.Peers); index += 1 {
+	for index := 0; index < len(n.Peers); index += 1 {
 
-		resp, httpErr := http.Post(s.Peers[index]+path, "data/json", data)
+		resp, httpErr := http.Post(n.Peers[index]+path, "data/json", data)
 
 		if httpErr != nil {
 
 			fmt.Println(color.Colorize(color.Red, "[NODE]: Error: "+httpErr.Error()))
 
-			if s.RemoveNode(s.Peers[index]) {
+			if n.RemoveNode(n.Peers[index]) {
 				// If the node was known/saved
 
 				fmt.Println(color.Colorize(color.Red, "[NODE]: Non-responsive node removed"))
@@ -125,24 +147,4 @@ func (s *Server) SendDataToAll(path string, data *bytes.Buffer) {
 			fmt.Println(color.Colorize(color.Red, "[NODE]: Potensial Error: Peer responded with a negative http status code"))
 		}
 	}
-}
-
-// This function gets the outbound ip of the machine running this software.
-// This will be used as the ip the node is known for.
-// Returns the string ip of this node.
-func GetOutboundIP() string {
-
-	connection, conErr := net.Dial("udp", "8.8.8.8:80")
-
-	if conErr != nil {
-
-		fmt.Println(color.Colorize(color.Red, "[NODE]: Error: "+conErr.Error()))
-	}
-
-	// Close the connection when the function ends
-	defer connection.Close()
-
-	localIp := connection.LocalAddr().(*net.UDPAddr)
-
-	return localIp.IP.String()
 }

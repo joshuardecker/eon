@@ -3,7 +3,6 @@ package blockchain
 import (
 	"bytes"
 	"encoding/hex"
-	"errors"
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
@@ -18,17 +17,22 @@ type Miner struct {
 	currentHash    []byte
 	unpackedTarget []byte
 	blocksFound    uint
+	startHeight    uint
 
 	util     utilities.ByteUtil
 	unpacker utilities.TargetUnpacker
 	utilTime utilities.Time
 }
 
-// Starts the miner. Will return a byte array of the valid hash once discovered. Also returns an error if once occured.
-func (m *Miner) Start(b *Block, difficulty uint64) error {
+// Starts the miner with the inputted block.
+// Will stop if the block is found and added to the blockchain seperatly.
+// Returns true if it found the block.
+func (m *Miner) Start(b *Block, bc *Blockchain, difficulty uint64) bool {
 
 	//****
 	// Prepare the miner
+
+	m.startHeight = bc.GetHeight()
 
 	// Gets the unpacked target with the unpacker struct
 	m.unpackedTarget = m.unpacker.UnpackAsBytes(b.PackedTarget)
@@ -80,6 +84,13 @@ func (m *Miner) Start(b *Block, difficulty uint64) error {
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
 
+			// Check if the block has been found
+			if m.startHeight != bc.GetHeight() {
+
+				fmt.Println("[MINER]:", color.Colorize(color.Yellow, "Found solution to old block. Scrapping old block..."))
+				return false
+			}
+
 			// Set the block hash to the winning hash
 			b.BlockHash = hex.EncodeToString(m.currentHash)
 
@@ -87,11 +98,18 @@ func (m *Miner) Start(b *Block, difficulty uint64) error {
 
 			m.blocksFound += 1
 
-			return nil
+			return true
 		}
 
-		// Prints stats every 10 MHs
-		if b.Nonce%10000000 == 0 {
+		// Prints stats every 20 MHs
+		if b.Nonce%20000000 == 0 {
+
+			// Check if the block has been found
+			if m.startHeight != bc.GetHeight() {
+
+				fmt.Println("[MINER]:", color.Colorize(color.Yellow, "Scrapping old block..."))
+				return false
+			}
 
 			timer = m.utilTime.Timer()
 
@@ -103,7 +121,7 @@ func (m *Miner) Start(b *Block, difficulty uint64) error {
 				fmt.Println("[MINER]:", m.utilTime.CurrentTime())
 				fmt.Printf("[MINER]: Heres a random of the hashes: %x\n", m.currentHash)
 				fmt.Println("[MINER]: Current Difficulty:", difficulty, "| Blocks Found:", m.blocksFound)
-				fmt.Println("[MINER]: Average Hashing Speed: ", ((10000000/timer)*60)/1000000, " MH / per minute.")
+				fmt.Println("[MINER]: Average Hashing Speed: ", ((20000000/timer)*60)/1000000, " MH / per minute.")
 
 				fmt.Println("!==========!")
 			}
@@ -113,5 +131,5 @@ func (m *Miner) Start(b *Block, difficulty uint64) error {
 		//****
 	}
 
-	return errors.New("you have reached the end of the defined search space! Impressive")
+	return false
 }
