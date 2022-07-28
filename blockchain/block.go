@@ -65,6 +65,20 @@ func (b *Block) AddTx(tx transactions.LuTx) bool {
 	return true
 }
 
+// This function simply removes a tx from the block.
+// Input is the tx index.
+// Returns nothing.
+func (b *Block) RemoveTx(txIndex uint) {
+
+	// If the tx does not exist
+	if txIndex >= uint(len(b.Txs)) {
+
+		return
+	}
+
+	b.Txs = append(b.Txs[:txIndex], b.Txs[txIndex+1:]...)
+}
+
 // Calculates the weight of the block.
 // Returns a uint32 of the block weight.
 func (b *Block) GetWeight() uint {
