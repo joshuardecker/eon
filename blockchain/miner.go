@@ -84,7 +84,7 @@ func (m *Miner) Start(b *Block, bc *Blockchain, difficulty uint64) bool {
 		// Was the solution found?
 		if bytes.Compare(m.currentHash, m.unpackedTarget) != 1 {
 
-			// Check if the block has been found
+			// Check if the block has already been found
 			if m.startHeight != bc.GetHeight() {
 
 				fmt.Println("[MINER]:", color.Colorize(color.Yellow, "Found solution to old block. Scrapping old block..."))
@@ -104,7 +104,7 @@ func (m *Miner) Start(b *Block, bc *Blockchain, difficulty uint64) bool {
 		// Prints stats every 20 MHs
 		if b.Nonce%20000000 == 0 {
 
-			// Check if the block has been found
+			// Check if the block has already been found
 			if m.startHeight != bc.GetHeight() {
 
 				fmt.Println("[MINER]:", color.Colorize(color.Yellow, "Scrapping old block..."))
