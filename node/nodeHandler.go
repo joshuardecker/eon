@@ -49,6 +49,7 @@ func (n *Node) InitMux() http.ServeMux {
 	mux.HandleFunc("/tx", n.AddTx)
 	mux.HandleFunc("/status", n.Status)
 	mux.HandleFunc("/newblock", n.Newblock)
+	mux.HandleFunc("/getbc", n.SendBlockchain)
 
 	return *mux
 }
@@ -159,4 +160,15 @@ func (n *Node) Newblock(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 
 	fmt.Println(color.Colorize(color.Green, "[NODE]: Successfully received new valid block."))
+}
+
+// Sends the blockchain to a user who requests it.
+// Used when nodes are syncing to the network.
+// Returns nothing.
+func (n *Node) SendBlockchain(w http.ResponseWriter, r *http.Request) {
+
+	// Runs the blockchain writting to a seperate go-routine
+	w.Write(n.bc.AsBytes())
+
+	w.WriteHeader(http.StatusOK)
 }
