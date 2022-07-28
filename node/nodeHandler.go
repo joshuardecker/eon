@@ -1,6 +1,7 @@
 package node
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -91,6 +92,10 @@ func (n *Node) AddTx(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 
 	fmt.Println(color.Colorize(color.Green, "[NODE]: Successfully received new transaction."))
+
+	// Send the tx to all your known peers
+	buffer := bytes.NewBuffer(body)
+	n.SendDataToAll("/tx", buffer)
 }
 
 // This function simply allows to see if each other are online, and you to them the same.
