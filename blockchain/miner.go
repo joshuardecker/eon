@@ -101,7 +101,7 @@ func (m *Miner) Start(b *Block, bc *Blockchain, difficulty uint64) bool {
 			return true
 		}
 
-		// Prints stats every 20 MHs
+		// Prints stats every 20000 KHs
 		if b.Nonce%20000000 == 0 {
 
 			// Check if the block has already been found
@@ -121,7 +121,7 @@ func (m *Miner) Start(b *Block, bc *Blockchain, difficulty uint64) bool {
 				fmt.Println("[MINER]:", m.utilTime.CurrentTime())
 				fmt.Printf("[MINER]: Heres a random of the hashes: %x\n", m.currentHash)
 				fmt.Println("[MINER]: Current Difficulty:", difficulty, "| Blocks Found:", m.blocksFound)
-				fmt.Println("[MINER]: Average Hashing Speed: ", ((20000000/timer)*60)/1000000, " MH / per minute.")
+				fmt.Println("[MINER]: Average Hashing Speed: ", (20000000/timer)/1000, " KH / per second.")
 
 				fmt.Println("!==========!")
 			}
