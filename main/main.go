@@ -54,7 +54,7 @@ func main() {
 		fmt.Println("!==========!")
 
 		// Load the local blockchain
-		bc.LoadBlockchain("localBlockchain")
+		bc.LoadBlockchain("local")
 
 		// Get and print the available balance
 		balance := wallet.ScanChainForBalance(keys.GetPubKeyStr())
@@ -91,18 +91,18 @@ func main() {
 
 		}
 
-		if userAmount > balance {
+		if (userAmount * 1000000) > balance {
 
 			fmt.Println(color.Colorize(color.Red, "[TRANSACTION]: Error: cannot send more than your balance"))
 			return
 		}
 
-		tx := wallet.CreateTx(userToKey, userAmount)
+		tx := wallet.CreateTx(userToKey, userAmount*1000000)
 
 		txBuffer := bytes.NewBuffer(tx.AsBytes())
 
 		// Contact the node
-		resp, httpErr := http.Post("http://localhost:1919/tx", "data/json", txBuffer)
+		resp, httpErr := http.Post("http://localhost:8180/tx", "data/json", txBuffer)
 
 		// Was there an error in contacting the node
 		if httpErr != nil {
