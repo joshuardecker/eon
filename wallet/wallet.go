@@ -45,9 +45,16 @@ func (w *Wallet) ScanChainForBalance(pubKey string) (balance uint64) {
 		// Check each tx in the block
 		for txIndex := 0; txIndex < len(w.chain.Blocks[index].Txs); txIndex += 1 {
 
+			// If coin received
 			if w.chain.Blocks[index].Txs[txIndex].TxTo == pubKey {
 
 				balance += w.chain.Blocks[index].Txs[txIndex].Value
+			}
+
+			// If coin spent
+			if w.chain.Blocks[index].Txs[txIndex].TxFrom == pubKey {
+
+				balance -= w.chain.Blocks[index].Txs[txIndex].Value
 			}
 		}
 	}
@@ -105,7 +112,7 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 
 	// If the tx has a spendable amount of coin from the persons balance
-	if w.ScanChainForBalance(tx.TxFrom)-(tx.Value+tx.Fee) > 0 {
+	if int(w.ScanChainForBalance(tx.TxFrom))-int((tx.Value+tx.Fee)) < 0 {
 
 		return false
 	}
