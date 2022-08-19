@@ -87,7 +87,13 @@ func (n *Node) AddTx(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add the tx to the mempool
-	n.mem.AddTx(tx)
+	if !n.mem.AddTx(tx) {
+
+		w.WriteHeader(http.StatusNotAcceptable)
+
+		fmt.Println(color.Colorize(color.Yellow, "[NODE]: Received Invalid Transaction."))
+		return
+	}
 
 	// Tells the client that the tx was accepted
 	w.WriteHeader(http.StatusAccepted)
