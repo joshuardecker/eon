@@ -35,8 +35,8 @@ func InitBlockchain() Blockchain {
 
 	// Manually sets the variables of the genisis block
 	genisisB.SoftwareVersion = utilities.SoftwareVersion
-	genisisB.PrevHash = "CoolGenisisBLock"
-	genisisB.PackedTarget = 0x1d0fffff
+	genisisB.PrevHash = "CoolGenisisBlock"
+	genisisB.PackedTarget = 0x1e050000
 
 	// Get the main public key ready
 	mainKeys := new(ellip.MainKey)
@@ -51,30 +51,27 @@ func InitBlockchain() Blockchain {
 }
 
 // Returns the current block reward.
-// Just for some context, the average blocktime shoots for 1 minute.
-// The blockchain reward will target to half once per year in Luncheon 1.0.
-// Block reward starts at 200 per block.
-// This means every 525600 blocks, the reward halves.
-// The current code also makes it so the blockchain rewards besides tx fees
-// Will fully dry-up in 7 years, the first block of year 8 will have zero reward.
+// Just for some context, the average blocktime shoots for 5 seconds.
+// The blockchain reward will reduce by 20% every 2 years in Luncheon 1.0.
+// Block reward starts at 5 per block.
+// This means every 6,307,200 blocks, the reward reduces by 20%.
 // The total amount of coins that can exist is 208,663,200, which means 10 of these coins
 // can be considered as rare, in terms of total in existance, as 1 btc.
 func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 
-	halvings := height / 525600
+	// Amount of times the block reward is being reduced
+	reduces := height / 6307200
 
-	// If no halvings have happened
-	if halvings == 0 {
+	reward := float32(5 * 1000000)
 
-		// The default block reward (the * 1000000 is to convert LNCH to LUNCHEON)
-		return 200 * 1000000
+	// Loops and applys block reward reduction based on the amount of reductions that have been passed.
+	// Based on block height, as calculated above.
+	for loop := uint32(0); loop < reduces; loop += 1 {
+
+		reward *= 0.8
 	}
 
-	// If 1 or more halvings have happened
-	// The << operator here acts as an easy way to do "to the power of" or **
-	// Does not work in substitute for 2**0
-	// Also the * 1 million is to covert LNCH to LUNCHEON
-	return (200 / (2 << (halvings - 1))) * 1000000
+	return uint64(reward)
 }
 
 // Updates and returns the height of the blockchain.
