@@ -65,6 +65,6 @@ File system: (Ignore, this is just for me.)
  - scripter reader
  - scripter writer
 
-- util
+- util (might get rid of)
  - byteutil
  + time 
