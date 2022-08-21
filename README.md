@@ -16,11 +16,42 @@ Security:
 The Peg:
 - Luncheon will no longer have a value peg to real life lunches anymore, but it still will be able to be used for that. There will not be a fixed rate at which lunches can be redeemed for now, but opportunities will arise for "bidding wars" to let the highest payer get a free lunch.
 
-Fun stats about the currency.
-- Each block, for the first year, will reward the solver (a miner) 200 LNCH (the currency of the network).
-- Each block will take on average 1 minute to solve/mine.
-- For the first year of the network, 288k LNCH will be mined per day.
-- Once every 365 days, the reward given by blocks will half, limiting the total supply of LNCH.
-- 1/2 of all LNCH ever will be mined in the 1st year of the blockchain.
-- The maximum amount of LNCH is 208,663,200. This means in terms of amount, 10 LNCH is about as rare as 1 bitcoin.
-- After 7 years, blocks will no longer give any reward from them. This is caused by the halving of the rewards every year.
+File system: (Ignore, this is just for me.)
+- chain
+ - blockchain
+  + blockchain files
+ - block
+  + block files
+ + merkleroot
+
+- http handler
+ - universal requests
+ - node requests
+ - light node requests
+
+- miner
+ - target
+ - tasks
+ - worker
+ + logger
+
+- node 
+ - universal node 
+ - node 
+ - light node
+ + logger
+
+- types 
+ - transactions
+ - contract parsing
+ - token parsing
+
+- scripter
+ - vm
+ - scripter reader
+ - scripter writer
+
+- util
+ - byteutil
+ - crypto
+ + time 
