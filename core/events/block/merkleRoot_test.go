@@ -1,10 +1,10 @@
-package blockchain
+package block
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/txs"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -12,9 +12,9 @@ func TestMerkle(t *testing.T) {
 
 	block := new(Block)
 
-	tx1 := new(transactions.LuTx)
-	tx2 := new(transactions.LuTx)
-	tx3 := new(transactions.LuTx)
+	tx1 := new(txs.LuTx)
+	tx2 := new(txs.LuTx)
+	tx3 := new(txs.LuTx)
 
 	tx1.AddScriptStr("PUBKH 123")
 	tx2.AddScriptStr("PUBKH 124")

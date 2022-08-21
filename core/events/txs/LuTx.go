@@ -1,9 +1,10 @@
-package transactions
+package txs
 
 import (
 	"encoding/hex"
 	"encoding/json"
 
+	"github.com/Sucks-To-Suck/LuncheonNetwork/scripter"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -31,7 +32,7 @@ func (l *LuTx) AddScriptStr(scriptstr string) {
 	}
 
 	// Runs the tx through the scripter and back out to remove any junk
-	l.Script = ScriptToStr(StrToScript(scriptstr))
+	l.Script = scripter.ScriptToStr(scripter.StrToScript(scriptstr))
 }
 
 // Function converts the tx into bytes.

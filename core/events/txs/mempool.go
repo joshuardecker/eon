@@ -1,13 +1,12 @@
-package mempool
+package txs
 
 import (
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/wallet"
 )
 
 // The mempool struct, containing all the tx's waiting to be added to the next available block.
 type Mempool struct {
-	Txs []transactions.LuTx
+	Txs []LuTx
 
 	wal *wallet.Wallet
 }
@@ -26,7 +25,7 @@ func Init(wal *wallet.Wallet) Mempool {
 // Function adds a tx to the mempool of the blockchain.
 // Inputs the tx you are adding.
 // Returns true if successfully added, false if tx was invalid.
-func (m *Mempool) AddTx(tx *transactions.LuTx) bool {
+func (m *Mempool) AddTx(tx *LuTx) bool {
 
 	// If the tx is valid
 	if m.wal.VerifyTx(*tx) {
@@ -46,12 +45,12 @@ func (m *Mempool) RemoveTx(index int) {
 }
 
 // Gets and returns a valid tx.
-func (m *Mempool) GetTx() transactions.LuTx {
+func (m *Mempool) GetTx() LuTx {
 
 	// If no txs
 	if len(m.Txs) == 0 {
 
-		return transactions.LuTx{}
+		return LuTx{}
 	}
 
 	tx := m.Txs[0]

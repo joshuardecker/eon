@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/crypto/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/mempool"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/wallet"
 	"github.com/TwiN/go-color"

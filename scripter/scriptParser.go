@@ -1,4 +1,4 @@
-package transactions
+package scripter
 
 import (
 	"strings"

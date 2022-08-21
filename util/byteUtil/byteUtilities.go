@@ -1,12 +1,8 @@
-package utilities
-
-// Provides basic utilities that will be needed throughout the program.
-// Example converting uint32's to a byte array.
-type ByteUtil struct{}
+package byteUtil
 
 // Converts a given uint32 into a byte array.
 // Returns sed byte array.
-func (u ByteUtil) Uint32toB(inputUint uint32) []byte {
+func Uint32toB(inputUint uint32) []byte {
 
 	// Init the byte array
 	bArray := make([]byte, 4)
@@ -22,7 +18,7 @@ func (u ByteUtil) Uint32toB(inputUint uint32) []byte {
 
 // Converts a given uint64 into a byte array.
 // Returns sed byte array.
-func (u ByteUtil) Uint64toB(inputUint uint64) []byte {
+func Uint64toB(inputUint uint64) []byte {
 
 	// Init the byte array
 	bArray := make([]byte, 8)
@@ -37,7 +33,7 @@ func (u ByteUtil) Uint64toB(inputUint uint64) []byte {
 }
 
 // Flips / swaps the order of the inputted byte array. Returns sed flipped byte array.
-func (u ByteUtil) ByteArraySwap(byteArray []byte) []byte {
+func ByteArraySwap(byteArray []byte) []byte {
 
 	for swapStart := 0; swapStart < len(byteArray)/2; swapStart++ {
 

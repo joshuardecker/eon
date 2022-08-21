@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/blockchain"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/blockchain"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/block"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/txs"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/crypto/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/util"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -20,87 +21,34 @@ type Wallet struct {
 // Initialize a wallet by calling this function.
 // Input is the blockchain the wallet is on.
 // Returns a new wallet.
-func Init(b *blockchain.Blockchain) Wallet {
+func Init(b *blockchain.Blockchain) *Wallet {
 
 	w := new(Wallet)
 
 	w.chain = b
 
-	return *w
-}
-
-// Scans the blockchain for the available balance of a publicKey.
-// Returns the balance of the publicKey.
-func (w *Wallet) ScanChainForBalance(pubKey string) (balance uint64) {
-
-	// Scans the blockchain, starting from the newest block to the first
-	for index := 0; index < len(w.chain.Blocks); index += 1 {
-
-		// Check if they got the block reward (+10 makes the miner wait at least 10 blocks before it can be spent)
-		if w.chain.Blocks[index].Miner == pubKey && (index+10) < int(w.chain.GetHeight()) {
-
-			balance += w.chain.GetBlockReward(uint32(index))
-		}
-
-		// Check each tx in the block
-		for txIndex := 0; txIndex < len(w.chain.Blocks[index].Txs); txIndex += 1 {
-
-			// If coin received
-			if w.chain.Blocks[index].Txs[txIndex].TxTo == pubKey {
-
-				balance += w.chain.Blocks[index].Txs[txIndex].Value
-			}
-
-			// If coin spent
-			if w.chain.Blocks[index].Txs[txIndex].TxFrom == pubKey {
-
-				balance -= w.chain.Blocks[index].Txs[txIndex].Value
-			}
-		}
-	}
-
-	return balance
-}
-
-// Scans the blockchain for the available balance of a publicKey.
-// Returns the balance of the publicKey.
-func (w *Wallet) ScanChainForNonce(pubKey string) (nonce uint32) {
-
-	// Scans the blockchain, starting from the newest block to the first
-	for index := 0; index < len(w.chain.Blocks); index += 1 {
-
-		// Check each tx in the block
-		for txIndex := 0; txIndex < len(w.chain.Blocks[index].Txs); txIndex += 1 {
-
-			if w.chain.Blocks[index].Txs[txIndex].TxFrom == pubKey {
-
-				nonce += 1
-			}
-		}
-	}
-
-	return nonce
+	return w
 }
 
 // This function creates a tx and verifys it.
 // Inputs are the publicKey the tx is going to, and the amount of Luncheon that is being sent.
 // Outputs are the tx, which if empty, means that the amount specified is not possible with your balance.
-func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
+func (self *Wallet) CreateTx(toPub string, amount uint64) (tx txs.LuTx) {
 
 	// Say the tx is from you
-	tx.TxFrom = w.mainKey.GetPubKeyStr()
+	tx.TxFrom = self.mainKey.GetPubKeyStr()
 
 	tx.TxTo = toPub
 	tx.Value = amount
 
-	tx.Nonce = w.ScanChainForNonce(tx.TxFrom)
+	tx.Nonce = self.chain.ScanChainForNonce(tx.TxFrom)
 
 	// Simple calculation to get a tx fee
 	tx.Fee = uint64((tx.GetWeight() + 64) * 100) // The +64 is to add the weight of the signature
 
 	txBytes, _ := json.Marshal(tx)
 
-	_, sig := w.mainKey.SignMsg(txBytes)
+	_, sig := self.mainKey.SignMsg(txBytes)
 	tx.Signature = hex.EncodeToString(sig)
 
 	return tx
@@ -109,16 +57,16 @@ func (w *Wallet) CreateTx(toPub string, amount uint64) (tx transactions.LuTx) {
 // Function calculates whether the tx input is valid or not.
 // Input is the tx.
 // Returns true if valid, false if not valid.
-func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
+func (self *Wallet) VerifyTx(tx txs.LuTx) bool {
 
 	// If the tx has a spendable amount of coin from the persons balance
-	if int(w.ScanChainForBalance(tx.TxFrom))-int((tx.Value+tx.Fee)) < 0 {
+	if int(self.chain.ScanChainForBalance(tx.TxFrom))-int((tx.Value+tx.Fee)) < 0 {
 
 		return false
 	}
 
 	// If the tx has the wrong nonce value
-	if tx.Nonce != w.ScanChainForNonce(tx.TxFrom) {
+	if tx.Nonce != self.chain.ScanChainForNonce(tx.TxFrom) {
 
 		return false
 	}
@@ -142,10 +90,10 @@ func (w *Wallet) VerifyTx(tx transactions.LuTx) bool {
 // Input is the block being verified. The second input is a bool that determines whether a block should have the same software version as you.
 // Input true to have it check, false to have it just check the block normally.
 // Returns true if it is valid, false if not valid.
-func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool) bool {
+func (self *Wallet) VerifyBlock(block *block.Block, checkSoftwareVersion bool) bool {
 
 	// If it is the genisis block
-	if len(w.chain.Blocks) == 1 {
+	if len(self.chain.Blocks) == 1 {
 
 		return true
 	}
@@ -153,13 +101,13 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	// Checks if the software version, if the func is told to do so
 	if checkSoftwareVersion {
 
-		if block.SoftwareVersion != utilities.SoftwareVersion {
+		if block.SoftwareVersion != util.SoftwareVersion {
 
 			return false
 		}
 	}
 
-	bytesUtil := new(utilities.ByteUtil)
+	bytesUtil := new(util.ByteUtil)
 
 	// Check the Block hash
 	softwareVersion := []byte(block.SoftwareVersion)
@@ -189,22 +137,22 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	}
 
 	// Check if the block points to the previous block
-	if block.PrevHash != w.chain.Blocks[w.chain.GetHeight()].BlockHash {
+	if block.PrevHash != self.chain.Blocks[self.chain.GetHeight()].BlockHash {
 
 		return false
 	}
 
-	timeUtil := new(utilities.Time)
+	timeUtil := new(util.Time)
 
 	// Check if the timestamp is valid
 	// TODO: make more advanced
-	if block.Timestamp < w.chain.Blocks[w.chain.GetHeight()].Timestamp || block.Timestamp > timeUtil.CurrentUnix() {
+	if block.Timestamp < self.chain.Blocks[self.chain.GetHeight()].Timestamp || block.Timestamp > timeUtil.CurrentUnix() {
 
 		return false
 	}
 
 	// Check if the target is correct
-	if block.PackedTarget != w.chain.CalculatePackedTarget(uint(len(w.chain.Blocks))) {
+	if block.PackedTarget != self.chain.CalculatePackedTarget(uint(len(self.chain.Blocks))) {
 
 		return false
 	}
@@ -218,10 +166,10 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 	// Check the txs
 	for index := 0; index < len(block.Txs); index += 1 {
 
-		// If the tx is not valid, just remove it
-		if !w.VerifyTx(block.Txs[index]) {
+		// If the tx is not valid
+		if !self.VerifyTx(block.Txs[index]) {
 
-			block.RemoveTx(uint(index))
+			return false
 		}
 	}
 
@@ -230,10 +178,10 @@ func (w *Wallet) VerifyBlock(block *blockchain.Block, checkSoftwareVersion bool)
 
 // Verifys whether the blockchain attached to the wallet is valid or not.
 // Returns true if valid, false if invalid.
-func (w *Wallet) VerifyBlockchain() bool {
+func (self *Wallet) VerifyBlockchain() bool {
 
 	// Is only valid if no blocks are in the chain
-	if len(w.chain.Blocks) == 0 {
+	if len(self.chain.Blocks) == 0 {
 
 		return true
 	}
@@ -241,12 +189,12 @@ func (w *Wallet) VerifyBlockchain() bool {
 	//****
 	// Check the genisis block:
 
-	if len(w.chain.Blocks[0].Txs) != 0 {
+	if len(self.chain.Blocks[0].Txs) != 0 {
 
 		return false
 	}
 
-	if w.chain.Blocks[0].PackedTarget != 0x1d0fffff {
+	if self.chain.Blocks[0].PackedTarget != 0x1d0fffff {
 
 		return false
 	}
@@ -257,9 +205,9 @@ func (w *Wallet) VerifyBlockchain() bool {
 	//****
 	// Checks the rest of the blocks
 
-	for blockIndex := 1; blockIndex < len(w.chain.Blocks); blockIndex += 1 {
+	for blockIndex := 1; blockIndex < len(self.chain.Blocks); blockIndex += 1 {
 
-		if !w.VerifyBlock(&w.chain.Blocks[blockIndex], false) {
+		if !self.VerifyBlock(&self.chain.Blocks[blockIndex], false) {
 
 			return false
 		}

@@ -1,11 +1,10 @@
-package blockchain
+package block
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/transactions"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/txs"
 )
 
 // Represents the blocks on the blockchain.
@@ -17,7 +16,7 @@ type Block struct {
 	Miner           string
 
 	MerkleRoot string
-	Txs        []transactions.LuTx
+	Txs        []txs.LuTx
 
 	Nonce     uint32
 	Timestamp uint64
@@ -25,58 +24,28 @@ type Block struct {
 	BlockHash string
 }
 
-// Creates a new block.
-// Only input is the mining address that will be rewarded if the block is solved.
 // Returns the newly created block.
-func (b *Blockchain) CreateBlock(blockMinerId string) Block {
+func NewBlock(blockMinerId string) *Block {
 
-	// If the blockchain has not been initialized, return an empty block
-	if len(b.Blocks) == 0 {
-
-		return Block{}
-	}
-
-	block := new(Block)
-
-	// Pack in the block information
-	block.SoftwareVersion = utilities.SoftwareVersion
-	block.PrevHash = b.Blocks[b.GetHeight()].BlockHash
-	block.PackedTarget = b.CalculatePackedTarget(uint(len(b.Blocks)))
-	block.Miner = blockMinerId
-
-	return *block
+	return new(Block)
 }
 
-// This function adds a slice of tx to the block.
-// Input is the tx slice.
-// Returns a bool, true if the tx were added, false if not.
-func (b *Block) AddTx(tx transactions.LuTx) bool {
-
-	// If the block weight + the new tx total weight is greater than the max weight
-	if (tx.GetWeight() + b.GetWeight()) > MaxWeight {
-
-		return false
-	}
-
-	b.Txs = append(b.Txs, tx)
-
-	b.MerkleRoot = b.GetMerkleRoot()
-
-	return true
-}
-
-// This function simply removes a tx from the block.
-// Input is the tx index.
+// Add a mempool of transactions to the block.
+// This mempool will be assumed to be the transactions chosen for the block, not just all transactions.
 // Returns nothing.
-func (b *Block) RemoveTx(txIndex uint) {
+func (b *Block) AddTxs(pool txs.Mempool) {
 
-	// If the tx does not exist
-	if txIndex >= uint(len(b.Txs)) {
+	// No Transactions
+	if len(pool.Txs) == 0 {
+
+		b.MerkleRoot = "NoTxs"
 
 		return
 	}
 
-	b.Txs = append(b.Txs[:txIndex], b.Txs[txIndex+1:]...)
+	b.Txs = append(b.Txs, pool.Txs...)
+
+	b.MerkleRoot = b.GetMerkleRoot()
 }
 
 // Calculates the weight of the block.

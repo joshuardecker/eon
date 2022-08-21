@@ -68,3 +68,5 @@ File system: (Ignore, this is just for me.)
 - util (might get rid of)
  - byteutil
  + time 
+
+Note to me, work on the worker and miner system first.

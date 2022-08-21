@@ -6,15 +6,14 @@ import (
 	"os"
 
 	"github.com/GoblinBear/beson/types"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/ellip"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/utilities"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/block"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/crypto/ellip"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/util"
 )
 
 // The blockchain struct that will be the chain of blocks.
 type Blockchain struct {
-	Blocks []Block
-
-	height uint
+	Blocks []block.Block
 }
 
 // 1,000,000 aka one MegaByte, just a little bigger as some values are excluded from the weight factoring
@@ -23,18 +22,16 @@ var MaxWeight uint = 1000000
 // Inits the blockchain struct, including defining constants.
 // Creates the genisis block.
 // Returns if any errors occured.
-func InitBlockchain() Blockchain {
+func InitBlockchain() *Blockchain {
 
 	// Create a blockchain instance
 	b := new(Blockchain)
 
-	b.height = 0
-
 	// Create the genisis block:
-	genisisB := new(Block)
+	genisisB := new(block.Block)
 
 	// Manually sets the variables of the genisis block
-	genisisB.SoftwareVersion = utilities.SoftwareVersion
+	genisisB.SoftwareVersion = util.SoftwareVersion
 	genisisB.PrevHash = "CoolGenisisBlock"
 	genisisB.PackedTarget = 0x1e050000
 
@@ -47,7 +44,7 @@ func InitBlockchain() Blockchain {
 	// Adds the genisis block to the blockchain
 	b.AddBlock(genisisB)
 
-	return *b
+	return b
 }
 
 // Returns the current block reward.
@@ -55,56 +52,61 @@ func InitBlockchain() Blockchain {
 // The blockchain reward will reduce by 20% every 2 years in Luncheon 1.0.
 // Block reward starts at 5 per block.
 // This means every 6,307,200 blocks, the reward reduces by 20%.
-// The total amount of coins that can exist is 208,663,200, which means 10 of these coins
-// can be considered as rare, in terms of total in existance, as 1 btc.
 func (b *Blockchain) GetBlockReward(height uint32) uint64 {
 
 	// Amount of times the block reward is being reduced
 	reduces := height / 6307200
 
-	reward := float32(5 * 1000000)
+	reward := uint64(5 * 1000000) // Default reward
 
 	// Loops and applys block reward reduction based on the amount of reductions that have been passed.
 	// Based on block height, as calculated above.
 	for loop := uint32(0); loop < reduces; loop += 1 {
 
-		reward *= 0.8
+		reward *= (8 * 100000) // It is * 100K because 8 * 100K = 0.8 * 1M, and the *0.8 is the 20% block reduction
+		reward /= 1000000
 	}
 
-	return uint64(reward)
+	return reward
 }
 
-// Updates and returns the height of the blockchain.
-// Returns a uint32 of the blockchain height.
-func (b *Blockchain) GetHeight() uint {
+// Returns a uint of the blockchain height.
+func (self *Blockchain) GetHeight() uint {
 
-	b.height = uint(len(b.Blocks) - 1)
-
-	return b.height
+	return uint(len(self.Blocks) - 1)
 }
 
 // This function adds a block to the blockchain.
-// Input is the block thats being added.
-func (b *Blockchain) AddBlock(block *Block) {
+func (self *Blockchain) AddBlock(block *block.Block) {
 
-	b.Blocks = append(b.Blocks, *block)
+	self.Blocks = append(self.Blocks, *block)
 }
 
 // This function removes the last block from the blockchain.
-// Returns nothing.
-func (b *Blockchain) RemoveBlock() {
+// Only affects the most recent block for error protection.
+func (self *Blockchain) RemoveBlock() {
 
-	b.Blocks = append(b.Blocks[:b.GetHeight()], b.Blocks[b.GetHeight()+1:]...)
+	self.Blocks = append(self.Blocks[:self.GetHeight()], self.Blocks[self.GetHeight()+1:]...)
+}
+
+// Replaces a block at a given index with another.
+// Will be used if a new valid chain has a higher height,
+// allowing the latest block on the saved chain to be replaced with
+// the new more valid block.
+// Only affects the most recent block for error protection.
+func (self *Blockchain) SwitchBlock(b block.Block) {
+
+	self.Blocks[self.GetHeight()] = b
 }
 
 // This function gets a block at a specified index.
 // Returns the block and true if this was successful.
 // If the index is invalid, it will return a empty block and false.
-func (b *Blockchain) GetBlock(blockNum uint) (Block, bool) {
+func (b *Blockchain) GetBlock(blockNum uint) (block.Block, bool) {
 
 	if blockNum > b.GetHeight() {
 
-		return Block{}, false
+		return block.Block{}, false
 	}
 
 	return b.Blocks[blockNum], true
@@ -124,9 +126,9 @@ func (b *Blockchain) CalculatePackedTarget(blockNumber uint) uint32 {
 	// If block time is 1 minute, this will happen once a week
 	if blockNumber%10080 == 0 {
 
-		unPacker := new(utilities.TargetUnpacker)
-		packer := new(utilities.TargetPacker)
-		byteUtil := new(utilities.ByteUtil)
+		unPacker := new(miner.TargetUnpacker)
+		packer := new(miner.TargetPacker)
+		byteUtil := new(util.ByteUtil)
 		time := b.Blocks[blockNumber-1].Timestamp - b.Blocks[blockNumber-10080].Timestamp
 
 		newMultiplier := (10080 * 60) / time // The *60 converts to seconds
@@ -207,7 +209,7 @@ func (b *Blockchain) AsBytes() []byte {
 // No inputs required and returns the uint64 of the current difficulty.
 func (b *Blockchain) GetDifficulty() uint64 {
 
-	unpacker := new(utilities.TargetUnpacker)
+	unpacker := new(miner.TargetUnpacker)
 
 	currentTarget := unpacker.Unpack(b.Blocks[b.GetHeight()].PackedTarget)
 	genisisTarget := unpacker.Unpack(0x1d0fffff)
@@ -222,7 +224,7 @@ func (b *Blockchain) GetDifficulty() uint64 {
 // Only input is the block number and returns the uint64 of that blocks difficulty.
 func (b *Blockchain) GetDifficultyOfBlock(blockN uint) uint64 {
 
-	unpacker := new(utilities.TargetUnpacker)
+	unpacker := new(miner.TargetUnpacker)
 
 	currentTarget := unpacker.Unpack(b.Blocks[blockN].PackedTarget)
 	genisisTarget := unpacker.Unpack(0x1d0fffff)
