@@ -17,17 +17,36 @@ The Peg:
 - Luncheon will no longer have a value peg to real life lunches anymore, but it still will be able to be used for that. There will not be a fixed rate at which lunches can be redeemed for now, but opportunities will arise for "bidding wars" to let the highest payer get a free lunch.
 
 File system: (Ignore, this is just for me.)
-- chain
+
+- cmd
+ - light client
+ - client
+ - test client
+
+- core
+ - lunDb
  - blockchain
-  + blockchain files
- - block
-  + block files
- + merkleroot
+ - events
+  - block
+   + merkleroot
+  - txs
+   + txpool (mempool)
+  - (more to come, like tokens)
+ - energy (gas)
+ - wallet
+
+- crypto
+ - ellip
+ - lash (in the future) (lunch hash)
 
 - http handler
  - universal requests
  - node requests
  - light node requests
+
+- logger
+ + color
+ + logger
 
 - miner
  - target
@@ -41,11 +60,6 @@ File system: (Ignore, this is just for me.)
  - light node
  + logger
 
-- types 
- - transactions
- - contract parsing
- - token parsing
-
 - scripter
  - vm
  - scripter reader
@@ -53,5 +67,4 @@ File system: (Ignore, this is just for me.)
 
 - util
  - byteutil
- - crypto
  + time 
