@@ -18,17 +18,17 @@ func Red(str string) (colorStr string) {
 // Changes the str color to yellow.
 func Yellow(str string) (colorStr string) {
 
-	return DEFAULT + str + DEFAULT
+	return YELLOW + str + DEFAULT
 }
 
 // Changes the str color to green.
 func Green(str string) (colorStr string) {
 
-	return DEFAULT + str + DEFAULT
+	return GREEN + str + DEFAULT
 }
 
 // Changes the str color to blue.
 func Blue(str string) (colorStr string) {
 
-	return DEFAULT + str + DEFAULT
+	return BLUE + str + DEFAULT
 }
