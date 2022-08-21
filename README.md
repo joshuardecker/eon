@@ -55,8 +55,8 @@ File system: (Ignore, this is just for me.)
  + logger
 
 - node 
- - universal node 
  - node 
+ - heavy node 
  - light node
  + logger
 
