@@ -38,11 +38,12 @@ func New(target *big.Int) *Worker {
 // If one is found, it is returned as a hex string.
 func (w *Worker) Start(b *block.Block, extraNonce uint32) string {
 
-	// Set the extra nonce, so workers are easily making unique hashes.
-	b.ExtraNonce = extraNonce
-
 	// The actual mining process. Only continues if Mining is set to true, so if its false, the worker will stop.
 	for b.Nonce = 0; w.Mining; b.Nonce++ {
+
+		// Set the extra nonce, so workers are easily making unique hashes.
+		// Is in the loop because if the block changes, we want the extra nonce to stay the same.
+		b.ExtraNonce = extraNonce
 
 		// Set the timestamp in the block.
 		b.Timestamp = w.utilTime.CurrentUnix()
