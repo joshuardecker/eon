@@ -50,7 +50,6 @@ File system: (Ignore, this is just for me.)
 
 - miner
  - target
- - tasks
  - worker
  + logger
 
