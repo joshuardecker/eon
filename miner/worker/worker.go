@@ -35,8 +35,8 @@ func New(target *big.Int) *Worker {
 
 // Tells the worker to start the mining process.
 // Input the block being worked on, an extra nonce, and this will search until a solution is found.
-// If one is found, it is returned as a hex string.
-func (w *Worker) Start(b *block.Block, extraNonce uint32) string {
+// If one is found, the process ends.
+func (w *Worker) Start(b *block.Block, extraNonce uint32) {
 
 	// The actual mining process. Only continues if Mining is set to true, so if its false, the worker will stop.
 	for b.Nonce = 0; w.Mining; b.Nonce++ {
@@ -57,9 +57,8 @@ func (w *Worker) Start(b *block.Block, extraNonce uint32) string {
 		// Was the solution found?
 		if bytes.Compare(w.currentHash, w.target) != 1 {
 
-			return hex.EncodeToString(w.currentHash)
+			b.BlockHash = hex.EncodeToString(w.currentHash)
+			return
 		}
 	}
-
-	return ""
 }

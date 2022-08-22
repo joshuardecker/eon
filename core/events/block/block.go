@@ -1,10 +1,13 @@
 package block
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/txs"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/util"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/util/byteUtil"
 )
 
 // Represents the blocks on the blockchain.
@@ -18,8 +21,9 @@ type Block struct {
 	MerkleRoot string
 	Txs        []txs.LuTx
 
-	Nonce     uint32
-	Timestamp uint64
+	Nonce      uint32 // Used to allow multiple workers to start at the same time, and have different hashes
+	ExtraNonce uint32
+	Timestamp  uint64
 
 	BlockHash string
 }
@@ -86,4 +90,28 @@ func (b *Block) PrintBlock() {
 
 	// Prints the json string of the block
 	fmt.Println(string(blockJson))
+}
+
+// Returns the bytes of the block needed for mining.
+// Much faster and is also smaller than just getting the raw bytes of the block.
+func (b *Block) MiningBytes() []byte {
+
+	// Get the bytes of all information needed for mining.
+	softwareVersion := []byte(util.SoftwareVersion)
+	prevBlockHash, _ := hex.DecodeString(b.PrevHash)
+	merkleRoot, _ := hex.DecodeString(b.MerkleRoot)
+	timestamp := byteUtil.Uint64toB(b.Timestamp)
+	packedTargetBytes := byteUtil.Uint32toB(b.PackedTarget)
+	nonceBytes := byteUtil.Uint32toB(b.Nonce)
+	extraNonce := byteUtil.Uint32toB(b.ExtraNonce)
+
+	// Collapse them together into one byte array so it can be returned.
+	softwareVersion = append(softwareVersion, prevBlockHash...)
+	softwareVersion = append(softwareVersion, merkleRoot...)
+	softwareVersion = append(softwareVersion, packedTargetBytes...)
+	softwareVersion = append(softwareVersion, timestamp...)
+	softwareVersion = append(softwareVersion, nonceBytes...)
+	softwareVersion = append(softwareVersion, extraNonce...)
+
+	return softwareVersion
 }
