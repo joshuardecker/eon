@@ -1,4 +1,4 @@
-package scripter
+package ScriptR
 
 import (
 	"strings"
