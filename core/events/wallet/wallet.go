@@ -2,7 +2,6 @@ package wallet
 
 import (
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/core/blockchain"
@@ -28,30 +27,6 @@ func Init(b *blockchain.Blockchain) *Wallet {
 	w.chain = b
 
 	return w
-}
-
-// This function creates a tx and verifys it.
-// Inputs are the publicKey the tx is going to, and the amount of Luncheon that is being sent.
-// Outputs are the tx, which if empty, means that the amount specified is not possible with your balance.
-func (self *Wallet) CreateTx(toPub string, amount uint64) (tx txs.LuTx) {
-
-	// Say the tx is from you
-	tx.TxFrom = self.mainKey.GetPubKeyStr()
-
-	tx.TxTo = toPub
-	tx.Value = amount
-
-	tx.Nonce = self.chain.ScanChainForNonce(tx.TxFrom)
-
-	// Simple calculation to get a tx fee
-	tx.Fee = uint64((tx.GetWeight() + 64) * 100) // The +64 is to add the weight of the signature
-
-	txBytes, _ := json.Marshal(tx)
-
-	_, sig := self.mainKey.SignMsg(txBytes)
-	tx.Signature = hex.EncodeToString(sig)
-
-	return tx
 }
 
 // Function calculates whether the tx input is valid or not.
