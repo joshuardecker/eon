@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/txs"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/util"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/version"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/util/byteUtil"
 )
 
@@ -97,7 +97,7 @@ func (b *Block) PrintBlock() {
 func (b *Block) MiningBytes() []byte {
 
 	// Get the bytes of all information needed for mining.
-	softwareVersion := []byte(util.SoftwareVersion)
+	softwareVersion := version.GetVersionBytes()
 	prevBlockHash, _ := hex.DecodeString(b.PrevHash)
 	merkleRoot, _ := hex.DecodeString(b.MerkleRoot)
 	timestamp := byteUtil.Uint64toB(b.Timestamp)
