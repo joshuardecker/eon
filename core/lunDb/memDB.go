@@ -15,7 +15,9 @@ type MemDb struct {
 // Creates and returns a new memDb.
 func InitMemDb() *MemDb {
 
-	return new(MemDb)
+	return &MemDb{
+		db: make(map[string][]byte),
+	}
 }
 
 // Adds a key and data pair to the mempool, but will not overide if the key is already used.
@@ -88,10 +90,10 @@ func (db *MemDb) Remove(key []byte) error {
 	// Lock the db so no other go routines can write while this is writting data.
 	db.lock.Lock()
 
-	// Unlock it when done.
+	// Unlock it wen done
 	defer db.lock.Unlock()
 
-	// The the db does not have this key.
+	// The the db does nothave this key
 	if !db.has(key) {
 
 		return errors.New("cannot delete an element that does not exist")
