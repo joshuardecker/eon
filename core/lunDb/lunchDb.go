@@ -21,7 +21,7 @@ func InitDatabase(name string) *leveldb.DB {
 
 	}
 
-	logger.LogGreen("database loaded")
+	logger.LogGreen("Database loaded")
 
 	return db
 }
