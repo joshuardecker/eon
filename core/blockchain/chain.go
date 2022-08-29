@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/GoblinBear/beson/types"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/core/events/block"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/core/types/block"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/crypto/ellip"
 	"github.com/Sucks-To-Suck/LuncheonNetwork/util"
 )
