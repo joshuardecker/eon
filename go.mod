@@ -1,4 +1,4 @@
-module github.com/Sucks-To-Suck/LuncheonNetwork
+module github.com/Sucks-To-Suck/Eon
 
 go 1.18
 

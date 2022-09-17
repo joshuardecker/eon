@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/core/gas"
-	"github.com/Sucks-To-Suck/LuncheonNetwork/helper"
+	"github.com/Sucks-To-Suck/Eon/core/gas"
+	"github.com/Sucks-To-Suck/Eon/helper"
 )
 
 // Headers define many features of the block, such as its parent or the set difficulty of the block.

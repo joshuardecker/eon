@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/helper/logger"
+	"github.com/Sucks-To-Suck/Eon/helper/logger"
 )
 
 func TestHashes(t *testing.T) {
