@@ -37,3 +37,72 @@ type Block struct {
 	Time      time.Time   `json:"Time"`
 	Received  time.Time   `json:"Received"`
 }
+
+// ****
+// Head:
+
+// Creates and gives a Head with the given inputs.
+func NewHead(ParentHash helper.Hash, Coinbase []byte, Merkle helper.Hash, Diff *big.Int, // TODO: Update when ellip updated
+	Gas gas.Gas, MaxGas gas.Gas, Nonce uint64) *Head {
+
+	h := new(Head)
+
+	h.ParentHash = ParentHash
+	h.Coinbase = Coinbase
+	h.MerkleRoot = Merkle
+	h.Difficulty = Diff
+	h.Gas = Gas
+	h.MaxGas = MaxGas
+	h.Nonce = Nonce
+
+	return h
+}
+
+// Creates and gives a Light Header with the given inputs.
+func NewLightHead(ParentHash helper.Hash, Coinbase []byte) *LightHead {
+
+	lh := new(LightHead)
+
+	lh.ParentHash = ParentHash
+	lh.Coinbase = Coinbase
+
+	return lh
+}
+
+func (h *Head) SetParentHash(hash helper.Hash) {
+
+	h.ParentHash = hash
+}
+
+func (h *Head) SetCoinbase(c []byte) { // TODO: Update when ellip updated
+
+	h.Coinbase = c
+}
+
+func (h *Head) SetMerkle(hash helper.Hash) {
+
+	h.MerkleRoot = hash
+}
+
+func (h *Head) SetDiff(b *big.Int) {
+
+	h.Difficulty = b
+}
+
+func (h *Head) SetGas(g gas.Gas) {
+
+	h.Gas = g
+}
+
+func (h *Head) SetMaxGas(g gas.Gas) {
+
+	h.Gas = g
+}
+
+func (h *Head) SetNonce(n uint64) {
+
+	h.Nonce = n
+}
+
+// Head:
+// ****
