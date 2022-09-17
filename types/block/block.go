@@ -139,6 +139,16 @@ func (h *Head) SetExtraNonce(en uint64) {
 	h.ExtraNonce = en
 }
 
+func (h *Head) GetParentHash() helper.Hash { return h.ParentHash }
+func (h *Head) GetCoinbase() []byte        { return h.Coinbase } // TODO: Update when ellip updated
+func (h *Head) GetMerkle() helper.Hash     { return h.MerkleRoot }
+func (h *Head) GetDiff() *big.Int          { return h.Difficulty }
+func (h *Head) GetGas() gas.Gas            { return h.Gas }
+func (h *Head) GetMaxGas() gas.Gas         { return h.MaxGas }
+func (h *Head) GetTime() time.Time         { return h.Time }
+func (h *Head) GetNonce() uint64           { return h.Nonce }
+func (h *Head) GetExtraNonce() uint64      { return h.ExtraNonce }
+
 // Head:
 // ****
 
@@ -191,17 +201,125 @@ func (h *LightHead) SetTime(t time.Time) {
 	h.Time = t
 }
 
+func (h *LightHead) GetParentHash() helper.Hash { return h.ParentHash }
+func (h *LightHead) GetCoinbase() []byte        { return h.Coinbase } // TODO: Update when ellip updated
+func (h *LightHead) GetMerkle() helper.Hash     { return h.MerkleRoot }
+func (h *LightHead) GetTime() time.Time         { return h.Time }
+
 // Light Head:
 // ****
 
 // ****
 // Block:
 
+// Create a new block with the given inputs. This does not calculate the block hash. Call CalcHash() on the block to get the hash.
+func NewBlock(Head *Head, Uncles *[]Head, Transactions []string, ReceivedTime time.Time) *Block { // TODO: update when tx is made.
+
+	b := new(Block)
+
+	b.SetHead(*Head)
+	b.SetUncles(*Uncles)
+	b.SetTransactions(Transactions)
+	b.SetReceivedTime(ReceivedTime)
+
+	return b
+}
+
+// This function calculates the hash of the block and saves it in the block. It also returns the hash, allowing for a copy to be
+// interacted with.
+func (b *Block) CalcHash() helper.Hash {
+
+	b.SetHash(*b.Head.Hash())
+
+	return b.GetHash()
+}
+
+func (b *Block) SetHead(h Head) {
+
+	b.Head = &h
+}
+
+func (b *Block) SetUncles(u []Head) {
+
+	b.Uncles = &u
+}
+
+func (b *Block) SetTransactions(t []string) { // TODO: update when tx is made.
+
+	b.Transactions = t
+}
+
+func (b *Block) SetHash(h helper.Hash) {
+
+	b.BlockHash = h
+}
+
+func (b *Block) SetReceivedTime(t time.Time) {
+
+	b.Received = t
+}
+
+func (b *Block) GetHead() *Head             { return b.Head }
+func (b *Block) GetUncles() *[]Head         { return b.Uncles }
+func (b *Block) GetTransactions() []string  { return b.Transactions } // TODO: update when tx is made.
+func (b *Block) GetHash() helper.Hash       { return b.BlockHash }
+func (b *Block) GetReceivedTime() time.Time { return b.Received }
+
 // Block:
 // ****
 
 // ****
 // Light Block:
+
+func NewLightBlock(Head *LightHead, Uncles *[]LightHead, Transactions []string, ReceivedTime time.Time) *LightBlock { // TODO: update when tx is made.
+
+	lb := new(LightBlock)
+
+	lb.SetHead(*Head)
+	lb.SetUncles(*Uncles)
+	lb.SetTransactions(Transactions)
+	lb.SetReceivedTime(ReceivedTime)
+
+	return lb
+}
+
+func (b *LightBlock) CalcHash() helper.Hash {
+
+	b.SetHash(*b.Head.Hash())
+
+	return b.GetHash()
+}
+
+func (b *LightBlock) SetHead(h LightHead) {
+
+	b.Head = &h
+}
+
+func (b *LightBlock) SetUncles(u []LightHead) {
+
+	b.Uncles = &u
+}
+
+func (b *LightBlock) SetTransactions(t []string) { // TODO: update when tx is made.
+
+	b.Transactions = t
+}
+
+func (b *LightBlock) SetHash(h helper.Hash) {
+
+	b.BlockHash = h
+}
+
+func (b *LightBlock) SetReceivedTime(t time.Time) {
+
+	b.Received = t
+}
+
+func (b *LightBlock) GetHead() *LightHead        { return b.Head }
+func (b *LightBlock) GetUncles() *[]LightHead    { return b.Uncles }
+func (b *LightBlock) GetTransactions() []string  { return b.Transactions } // TODO: update when tx is made.
+func (b *LightBlock) GetHash() helper.Hash       { return b.BlockHash }
+func (b *LightBlock) GetReceivedTime() time.Time { return b.Received }
 
 // Light Block:
 // ****
