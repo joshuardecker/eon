@@ -69,6 +69,35 @@ func NewLightHead(ParentHash helper.Hash, Coinbase []byte) *LightHead {
 	return lh
 }
 
+// Returns the hash of the Header.
+func (h *Head) Hash() *helper.Hash {
+
+	return helper.HashInterface(
+		[]interface{}{
+
+			h.ParentHash,
+			h.Coinbase,
+			h.MerkleRoot,
+			h.Difficulty,
+			h.Gas,
+			h.MaxGas,
+			h.Nonce,
+		},
+	)
+}
+
+// Returns the hash of the Light Header.
+func (h *LightHead) Hash() *helper.Hash {
+
+	return helper.HashInterface(
+		[]interface{}{
+
+			h.ParentHash,
+			h.Coinbase,
+		},
+	)
+}
+
 func (h *Head) SetParentHash(hash helper.Hash) {
 
 	h.ParentHash = hash
