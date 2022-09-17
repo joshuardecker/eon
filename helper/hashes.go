@@ -13,13 +13,13 @@ import (
 const HASH_LEN = 32
 
 // Is only a 32 long byte array, but with some fancy functions.
-type hash [HASH_LEN]byte
+type Hash [HASH_LEN]byte
 
 // ****
 // Value setting / getting:
 
 // Set the value of the hash with bytes.
-func (h *hash) SetBytes(b []byte) {
+func (h *Hash) SetBytes(b []byte) {
 
 	if len(b) > 32 {
 
@@ -31,13 +31,13 @@ func (h *hash) SetBytes(b []byte) {
 }
 
 // Set the value of the hash with a string.
-func (h *hash) SetString(s string) {
+func (h *Hash) SetString(s string) {
 
 	h.SetBytes([]byte(s))
 }
 
 // Set the value of the hash with a hex string.
-func (h *hash) SetHex(s string) {
+func (h *Hash) SetHex(s string) {
 
 	// Decode the hex.
 	b, _ := hex.DecodeString(s)
@@ -46,31 +46,31 @@ func (h *hash) SetHex(s string) {
 }
 
 // Set the value of the hash with a Big Int.
-func (h *hash) SetBigInt(i *big.Int) {
+func (h *Hash) SetBigInt(i *big.Int) {
 
 	h.SetBytes(i.Bytes())
 }
 
 // Get the bytes of the hash.
-func (h *hash) GetBytes() []byte {
+func (h *Hash) GetBytes() []byte {
 
 	return h[:]
 }
 
 // Get the string of the hash.
-func (h *hash) GetString() string {
+func (h *Hash) GetString() string {
 
 	return string(h[:])
 }
 
 // Get the string (hex) of the bytes of the hash.
-func (h *hash) GetHex() string {
+func (h *Hash) GetHex() string {
 
 	return hex.EncodeToString(h[:])
 }
 
 // Get the Big Int of the bytes of the hash.
-func (h *hash) GetBigInt() *big.Int {
+func (h *Hash) GetBigInt() *big.Int {
 
 	// Create and assign a value to the big int.
 	i := big.NewInt(0)
@@ -86,15 +86,15 @@ func (h *hash) GetBigInt() *big.Int {
 // Usage:
 
 // Create and return an emtpy hash.
-func EmptyHash() *hash {
+func EmptyHash() *Hash {
 
-	return new(hash)
+	return new(Hash)
 }
 
 // Hash input bytes and return it as a hash type.
-func HashBytes(b []byte) *hash {
+func HashBytes(b []byte) *Hash {
 
-	h := new(hash)
+	h := new(Hash)
 
 	// Hash using shake.
 	sha3.ShakeSum128(h[:], b)
@@ -104,9 +104,9 @@ func HashBytes(b []byte) *hash {
 
 // This function hashes an inputted interface.
 // Returns nil and logs if an error occurs.
-func HashInterface(val interface{}) *hash {
+func HashInterface(val interface{}) *Hash {
 
-	h := new(hash)
+	h := new(Hash)
 
 	// Make a buffer.
 	var buf bytes.Buffer
