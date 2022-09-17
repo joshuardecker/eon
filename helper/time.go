@@ -4,34 +4,47 @@ import (
 	"time"
 )
 
-type Time struct {
-	timerLog   uint64
-	timerValue uint64
+// Return the unix time as a int64.
+func UnixTime() int64 {
+
+	return time.Now().Unix()
 }
 
-// Function returns the current unix time in seconds.
-func (t *Time) CurrentUnix() uint64 {
+// Return the local time in the time.Time format.
+func LocalTime() time.Time {
 
-	return uint64(time.Now().Unix())
+	return time.Now()
 }
 
-// Function returns the current unix time in milli-seconds.
-func (t *Time) CurrentUnixMilli() uint64 {
+// ****
+// Timer:
 
-	return uint64(time.Now().UnixMicro())
+// A Timer starts as a int64 that holds the start unix time.
+type Timer int64
+
+// Return a new timer, bound to the unix time of its creation.
+func CreateTimer() Timer {
+
+	return Timer(UnixTime())
 }
 
-// Returns a nice version of the local time.
-func (t *Time) CurrentTime() time.Time {
+// Get the unix time stored in the timer.
+func (t *Timer) Time() int64 {
 
-	return time.Now().Round(time.Second)
+	return int64(*t)
 }
 
-func (t *Time) Timer() uint64 {
+// Get the time (seconds) that have passed since the timer was created.
+func (t *Timer) GetTime() int64 {
 
-	t.timerLog = t.timerValue
-
-	t.timerValue = t.CurrentUnix()
-
-	return t.timerValue - t.timerLog
+	return (UnixTime() - t.Time())
 }
+
+// Reset the time stored in the timer.
+func (t *Timer) Reset() {
+
+	*t = Timer(UnixTime())
+}
+
+// Timer:
+// ****
