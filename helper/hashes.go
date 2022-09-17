@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"math/big"
 
-	"github.com/Sucks-To-Suck/LuncheonNetwork/logger"
+	"github.com/Sucks-To-Suck/LuncheonNetwork/helper/logger"
 	"golang.org/x/crypto/sha3"
 )
 
