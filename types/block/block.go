@@ -1,69 +1,73 @@
 package block
 
 import (
+	"crypto/ecdsa"
 	"math/big"
 	"time"
 
 	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
+	"github.com/Sucks-To-Suck/Eon/types/transaction"
 )
 
 // Headers define many features of the block, such as its parent or the set difficulty of the block.
 // Used as the standard in Eon.
 type Head struct {
-	ParentHash eocrypt.Hash `json:"ParentHash"`
-	Coinbase   []byte       `json:"Coinbase"` // TODO: update when ellip is updated.
-	MerkleRoot eocrypt.Hash `json:"Merkle"`
-	Difficulty *big.Int     `json:"Diff"`
-	Gas        gas.Gas      `json:"GasUsed"`
-	MaxGas     gas.Gas      `json:"MaxGas"`
-	Time       time.Time    `json:"Time"`
-	Nonce      uint64       `json:"Nonce"`
-	ExtraNonce uint64       `json:"ExtraNonce"`
+	ParentHash eocrypt.Hash     `json:"ParentHash"`
+	Coinbase   *ecdsa.PublicKey `json:"Coinbase"`
+	MerkleRoot eocrypt.Hash     `json:"Merkle"`
+	Difficulty *big.Int         `json:"Diff"`
+	Gas        gas.Gas          `json:"GasUsed"`
+	MaxGas     gas.Gas          `json:"MaxGas"`
+	Time       time.Time        `json:"Time"`
+	Nonce      uint64           `json:"Nonce"`
+	ExtraNonce uint64           `json:"ExtraNonce"`
 }
 
 // Light Headers are used when operating Eon on a private network and the features of the normal Header are unnessesary.
 // Example, on a PoA (proof of authority) based network, things like difficulty are simply not needed.
 type LightHead struct {
-	ParentHash eocrypt.Hash `json:"ParentHash"`
-	Coinbase   []byte       `json:"Coinbase"` // TODO: update when ellip is updated.
-	MerkleRoot eocrypt.Hash `json:"Merkle"`
-	Time       time.Time    `json:"Time"`
+	ParentHash eocrypt.Hash     `json:"ParentHash"`
+	Coinbase   *ecdsa.PublicKey `json:"Coinbase"`
+	MerkleRoot eocrypt.Hash     `json:"Merkle"`
+	Time       time.Time        `json:"Time"`
 }
 
 // Blocks are a storage of data transactions. They have an identifying hash, as well as Time created and received.
 // Blocks also have a normal Head by default.
 type Block struct {
-	Head         *Head    `json:"Head"`
-	Uncles       *[]Head  `json:"Uncles"`
-	Transactions []string `json:"Txs"` // TODO: update when tx is made.
+	Head         *Head                      `json:"Head"`
+	Uncles       *[]Head                    `json:"Uncles"`
+	Transactions *[]transaction.Transaction `json:"Txs"`
 
 	BlockHash eocrypt.Hash `json:"Hash"`
 	Received  time.Time    `json:"Received"`
+	Size      int          `json:"Size"`
 }
 
 // Light blocks are used when wanting to use Light Heads on those blocks, which is mainly in a PoA (proof of authority) setting.
 // Remains the same compared to normal blocks, in that data transactions are stored, along with a blockhash and time of creation and reception.
 type LightBlock struct {
-	Head         *LightHead   `json:"Head"`
-	Uncles       *[]LightHead `json:"Uncles"`
-	Transactions []string     `json:"Txs"` // TODO: update when tx is made.
+	Head         *LightHead                 `json:"Head"`
+	Uncles       *[]LightHead               `json:"Uncles"`
+	Transactions *[]transaction.Transaction `json:"Txs"`
 
 	BlockHash eocrypt.Hash `json:"Hash"`
 	Received  time.Time    `json:"Received"`
+	Size      int          `json:"Size"`
 }
 
 // ****
 // Head:
 
 // Creates and gives a Head with the given inputs.
-func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff *big.Int, // TODO: Update when ellip updated
+func NewHead(ParentHash eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
 	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint64, ExtraNonce uint64) *Head {
 
 	h := new(Head)
 
 	h.SetParentHash(ParentHash)
-	h.SetCoinbase(Coinbase)
+	h.SetCoinbase(*Coinbase)
 	h.SetMerkle(Merkle)
 	h.SetDiff(*Diff)
 	h.SetGas(Gas)
@@ -97,9 +101,9 @@ func (h *Head) SetParentHash(hash eocrypt.Hash) {
 	h.ParentHash = hash
 }
 
-func (h *Head) SetCoinbase(c []byte) { // TODO: Update when ellip updated
+func (h *Head) SetCoinbase(p ecdsa.PublicKey) {
 
-	h.Coinbase = c
+	h.Coinbase = &p
 }
 
 func (h *Head) SetMerkle(hash eocrypt.Hash) {
@@ -139,15 +143,15 @@ func (h *Head) SetExtraNonce(en uint64) {
 	h.ExtraNonce = en
 }
 
-func (h *Head) GetParentHash() eocrypt.Hash { return h.ParentHash }
-func (h *Head) GetCoinbase() []byte         { return h.Coinbase } // TODO: Update when ellip updated
-func (h *Head) GetMerkle() eocrypt.Hash     { return h.MerkleRoot }
-func (h *Head) GetDiff() *big.Int           { return h.Difficulty }
-func (h *Head) GetGas() gas.Gas             { return h.Gas }
-func (h *Head) GetMaxGas() gas.Gas          { return h.MaxGas }
-func (h *Head) GetTime() time.Time          { return h.Time }
-func (h *Head) GetNonce() uint64            { return h.Nonce }
-func (h *Head) GetExtraNonce() uint64       { return h.ExtraNonce }
+func (h *Head) GetParentHash() eocrypt.Hash  { return h.ParentHash }
+func (h *Head) GetCoinbase() ecdsa.PublicKey { return *h.Coinbase }
+func (h *Head) GetMerkle() eocrypt.Hash      { return h.MerkleRoot }
+func (h *Head) GetDiff() *big.Int            { return h.Difficulty }
+func (h *Head) GetGas() gas.Gas              { return h.Gas }
+func (h *Head) GetMaxGas() gas.Gas           { return h.MaxGas }
+func (h *Head) GetTime() time.Time           { return h.Time }
+func (h *Head) GetNonce() uint64             { return h.Nonce }
+func (h *Head) GetExtraNonce() uint64        { return h.ExtraNonce }
 
 // Head:
 // ****
@@ -156,12 +160,12 @@ func (h *Head) GetExtraNonce() uint64       { return h.ExtraNonce }
 // Light Head:
 
 // Creates and gives a Light Header with the given inputs.
-func NewLightHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Time time.Time) *LightHead {
+func NewLightHead(ParentHash eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Time time.Time) *LightHead {
 
 	lh := new(LightHead)
 
 	lh.SetParentHash(ParentHash)
-	lh.SetCoinbase(Coinbase)
+	lh.SetCoinbase(*Coinbase)
 	lh.SetMerkle(Merkle)
 	lh.SetTime(Time)
 
@@ -186,9 +190,9 @@ func (h *LightHead) SetParentHash(hash eocrypt.Hash) {
 	h.ParentHash = hash
 }
 
-func (h *LightHead) SetCoinbase(c []byte) { // TODO: Update when ellip updated
+func (h *LightHead) SetCoinbase(p ecdsa.PublicKey) {
 
-	h.Coinbase = c
+	h.Coinbase = &p
 }
 
 func (h *LightHead) SetMerkle(hash eocrypt.Hash) {
@@ -201,10 +205,10 @@ func (h *LightHead) SetTime(t time.Time) {
 	h.Time = t
 }
 
-func (h *LightHead) GetParentHash() eocrypt.Hash { return h.ParentHash }
-func (h *LightHead) GetCoinbase() []byte         { return h.Coinbase } // TODO: Update when ellip updated
-func (h *LightHead) GetMerkle() eocrypt.Hash     { return h.MerkleRoot }
-func (h *LightHead) GetTime() time.Time          { return h.Time }
+func (h *LightHead) GetParentHash() eocrypt.Hash  { return h.ParentHash }
+func (h *LightHead) GetCoinbase() ecdsa.PublicKey { return *h.Coinbase }
+func (h *LightHead) GetMerkle() eocrypt.Hash      { return h.MerkleRoot }
+func (h *LightHead) GetTime() time.Time           { return h.Time }
 
 // Light Head:
 // ****
@@ -213,13 +217,13 @@ func (h *LightHead) GetTime() time.Time          { return h.Time }
 // Block:
 
 // Create a new block with the given inputs. This does not calculate the block hash. Call CalcHash() on the block to get the hash.
-func NewBlock(Head *Head, Uncles *[]Head, Transactions []string, ReceivedTime time.Time) *Block { // TODO: update when tx is made.
+func NewBlock(Head *Head, Uncles *[]Head, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *Block {
 
 	b := new(Block)
 
 	b.SetHead(*Head)
 	b.SetUncles(*Uncles)
-	b.SetTransactions(Transactions)
+	b.SetTransactions(*Transactions)
 	b.SetReceivedTime(ReceivedTime)
 
 	return b
@@ -244,9 +248,9 @@ func (b *Block) SetUncles(u []Head) {
 	b.Uncles = &u
 }
 
-func (b *Block) SetTransactions(t []string) { // TODO: update when tx is made.
+func (b *Block) SetTransactions(t []transaction.Transaction) {
 
-	b.Transactions = t
+	b.Transactions = &t
 }
 
 func (b *Block) SetHash(h eocrypt.Hash) {
@@ -259,11 +263,11 @@ func (b *Block) SetReceivedTime(t time.Time) {
 	b.Received = t
 }
 
-func (b *Block) GetHead() *Head             { return b.Head }
-func (b *Block) GetUncles() *[]Head         { return b.Uncles }
-func (b *Block) GetTransactions() []string  { return b.Transactions } // TODO: update when tx is made.
-func (b *Block) GetHash() eocrypt.Hash      { return b.BlockHash }
-func (b *Block) GetReceivedTime() time.Time { return b.Received }
+func (b *Block) GetHead() *Head                             { return b.Head }
+func (b *Block) GetUncles() *[]Head                         { return b.Uncles }
+func (b *Block) GetTransactions() []transaction.Transaction { return *b.Transactions }
+func (b *Block) GetHash() eocrypt.Hash                      { return b.BlockHash }
+func (b *Block) GetReceivedTime() time.Time                 { return b.Received }
 
 // Block:
 // ****
@@ -271,13 +275,14 @@ func (b *Block) GetReceivedTime() time.Time { return b.Received }
 // ****
 // Light Block:
 
-func NewLightBlock(Head *LightHead, Uncles *[]LightHead, Transactions []string, ReceivedTime time.Time) *LightBlock { // TODO: update when tx is made.
+// Creates a new light block with the given parameters. Light blocks are useful mostly on private networks and on PoA based systems.
+func NewLightBlock(Head *LightHead, Uncles *[]LightHead, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *LightBlock {
 
 	lb := new(LightBlock)
 
 	lb.SetHead(*Head)
 	lb.SetUncles(*Uncles)
-	lb.SetTransactions(Transactions)
+	lb.SetTransactions(*Transactions)
 	lb.SetReceivedTime(ReceivedTime)
 
 	return lb
@@ -300,9 +305,9 @@ func (b *LightBlock) SetUncles(u []LightHead) {
 	b.Uncles = &u
 }
 
-func (b *LightBlock) SetTransactions(t []string) { // TODO: update when tx is made.
+func (b *LightBlock) SetTransactions(t []transaction.Transaction) {
 
-	b.Transactions = t
+	b.Transactions = &t
 }
 
 func (b *LightBlock) SetHash(h eocrypt.Hash) {
@@ -315,11 +320,11 @@ func (b *LightBlock) SetReceivedTime(t time.Time) {
 	b.Received = t
 }
 
-func (b *LightBlock) GetHead() *LightHead        { return b.Head }
-func (b *LightBlock) GetUncles() *[]LightHead    { return b.Uncles }
-func (b *LightBlock) GetTransactions() []string  { return b.Transactions } // TODO: update when tx is made.
-func (b *LightBlock) GetHash() eocrypt.Hash      { return b.BlockHash }
-func (b *LightBlock) GetReceivedTime() time.Time { return b.Received }
+func (b *LightBlock) GetHead() *LightHead                        { return b.Head }
+func (b *LightBlock) GetUncles() *[]LightHead                    { return b.Uncles }
+func (b *LightBlock) GetTransactions() []transaction.Transaction { return *b.Transactions }
+func (b *LightBlock) GetHash() eocrypt.Hash                      { return b.BlockHash }
+func (b *LightBlock) GetReceivedTime() time.Time                 { return b.Received }
 
 // Light Block:
 // ****
