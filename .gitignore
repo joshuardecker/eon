@@ -13,6 +13,7 @@
 
 # Directories / File names that are ignored
 *.pem
+saves
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
