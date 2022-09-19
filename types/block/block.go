@@ -1,7 +1,10 @@
 package block
 
 import (
+	"bytes"
 	"crypto/ecdsa"
+	"encoding/gob"
+	"encoding/json"
 	"math/big"
 	"time"
 
@@ -269,6 +272,64 @@ func (b *Block) GetTransactions() []transaction.Transaction { return *b.Transact
 func (b *Block) GetHash() eocrypt.Hash                      { return b.BlockHash }
 func (b *Block) GetReceivedTime() time.Time                 { return b.Received }
 
+// Uses the gob encoder to encode and return the block as a Bytes Buffer.
+func (b *Block) EncodeToBuffer() (*bytes.Buffer, error) {
+
+	buff := new(bytes.Buffer)
+
+	// Encode the block into the Bytes Buffer.
+	encodeErr := gob.NewEncoder(buff).Encode(b)
+
+	return buff, encodeErr
+}
+
+// Uses the gob encoder with a provided Bytes Buffer to encode the block into that Buffer.
+func (b *Block) EncodeWithBuffer(by *bytes.Buffer) error {
+
+	// Encode the block into the Bytes Buffer.
+	return gob.NewEncoder(by).Encode(b)
+}
+
+// Encode the block into JSON format. Returns the encoded bytes in a Bytes Buffer.
+func (b *Block) EncodeJSON() (*bytes.Buffer, error) {
+
+	buff := new(bytes.Buffer)
+
+	// Encode the block into the Bytes Buffer.
+	encodeErr := json.NewEncoder(buff).Encode(b)
+
+	return buff, encodeErr
+}
+
+// Encode the block with the provided Bytes Buffer. The encoded bytes will reside there.
+func (b *Block) EncodeJSONwithBuff(by *bytes.Buffer) error {
+
+	// Encode the block into the Bytes Buffer.
+	return json.NewEncoder(by).Encode(b)
+}
+
+// Trys to decode the given Bytes Buffer (suppose to be the encoded form by gob). Returns the decoded block and any errors.
+func Decode(by *bytes.Buffer) (*Block, error) {
+
+	b := new(Block)
+
+	// Try to decode the Bytes Buffer into a block.
+	decodeErr := gob.NewDecoder(by).Decode(b)
+
+	return b, decodeErr
+}
+
+// Trys to decode the given Bytes Buffer (suppose to be encoded JSON form). Returns the decoded block and any errors.
+func DecodeJSON(by *bytes.Buffer) (*Block, error) {
+
+	b := new(Block)
+
+	// Try to decode the Bytes Buffer into a block.
+	decodeErr := json.NewDecoder(by).Decode(b)
+
+	return b, decodeErr
+}
+
 // Block:
 // ****
 
@@ -325,6 +386,64 @@ func (b *LightBlock) GetUncles() *[]LightHead                    { return b.Uncl
 func (b *LightBlock) GetTransactions() []transaction.Transaction { return *b.Transactions }
 func (b *LightBlock) GetHash() eocrypt.Hash                      { return b.BlockHash }
 func (b *LightBlock) GetReceivedTime() time.Time                 { return b.Received }
+
+// Uses the gob encoder to encode and return the block as a Bytes Buffer.
+func (b *LightBlock) EncodeToBuffer() (*bytes.Buffer, error) {
+
+	buff := new(bytes.Buffer)
+
+	// Encode the block into the Bytes Buffer.
+	encodeErr := gob.NewEncoder(buff).Encode(b)
+
+	return buff, encodeErr
+}
+
+// Uses the gob encoder with a provided Bytes Buffer to encode the block into that Buffer.
+func (b *LightBlock) EncodeWithBuffer(by *bytes.Buffer) error {
+
+	// Encode the block into the Bytes Buffer.
+	return gob.NewEncoder(by).Encode(b)
+}
+
+// Encode the block into JSON format. Returns the encoded bytes in a Bytes Buffer.
+func (b *LightBlock) EncodeJSON() (*bytes.Buffer, error) {
+
+	buff := new(bytes.Buffer)
+
+	// Encode the block into the Bytes Buffer.
+	encodeErr := json.NewEncoder(buff).Encode(b)
+
+	return buff, encodeErr
+}
+
+// Encode the block with the provided Bytes Buffer. The encoded bytes will reside there.
+func (b *LightBlock) EncodeJSONwithBuff(by *bytes.Buffer) error {
+
+	// Encode the block into the Bytes Buffer.
+	return json.NewEncoder(by).Encode(b)
+}
+
+// Trys to decode a Light Block from the given (hopefully gob encoded) bytes buffer. Returns the light block and any errors.
+func DecodeLight(by *bytes.Buffer) (*LightBlock, error) {
+
+	b := new(LightBlock)
+
+	// Try to decode the Bytes Buffer into a block.
+	decodeErr := gob.NewDecoder(by).Decode(b)
+
+	return b, decodeErr
+}
+
+// Trys to decode a Light Block from the given JSON encoded bytes buffer. Returns the light block and any errors.
+func DecodeLightJSON(by *bytes.Buffer) (*LightBlock, error) {
+
+	b := new(LightBlock)
+
+	// Try to decode the Bytes Buffer into a block.
+	decodeErr := json.NewDecoder(by).Decode(b)
+
+	return b, decodeErr
+}
 
 // Light Block:
 // ****
