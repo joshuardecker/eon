@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"math/big"
 	"time"
 
@@ -208,6 +209,22 @@ func DecodeJSON(b *bytes.Buffer) (*Transaction, error) {
 	decodeErr := json.NewDecoder(b).Decode(t)
 
 	return t, decodeErr
+}
+
+// Prints the main important information about the transaction.
+func (t *Transaction) Print() {
+
+	fmt.Printf(`
+	[
+		Transaction: %x
+		
+		Token Hash: %x
+		Amount: %d
+		To: %x
+		ChainId: %x
+		Gas: %v
+		GasPrice: %v
+	]`, t.Hash.GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ChainId, t.Gas, t.GasPrice)
 }
 
 // Transaction advanced interaction:
