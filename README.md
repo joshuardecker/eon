@@ -3,4 +3,4 @@ For now this docuement will be very blank, as there is no documentation on how t
 For documentation on details of the project, see the docs folder.
 
 For updates on whats going on / questions, heres the discord:
-https://discord.gg/wUDFpmJk
+https://discord.gg/tW5qPk7kyK
