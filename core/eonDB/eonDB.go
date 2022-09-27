@@ -1,4 +1,4 @@
-package lundb
+package eondb
 
 import (
 	"github.com/Sucks-To-Suck/Eon/helper/logger"

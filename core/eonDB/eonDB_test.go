@@ -1,4 +1,4 @@
-package lundb
+package eondb
 
 import (
 	"fmt"
