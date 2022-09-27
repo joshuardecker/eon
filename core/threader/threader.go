@@ -15,7 +15,8 @@ import (
 // threads deployed.
 type Threader struct {
 
-	// Saved engines to shift between.
+	// The three types of consensus engines that can be used by the threader.
+	// All three are saved that way threads of different types can be verified concurrently.
 	PoAEngine *poa.AuthorityEngine
 	PoBEngine *pob.BurnEngine
 	PoWEngine *pow.WorkEngine
