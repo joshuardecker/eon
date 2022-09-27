@@ -13,8 +13,11 @@ var (
 	SHIFTERROR = errors.New("Could not shift engines given the gear.")
 )
 
-// Shift the consensus engine to a different type.
+// Shift the consensus engine to a different consensus mechanism.
 func (t *Threader) Shift(gear int) error {
+
+	// Waits for the engine to not be in use before shifting.
+	t.engineLock.Wait()
 
 	switch gear {
 

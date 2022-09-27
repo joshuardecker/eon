@@ -1,6 +1,8 @@
 package threader
 
 import (
+	"sync"
+
 	poa "github.com/Sucks-To-Suck/Eon/PoA"
 	pob "github.com/Sucks-To-Suck/Eon/PoB"
 	pow "github.com/Sucks-To-Suck/Eon/PoW"
@@ -10,7 +12,8 @@ import (
 type Threader struct {
 
 	// Consensus Engine:
-	engine engine.ConsensusEngine
+	engine     engine.ConsensusEngine
+	engineLock *sync.WaitGroup
 
 	// Saved engines to shift between.
 	PoAEngine *poa.AuthorityEngine
