@@ -13,8 +13,8 @@ import (
 	"github.com/Sucks-To-Suck/Eon/types/transaction"
 )
 
-// Headers define many features of the block, such as its parent or the set difficulty of the block.
-// Used as the standard in Eon.
+// Heads define the parameters of a block: the parents of the block, Coinbase, merkleroot of the data transactions, difficulty of the block,
+// gas used (size of the data transactions), max size, creation time,
 type Head struct {
 	ParentHashes []eocrypt.Hash   `json:"ParentHash"`
 	Coinbase     *ecdsa.PublicKey `json:"Coinbase"`
@@ -23,36 +23,14 @@ type Head struct {
 	Gas          gas.Gas          `json:"GasUsed"`
 	MaxGas       gas.Gas          `json:"MaxGas"`
 	Time         time.Time        `json:"Time"`
-	Nonce        uint64           `json:"Nonce"`
-	ExtraNonce   uint64           `json:"ExtraNonce"`
+	Nonce        uint             `json:"Nonce"`
 }
 
-// Light Headers are used when operating Eon on a private network and the features of the normal Header are unnessesary.
-// Example, on a PoA (proof of authority) based network, things like difficulty are simply not needed.
-type LightHead struct {
-	ParentHashes []eocrypt.Hash   `json:"ParentHash"`
-	Coinbase     *ecdsa.PublicKey `json:"Coinbase"`
-	MerkleRoot   eocrypt.Hash     `json:"Merkle"`
-	Time         time.Time        `json:"Time"`
-}
-
-// Blocks are a storage of data transactions. They have an identifying hash, as well as Time created and received.
-// Blocks also have a normal Head by default.
+// Blocks store the data transactions of the network. Includes the header of the block, any uncles, the data transactions, an identifying hash,
+// time received, and the size of the block.
 type Block struct {
 	Head         *Head                      `json:"Head"`
 	Uncles       *[]Head                    `json:"Uncles"`
-	Transactions *[]transaction.Transaction `json:"Txs"`
-
-	BlockHash eocrypt.Hash `json:"Hash"`
-	Received  time.Time    `json:"Received"`
-	Size      int          `json:"Size"`
-}
-
-// Light blocks are used when wanting to use Light Heads on those blocks, which is mainly in a PoA (proof of authority) setting.
-// Remains the same compared to normal blocks, in that data transactions are stored, along with a blockhash and time of creation and reception.
-type LightBlock struct {
-	Head         *LightHead                 `json:"Head"`
-	Uncles       *[]LightHead               `json:"Uncles"`
 	Transactions *[]transaction.Transaction `json:"Txs"`
 
 	BlockHash eocrypt.Hash `json:"Hash"`
@@ -65,7 +43,7 @@ type LightBlock struct {
 
 // Creates and gives a Head with the given inputs.
 func NewHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
-	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint64, ExtraNonce uint64) *Head {
+	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint) *Head {
 
 	h := new(Head)
 
@@ -77,7 +55,6 @@ func NewHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocr
 	h.SetMaxGas(MaxGas)
 	h.SetTime(Time)
 	h.SetNonce(Nonce)
-	h.SetExtraNonce(ExtraNonce)
 
 	return h
 }
@@ -136,14 +113,9 @@ func (h *Head) SetTime(t time.Time) {
 	h.Time = t
 }
 
-func (h *Head) SetNonce(n uint64) {
+func (h *Head) SetNonce(n uint) {
 
 	h.Nonce = n
-}
-
-func (h *Head) SetExtraNonce(en uint64) {
-
-	h.ExtraNonce = en
 }
 
 func (h *Head) GetParentHashes() []eocrypt.Hash { return h.ParentHashes }
@@ -153,67 +125,9 @@ func (h *Head) GetDiff() *big.Int               { return h.Difficulty }
 func (h *Head) GetGas() gas.Gas                 { return h.Gas }
 func (h *Head) GetMaxGas() gas.Gas              { return h.MaxGas }
 func (h *Head) GetTime() time.Time              { return h.Time }
-func (h *Head) GetNonce() uint64                { return h.Nonce }
-func (h *Head) GetExtraNonce() uint64           { return h.ExtraNonce }
+func (h *Head) GetNonce() uint                  { return h.Nonce }
 
 // Head:
-// ****
-
-// ****
-// Light Head:
-
-// Creates and gives a Light Header with the given inputs.
-func NewLightHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Time time.Time) *LightHead {
-
-	lh := new(LightHead)
-
-	lh.SetParentHashes(ParentHashes)
-	lh.SetCoinbase(*Coinbase)
-	lh.SetMerkle(Merkle)
-	lh.SetTime(Time)
-
-	return lh
-}
-
-// Returns the hash of the Light Header.
-func (h *LightHead) Hash() *eocrypt.Hash {
-
-	return eocrypt.HashInterface(
-		[]interface{}{
-
-			h.ParentHashes,
-			h.Coinbase,
-			h.MerkleRoot,
-		},
-	)
-}
-
-func (h *LightHead) SetParentHashes(hashes []eocrypt.Hash) {
-
-	h.ParentHashes = hashes
-}
-
-func (h *LightHead) SetCoinbase(p ecdsa.PublicKey) {
-
-	h.Coinbase = &p
-}
-
-func (h *LightHead) SetMerkle(hash eocrypt.Hash) {
-
-	h.MerkleRoot = hash
-}
-
-func (h *LightHead) SetTime(t time.Time) {
-
-	h.Time = t
-}
-
-func (h *LightHead) GetParentHashes() []eocrypt.Hash { return h.ParentHashes }
-func (h *LightHead) GetCoinbase() ecdsa.PublicKey    { return *h.Coinbase }
-func (h *LightHead) GetMerkle() eocrypt.Hash         { return h.MerkleRoot }
-func (h *LightHead) GetTime() time.Time              { return h.Time }
-
-// Light Head:
 // ****
 
 // ****
@@ -331,119 +245,4 @@ func DecodeJSON(by *bytes.Buffer) (*Block, error) {
 }
 
 // Block:
-// ****
-
-// ****
-// Light Block:
-
-// Creates a new light block with the given parameters. Light blocks are useful mostly on private networks and on PoA based systems.
-func NewLightBlock(Head *LightHead, Uncles *[]LightHead, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *LightBlock {
-
-	lb := new(LightBlock)
-
-	lb.SetHead(*Head)
-	lb.SetUncles(*Uncles)
-	lb.SetTransactions(*Transactions)
-	lb.SetReceivedTime(ReceivedTime)
-
-	return lb
-}
-
-func (b *LightBlock) CalcHash() eocrypt.Hash {
-
-	b.SetHash(*b.Head.Hash())
-
-	return b.GetHash()
-}
-
-func (b *LightBlock) SetHead(h LightHead) {
-
-	b.Head = &h
-}
-
-func (b *LightBlock) SetUncles(u []LightHead) {
-
-	b.Uncles = &u
-}
-
-func (b *LightBlock) SetTransactions(t []transaction.Transaction) {
-
-	b.Transactions = &t
-}
-
-func (b *LightBlock) SetHash(h eocrypt.Hash) {
-
-	b.BlockHash = h
-}
-
-func (b *LightBlock) SetReceivedTime(t time.Time) {
-
-	b.Received = t
-}
-
-func (b *LightBlock) GetHead() *LightHead                        { return b.Head }
-func (b *LightBlock) GetUncles() *[]LightHead                    { return b.Uncles }
-func (b *LightBlock) GetTransactions() []transaction.Transaction { return *b.Transactions }
-func (b *LightBlock) GetHash() eocrypt.Hash                      { return b.BlockHash }
-func (b *LightBlock) GetReceivedTime() time.Time                 { return b.Received }
-
-// Uses the gob encoder to encode and return the block as a Bytes Buffer.
-func (b *LightBlock) EncodeToBuffer() (*bytes.Buffer, error) {
-
-	buff := new(bytes.Buffer)
-
-	// Encode the block into the Bytes Buffer.
-	encodeErr := gob.NewEncoder(buff).Encode(b)
-
-	return buff, encodeErr
-}
-
-// Uses the gob encoder with a provided Bytes Buffer to encode the block into that Buffer.
-func (b *LightBlock) EncodeWithBuffer(by *bytes.Buffer) error {
-
-	// Encode the block into the Bytes Buffer.
-	return gob.NewEncoder(by).Encode(b)
-}
-
-// Encode the block into JSON format. Returns the encoded bytes in a Bytes Buffer.
-func (b *LightBlock) EncodeJSON() (*bytes.Buffer, error) {
-
-	buff := new(bytes.Buffer)
-
-	// Encode the block into the Bytes Buffer.
-	encodeErr := json.NewEncoder(buff).Encode(b)
-
-	return buff, encodeErr
-}
-
-// Encode the block with the provided Bytes Buffer. The encoded bytes will reside there.
-func (b *LightBlock) EncodeJSONwithBuff(by *bytes.Buffer) error {
-
-	// Encode the block into the Bytes Buffer.
-	return json.NewEncoder(by).Encode(b)
-}
-
-// Trys to decode a Light Block from the given (hopefully gob encoded) bytes buffer. Returns the light block and any errors.
-func DecodeLight(by *bytes.Buffer) (*LightBlock, error) {
-
-	b := new(LightBlock)
-
-	// Try to decode the Bytes Buffer into a block.
-	decodeErr := gob.NewDecoder(by).Decode(b)
-
-	return b, decodeErr
-}
-
-// Trys to decode a Light Block from the given JSON encoded bytes buffer. Returns the light block and any errors.
-func DecodeLightJSON(by *bytes.Buffer) (*LightBlock, error) {
-
-	b := new(LightBlock)
-
-	// Try to decode the Bytes Buffer into a block.
-	decodeErr := json.NewDecoder(by).Decode(b)
-
-	return b, decodeErr
-}
-
-// Light Block:
 // ****
