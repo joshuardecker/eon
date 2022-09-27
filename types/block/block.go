@@ -16,24 +16,24 @@ import (
 // Headers define many features of the block, such as its parent or the set difficulty of the block.
 // Used as the standard in Eon.
 type Head struct {
-	ParentHash eocrypt.Hash     `json:"ParentHash"`
-	Coinbase   *ecdsa.PublicKey `json:"Coinbase"`
-	MerkleRoot eocrypt.Hash     `json:"Merkle"`
-	Difficulty *big.Int         `json:"Diff"`
-	Gas        gas.Gas          `json:"GasUsed"`
-	MaxGas     gas.Gas          `json:"MaxGas"`
-	Time       time.Time        `json:"Time"`
-	Nonce      uint64           `json:"Nonce"`
-	ExtraNonce uint64           `json:"ExtraNonce"`
+	ParentHashes []eocrypt.Hash   `json:"ParentHash"`
+	Coinbase     *ecdsa.PublicKey `json:"Coinbase"`
+	MerkleRoot   eocrypt.Hash     `json:"Merkle"`
+	Difficulty   *big.Int         `json:"Diff"`
+	Gas          gas.Gas          `json:"GasUsed"`
+	MaxGas       gas.Gas          `json:"MaxGas"`
+	Time         time.Time        `json:"Time"`
+	Nonce        uint64           `json:"Nonce"`
+	ExtraNonce   uint64           `json:"ExtraNonce"`
 }
 
 // Light Headers are used when operating Eon on a private network and the features of the normal Header are unnessesary.
 // Example, on a PoA (proof of authority) based network, things like difficulty are simply not needed.
 type LightHead struct {
-	ParentHash eocrypt.Hash     `json:"ParentHash"`
-	Coinbase   *ecdsa.PublicKey `json:"Coinbase"`
-	MerkleRoot eocrypt.Hash     `json:"Merkle"`
-	Time       time.Time        `json:"Time"`
+	ParentHashes []eocrypt.Hash   `json:"ParentHash"`
+	Coinbase     *ecdsa.PublicKey `json:"Coinbase"`
+	MerkleRoot   eocrypt.Hash     `json:"Merkle"`
+	Time         time.Time        `json:"Time"`
 }
 
 // Blocks are a storage of data transactions. They have an identifying hash, as well as Time created and received.
@@ -64,12 +64,12 @@ type LightBlock struct {
 // Head:
 
 // Creates and gives a Head with the given inputs.
-func NewHead(ParentHash eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
+func NewHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
 	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint64, ExtraNonce uint64) *Head {
 
 	h := new(Head)
 
-	h.SetParentHash(ParentHash)
+	h.SetParentHashes(ParentHashes)
 	h.SetCoinbase(*Coinbase)
 	h.SetMerkle(Merkle)
 	h.SetDiff(*Diff)
@@ -88,7 +88,7 @@ func (h *Head) Hash() *eocrypt.Hash {
 	return eocrypt.HashInterface(
 		[]interface{}{
 
-			h.ParentHash,
+			h.ParentHashes,
 			h.Coinbase,
 			h.MerkleRoot,
 			h.Difficulty,
@@ -99,9 +99,9 @@ func (h *Head) Hash() *eocrypt.Hash {
 	)
 }
 
-func (h *Head) SetParentHash(hash eocrypt.Hash) {
+func (h *Head) SetParentHashes(hashes []eocrypt.Hash) {
 
-	h.ParentHash = hash
+	h.ParentHashes = hashes
 }
 
 func (h *Head) SetCoinbase(p ecdsa.PublicKey) {
@@ -146,15 +146,15 @@ func (h *Head) SetExtraNonce(en uint64) {
 	h.ExtraNonce = en
 }
 
-func (h *Head) GetParentHash() eocrypt.Hash  { return h.ParentHash }
-func (h *Head) GetCoinbase() ecdsa.PublicKey { return *h.Coinbase }
-func (h *Head) GetMerkle() eocrypt.Hash      { return h.MerkleRoot }
-func (h *Head) GetDiff() *big.Int            { return h.Difficulty }
-func (h *Head) GetGas() gas.Gas              { return h.Gas }
-func (h *Head) GetMaxGas() gas.Gas           { return h.MaxGas }
-func (h *Head) GetTime() time.Time           { return h.Time }
-func (h *Head) GetNonce() uint64             { return h.Nonce }
-func (h *Head) GetExtraNonce() uint64        { return h.ExtraNonce }
+func (h *Head) GetParentHashes() []eocrypt.Hash { return h.ParentHashes }
+func (h *Head) GetCoinbase() ecdsa.PublicKey    { return *h.Coinbase }
+func (h *Head) GetMerkle() eocrypt.Hash         { return h.MerkleRoot }
+func (h *Head) GetDiff() *big.Int               { return h.Difficulty }
+func (h *Head) GetGas() gas.Gas                 { return h.Gas }
+func (h *Head) GetMaxGas() gas.Gas              { return h.MaxGas }
+func (h *Head) GetTime() time.Time              { return h.Time }
+func (h *Head) GetNonce() uint64                { return h.Nonce }
+func (h *Head) GetExtraNonce() uint64           { return h.ExtraNonce }
 
 // Head:
 // ****
@@ -163,11 +163,11 @@ func (h *Head) GetExtraNonce() uint64        { return h.ExtraNonce }
 // Light Head:
 
 // Creates and gives a Light Header with the given inputs.
-func NewLightHead(ParentHash eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Time time.Time) *LightHead {
+func NewLightHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Time time.Time) *LightHead {
 
 	lh := new(LightHead)
 
-	lh.SetParentHash(ParentHash)
+	lh.SetParentHashes(ParentHashes)
 	lh.SetCoinbase(*Coinbase)
 	lh.SetMerkle(Merkle)
 	lh.SetTime(Time)
@@ -181,16 +181,16 @@ func (h *LightHead) Hash() *eocrypt.Hash {
 	return eocrypt.HashInterface(
 		[]interface{}{
 
-			h.ParentHash,
+			h.ParentHashes,
 			h.Coinbase,
 			h.MerkleRoot,
 		},
 	)
 }
 
-func (h *LightHead) SetParentHash(hash eocrypt.Hash) {
+func (h *LightHead) SetParentHashes(hashes []eocrypt.Hash) {
 
-	h.ParentHash = hash
+	h.ParentHashes = hashes
 }
 
 func (h *LightHead) SetCoinbase(p ecdsa.PublicKey) {
@@ -208,10 +208,10 @@ func (h *LightHead) SetTime(t time.Time) {
 	h.Time = t
 }
 
-func (h *LightHead) GetParentHash() eocrypt.Hash  { return h.ParentHash }
-func (h *LightHead) GetCoinbase() ecdsa.PublicKey { return *h.Coinbase }
-func (h *LightHead) GetMerkle() eocrypt.Hash      { return h.MerkleRoot }
-func (h *LightHead) GetTime() time.Time           { return h.Time }
+func (h *LightHead) GetParentHashes() []eocrypt.Hash { return h.ParentHashes }
+func (h *LightHead) GetCoinbase() ecdsa.PublicKey    { return *h.Coinbase }
+func (h *LightHead) GetMerkle() eocrypt.Hash         { return h.MerkleRoot }
+func (h *LightHead) GetTime() time.Time              { return h.Time }
 
 // Light Head:
 // ****
