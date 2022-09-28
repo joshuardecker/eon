@@ -5,6 +5,13 @@ import (
 	"sync"
 )
 
+var (
+	PUT_ERR    = errors.New("Key is already in use")
+	REMOVE_ERR = errors.New("Cannot remove an element that does not exist")
+	EXIST_ERR  = errors.New("Element does not exist")
+	GET_ERR    = errors.New("Could not get value from the memDB")
+)
+
 // A db only stored on the memory.
 // Will be used for storing data that the hard disk doesnt need to store.
 type MemDb struct {
@@ -33,7 +40,7 @@ func (db *MemDb) Put(key []byte, data []byte) error {
 	// Is the key already used?
 	if db.has(key) {
 
-		return errors.New("key already in use")
+		return PUT_ERR
 	}
 
 	db.db[string(key)] = data
@@ -96,10 +103,37 @@ func (db *MemDb) Remove(key []byte) error {
 	// The the db does nothave this key
 	if !db.has(key) {
 
-		return errors.New("cannot delete an element that does not exist")
+		return REMOVE_ERR
 	}
 
 	delete(db.db, string(key))
 
 	return nil
+}
+
+// Function simply gets and returns the data of a given key, no questions asked.
+func (db *MemDb) get(key []byte) *[]byte {
+
+	data := db.db[string(key)]
+
+	return &data
+}
+
+// Gets data from the memDB based on the given key. Returns the data and any errors that occured.
+func (db *MemDb) Get(key []byte) ([]byte, error) {
+
+	// Lock the db so no other go routines can write while this is writting data.
+	db.lock.Lock()
+
+	// Unlock it wen done
+	defer db.lock.Unlock()
+
+	// Does the key exist? If not throw an error.
+	if !db.has(key) {
+
+		return nil, EXIST_ERR
+	}
+
+	// Return the data and no errors.
+	return *db.get(key), nil
 }
