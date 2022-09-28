@@ -244,5 +244,13 @@ func DecodeJSON(by *bytes.Buffer) (*Block, error) {
 	return b, decodeErr
 }
 
+// Returns the encoded bytes of the block.
+func (b *Block) Bytes() []byte {
+
+	bytes, _ := b.EncodeToBuffer()
+
+	return bytes.Bytes()
+}
+
 // Block:
 // ****
