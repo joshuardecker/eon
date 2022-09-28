@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	MINTHREADS = 1 // Minimum amount of threads in the Threader.
+	MIN_THREADS = 1 // Minimum amount of threads in the Threader.
 )
 
 // The Threader is the mastermind of the blockchains that are threaded together. It covers
