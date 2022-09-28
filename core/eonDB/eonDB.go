@@ -1,27 +1,28 @@
 package eondb
 
 import (
-	"github.com/Sucks-To-Suck/Eon/helper/logger"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/syndtr/goleveldb/leveldb/errors"
 )
 
-// Create and return a lunch db.
-// Input the name of the db save.
-func NewDatabase(name string) *leveldb.DB {
+// Create / open a DB with the given file name.
+func NewDB(name string) *leveldb.DB {
 
-	// Create the database
-	db, err := leveldb.OpenFile("saves/db/"+name, nil)
+	// Create the database.
+	db, dbErr := leveldb.OpenFile("saves/db/"+name, nil)
 
-	// Create a logger
-	logger := logger.NewLogger("Database")
+	// If the db is corrupted and needs to be recovered.
+	if errors.IsCorrupted(dbErr) {
 
-	if err != nil {
-
-		logger.LogRed(err.Error())
+		db, dbErr = leveldb.RecoverFile("saves/db/"+name, nil)
 
 	}
 
-	logger.LogGreen("Database loaded")
+	// Panic if the DB could not be loaded and recovering didnt work / wasnt an option.
+	if dbErr != nil {
+
+		panic("DB could not be loaded, Error: " + dbErr.Error())
+	}
 
 	return db
 }
