@@ -10,6 +10,10 @@ import (
 	"github.com/Sucks-To-Suck/Eon/types/thread"
 )
 
+const (
+	MINTHREADS = 1 // Minimum amount of threads in the Threader.
+)
+
 // The Threader is the mastermind of the blockchains that are threaded together. It covers
 // consensus / verification of the various threads, and can expand or shrink the number of
 // threads deployed.
