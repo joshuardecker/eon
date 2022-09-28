@@ -7,7 +7,7 @@ import (
 
 // Create and return a lunch db.
 // Input the name of the db save.
-func InitDatabase(name string) *leveldb.DB {
+func NewDatabase(name string) *leveldb.DB {
 
 	// Create the database
 	db, err := leveldb.OpenFile("saves/db/"+name, nil)

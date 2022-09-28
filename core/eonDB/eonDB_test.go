@@ -7,7 +7,7 @@ import (
 
 func TestDB(t *testing.T) {
 
-	db := InitDatabase("dbTest")
+	db := NewDatabase("dbTest")
 
 	// Test the Put meathod.
 	db.Put([]byte("1"), []byte("This is a cool test!"), nil)
