@@ -16,7 +16,7 @@ var (
 	DECODE_ERR = errors.New("Couldnt decode the block")
 	DB_ERR     = errors.New("Database error")
 	MEMDB_ERR  = errors.New("MemDatabase error")
-	BUFF_ERR   = errors.New("Buffer error: ")
+	BUFF_ERR   = errors.New("Buffer error")
 )
 
 // A thread is a single thread of blocks, aka a normal blockchain.
