@@ -36,7 +36,7 @@ func NewThread(Id *big.Int) *Thread {
 	return &Thread{
 		Id:    Id,
 		DB:    eondb.NewDB(Id.String()),
-		memDB: eondb.InitMemDb(),
+		memDB: eondb.NewMemDb(),
 	}
 }
 

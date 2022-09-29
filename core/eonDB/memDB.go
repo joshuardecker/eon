@@ -20,7 +20,7 @@ type MemDb struct {
 }
 
 // Creates and returns a new memDb.
-func InitMemDb() *MemDb {
+func NewMemDb() *MemDb {
 
 	return &MemDb{
 		db: make(map[string][]byte),

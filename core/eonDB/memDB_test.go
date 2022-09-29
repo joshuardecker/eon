@@ -7,7 +7,7 @@ import (
 
 func TestMemDB(t *testing.T) {
 
-	mDB := InitMemDb()
+	mDB := NewMemDb()
 
 	// Data
 	data1 := []byte("This is pretty cool!")
