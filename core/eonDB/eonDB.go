@@ -5,6 +5,10 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/errors"
 )
 
+var (
+	DB_ERR = errors.New("DB could not be loaded: ")
+)
+
 // Create / open a DB with the given file name.
 func NewDB(name string) *leveldb.DB {
 
@@ -21,7 +25,7 @@ func NewDB(name string) *leveldb.DB {
 	// Panic if the DB could not be loaded and recovering didnt work / wasnt an option.
 	if dbErr != nil {
 
-		panic("DB could not be loaded, Error: " + dbErr.Error())
+		panic(DB_ERR.Error() + dbErr.Error())
 	}
 
 	return db
