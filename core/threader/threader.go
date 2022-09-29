@@ -34,3 +34,28 @@ type Threader struct {
 	// The public key used by the Threader.
 	Pub *ecdsa.PublicKey
 }
+
+// Creates a new Threader with the given chain id and public key.
+func NewThreader(id big.Int, pub ecdsa.PublicKey) *Threader {
+
+	t := new(Threader)
+
+	// Set up the engines.
+	t.PoAEngine = &poa.AuthorityEngine{}
+	t.PoBEngine = &pob.BurnEngine{}
+	t.PoWEngine = &pow.WorkEngine{}
+
+	// Add a single Thread to start.
+	t.addThread(thread.NewThread(big.NewInt(0)))
+
+	t.Id = &id
+	t.Pub = &pub
+
+	return t
+}
+
+// Simply adds a thread to the Threader.
+func (t *Threader) addThread(th *thread.Thread) {
+
+	*t.Threads = append(*t.Threads, *th)
+}
