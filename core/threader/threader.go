@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"sync"
 
+	"github.com/Sucks-To-Suck/Eon/core/config"
 	"github.com/Sucks-To-Suck/Eon/types/thread"
 )
 
@@ -31,11 +32,11 @@ type Threader struct {
 	Priv *ecdsa.PrivateKey
 
 	// The configuration that will be used by the threader.
-	config *Config
+	config *config.Config
 }
 
 // Creates a new threader with the given configuration, proofEngine, and the nodes private key.
-func NewThreader(config Config, proofEngine interface{}, private ecdsa.PrivateKey) *Threader {
+func NewThreader(config config.Config, proofEngine interface{}, private ecdsa.PrivateKey) *Threader {
 
 	// Create the threader.
 	t := new(Threader)

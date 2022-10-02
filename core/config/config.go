@@ -1,4 +1,4 @@
-package threader
+package config
 
 import (
 	"crypto/ecdsa"
