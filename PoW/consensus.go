@@ -2,4 +2,4 @@ package pow
 
 type WorkEngine struct{}
 
-func (w *WorkEngine) Verify() {}
+func (w *WorkEngine) VerifyBlock() {}

@@ -2,4 +2,4 @@ package pob
 
 type BurnEngine struct{}
 
-func (b *BurnEngine) Verify() {}
+func (b *BurnEngine) VerifyBlock() {}
