@@ -16,14 +16,14 @@ import (
 // Heads define the parameters of a block: the parents of the block, Coinbase, merkleroot of the data transactions, difficulty of the block,
 // gas used (size of the data transactions), max size, creation time,
 type Head struct {
-	ParentHashes []eocrypt.Hash   `json:"ParentHash"`
-	Coinbase     *ecdsa.PublicKey `json:"Coinbase"`
-	MerkleRoot   eocrypt.Hash     `json:"Merkle"`
-	Difficulty   *big.Int         `json:"Diff"`
-	Gas          gas.Gas          `json:"GasUsed"`
-	MaxGas       gas.Gas          `json:"MaxGas"`
-	Time         time.Time        `json:"Time"`
-	Nonce        uint             `json:"Nonce"`
+	ParentHash eocrypt.Hash     `json:"ParentHash"`
+	Coinbase   *ecdsa.PublicKey `json:"Coinbase"`
+	MerkleRoot eocrypt.Hash     `json:"Merkle"`
+	Difficulty *big.Int         `json:"Diff"`
+	Gas        gas.Gas          `json:"GasUsed"`
+	MaxGas     gas.Gas          `json:"MaxGas"`
+	Time       time.Time        `json:"Time"`
+	Nonce      uint             `json:"Nonce"`
 }
 
 // Blocks store the data transactions of the network. Includes the header of the block, any uncles, the data transactions, an identifying hash,
@@ -42,12 +42,12 @@ type Block struct {
 // Head:
 
 // Creates and gives a Head with the given inputs.
-func NewHead(ParentHashes []eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
+func NewHead(ParentHash eocrypt.Hash, Coinbase *ecdsa.PublicKey, Merkle eocrypt.Hash, Diff *big.Int,
 	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint) *Head {
 
 	h := new(Head)
 
-	h.SetParentHashes(ParentHashes)
+	h.SetParentHash(ParentHash)
 	h.SetCoinbase(*Coinbase)
 	h.SetMerkle(Merkle)
 	h.SetDiff(*Diff)
@@ -65,7 +65,7 @@ func (h *Head) Hash() *eocrypt.Hash {
 	return eocrypt.HashInterface(
 		[]interface{}{
 
-			h.ParentHashes,
+			h.ParentHash,
 			h.Coinbase,
 			h.MerkleRoot,
 			h.Difficulty,
@@ -76,9 +76,9 @@ func (h *Head) Hash() *eocrypt.Hash {
 	)
 }
 
-func (h *Head) SetParentHashes(hashes []eocrypt.Hash) {
+func (h *Head) SetParentHash(hash eocrypt.Hash) {
 
-	h.ParentHashes = hashes
+	h.ParentHash = hash
 }
 
 func (h *Head) SetCoinbase(p ecdsa.PublicKey) {
@@ -118,14 +118,14 @@ func (h *Head) SetNonce(n uint) {
 	h.Nonce = n
 }
 
-func (h *Head) GetParentHashes() []eocrypt.Hash { return h.ParentHashes }
-func (h *Head) GetCoinbase() ecdsa.PublicKey    { return *h.Coinbase }
-func (h *Head) GetMerkle() eocrypt.Hash         { return h.MerkleRoot }
-func (h *Head) GetDiff() *big.Int               { return h.Difficulty }
-func (h *Head) GetGas() gas.Gas                 { return h.Gas }
-func (h *Head) GetMaxGas() gas.Gas              { return h.MaxGas }
-func (h *Head) GetTime() time.Time              { return h.Time }
-func (h *Head) GetNonce() uint                  { return h.Nonce }
+func (h *Head) GetParentHashes() eocrypt.Hash { return h.ParentHash }
+func (h *Head) GetCoinbase() ecdsa.PublicKey  { return *h.Coinbase }
+func (h *Head) GetMerkle() eocrypt.Hash       { return h.MerkleRoot }
+func (h *Head) GetDiff() *big.Int             { return h.Difficulty }
+func (h *Head) GetGas() gas.Gas               { return h.Gas }
+func (h *Head) GetMaxGas() gas.Gas            { return h.MaxGas }
+func (h *Head) GetTime() time.Time            { return h.Time }
+func (h *Head) GetNonce() uint                { return h.Nonce }
 
 // Head:
 // ****
