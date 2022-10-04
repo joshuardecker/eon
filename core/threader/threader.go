@@ -71,3 +71,29 @@ func (t *Threader) AddThread(th *thread.Thread) {
 	// Add the new thread to the array.
 	*t.Threads = append(*t.Threads, *th)
 }
+
+// Loads the given thread based on id. If the thread does not exist, it will create a thread with that id.
+func (t *Threader) LoadThread(id *big.Int) {
+
+	// Load / create a thread with the given id.
+	th := thread.NewThread(id)
+
+	// Add the thread to the threader.
+	t.AddThread(th)
+}
+
+// Loads all of the threads with the given largest id. Example: if 4 is provided as the id, this func
+// will load thread with the id of '4', '3', '2', and '1'.
+func (t *Threader) LoadAllThreads(id *big.Int) {
+
+	// Loop through, starting at the highest thread id and looping loading / creation of the
+	// threads until it hits loops until thread 0 (by default the only thread).
+	for id.Cmp(big.NewInt(0)) >= 0 {
+
+		// Load / create the thread.
+		t.LoadThread(id)
+
+		// Subtract 1 from the id so it can loop to 0.
+		id.Sub(id, big.NewInt(1))
+	}
+}
