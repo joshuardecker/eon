@@ -133,3 +133,19 @@ func HashInterface(val interface{}) *Hash {
 
 // Usage:
 // ****
+
+// Mixes two given hashes together, in a very lightweight process.
+func MixHashes(h1 *Hash, h2 *Hash) *Hash {
+
+	// Make a byte array the size of the hash input.
+	hBytes := make([]byte, len(h1.GetBytes()))
+
+	// Loop through all of the bytes and mix (XOR) them together.
+	for i, _ := range h1 {
+
+		hBytes[i] = h1[i] ^ h2[i]
+	}
+
+	// Return it as a hash.
+	return HashBytes(hBytes)
+}

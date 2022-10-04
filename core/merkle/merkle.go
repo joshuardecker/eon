@@ -48,7 +48,7 @@ func (m *MerkleTree) FindRoot() *eocrypt.Hash {
 		// Loop through all of the nodes in pairs, mixing those pairs into one hash thats added to the next level up.
 		for nodeIndex := 0; nodeIndex < l; nodeIndex += 2 {
 
-			m.nodes[level+1] = append(m.nodes[level+1], *mixHashes(&m.nodes[level][nodeIndex], (&m.nodes[level][nodeIndex+1])))
+			m.nodes[level+1] = append(m.nodes[level+1], *eocrypt.MixHashes(&m.nodes[level][nodeIndex], (&m.nodes[level][nodeIndex+1])))
 		}
 
 		// Update the variables accordingly.
@@ -58,20 +58,4 @@ func (m *MerkleTree) FindRoot() *eocrypt.Hash {
 
 	// Return the merkle root.
 	return &m.nodes[level][0]
-}
-
-// Mixes two given hashes together, in a very lightweight process.
-func mixHashes(h1 *eocrypt.Hash, h2 *eocrypt.Hash) *eocrypt.Hash {
-
-	// Make a byte array the size of the hash input.
-	hBytes := make([]byte, len(h1.GetBytes()))
-
-	// Loop through all of the bytes and mix (XOR) them together.
-	for i, _ := range h1 {
-
-		hBytes[i] = h1[i] ^ h2[i]
-	}
-
-	// Return it as a hash.
-	return eocrypt.HashBytes(hBytes)
 }
