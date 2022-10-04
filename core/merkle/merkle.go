@@ -24,6 +24,7 @@ func NewMerkleTree(leafValues []eocrypt.Hash) *MerkleTree {
 	// Create the Merkle Tree.
 	m := new(MerkleTree)
 
+	// Initializes the map, if not done causes nil errors.
 	m.nodes = make(map[int][]eocrypt.Hash)
 
 	// Set the leaf layer (layer 0) to the given values.
