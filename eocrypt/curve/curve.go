@@ -15,10 +15,11 @@ import (
 )
 
 var (
-	ERR_GENERATE = errors.New("Could not generate a public private key pair. ")
-	ERR_LOAD     = errors.New("Could not load a public private key pair. ")
-	ERR_SAVE     = errors.New("Could not save a public private key pair. ")
-	ERR_DECODE   = errors.New("Could not decode a public private key pair. ")
+	ERR_GENERATE      = errors.New("Could not generate a public private key pair")
+	ERR_LOAD          = errors.New("Could not load a public private key pair")
+	ERR_SAVE          = errors.New("Could not save a public private key pair")
+	ERR_DECODE        = errors.New("Could not decode a public private key pair")
+	ERR_UNCOMPRESSKEY = errors.New("The given bytes could not be uncompressed into a public key")
 )
 
 // ****
@@ -158,6 +159,31 @@ func Sign(p *ecdsa.PrivateKey, msg []byte) ([]byte, error) {
 func VerifySign(p *ecdsa.PublicKey, msg []byte, sig []byte) bool {
 
 	return ecdsa.VerifyASN1(p, eocrypt.HashBytes(msg).GetBytes(), sig)
+}
+
+// Returns the compressed form of a public key.
+func CompressPub(p *ecdsa.PublicKey) []byte {
+
+	return elliptic.MarshalCompressed(elliptic.P256(), p.X, p.Y)
+}
+
+// Uncompresses the given bytes into a public key. Returns an error if occured.
+func UncompressPub(k []byte) (*ecdsa.PublicKey, error) {
+
+	x, y := elliptic.UnmarshalCompressed(elliptic.P256(), k)
+
+	// X == nil if it failed to Unmarshal the given bytes 'k'.
+	if x == nil {
+
+		return nil, ERR_UNCOMPRESSKEY
+	}
+
+	// Return the uncompressed public key.
+	return &ecdsa.PublicKey{
+		Curve: elliptic.P256(),
+		X:     x,
+		Y:     y,
+	}, nil
 }
 
 // Public Key Stuff:
