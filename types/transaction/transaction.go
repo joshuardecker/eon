@@ -34,10 +34,6 @@ type Transaction struct {
 
 	// When did the node get this transaction?
 	ReceivedTime time.Time `json:"ReceivedTime"`
-
-	// Calculated data about the transaction.
-	Hash eocrypt.Hash `json:"Hash"`
-	Size int          `json:"Size"`
 }
 
 // ****
@@ -123,16 +119,6 @@ func (t *Transaction) SetReceivedTime(time time.Time) {
 	t.ReceivedTime = time
 }
 
-func (t *Transaction) SetHash(h eocrypt.Hash) {
-
-	t.Hash = h
-}
-
-func (t *Transaction) SetSize(s int) {
-
-	t.Size = s
-}
-
 func (t *Transaction) GetTokenHash() eocrypt.Hash   { return t.TokenHash }
 func (t *Transaction) GetAmount() big.Int           { return *t.Amount }
 func (t *Transaction) GetTo() []byte                { return t.To }
@@ -143,8 +129,6 @@ func (t *Transaction) GetChainId() big.Int          { return *t.ChainId }
 func (t *Transaction) GetGas() gas.Gas              { return t.Gas }
 func (t *Transaction) GetGasPrice() gas.GasPrice    { return t.GasPrice }
 func (t *Transaction) GetReceivedTime() time.Time   { return t.ReceivedTime }
-func (t *Transaction) GetHash() eocrypt.Hash        { return t.Hash }
-func (t *Transaction) GetSize() int                 { return t.Size }
 
 // Transaction basic interaction:
 // ****
@@ -210,6 +194,24 @@ func DecodeJSON(b *bytes.Buffer) (*Transaction, error) {
 	return t, decodeErr
 }
 
+// Get the hash of the transaction. Will be whats signed by the transaction sender.
+func (t *Transaction) Hash() *eocrypt.Hash {
+
+	return eocrypt.HashInterface(
+		[]interface{}{
+			t.TokenHash.GetBytes(),
+			t.Amount.Bytes(),
+			t.To,
+			t.From,
+			t.BlockFrom.GetBytes(),
+			t.TxFrom,
+			t.ChainId.Bytes(),
+			t.Gas.Uint(),
+			t.GasPrice,
+		},
+	)
+}
+
 // Prints the main important information about the transaction.
 func (t *Transaction) Print() {
 
@@ -223,7 +225,7 @@ func (t *Transaction) Print() {
 		ChainId: %x
 		Gas: %v
 		GasPrice: %v
-	]`, t.Hash.GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ChainId, t.Gas, t.GasPrice)
+	]`, t.Hash().GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ChainId, t.Gas, t.GasPrice)
 }
 
 // Transaction advanced interaction:
