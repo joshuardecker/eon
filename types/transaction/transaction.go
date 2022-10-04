@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"bytes"
-	"crypto/ecdsa"
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
@@ -20,9 +19,9 @@ type Transaction struct {
 	Amount    *big.Int     `json:"Amount"`
 
 	// From who and where to?
-	To        *ecdsa.PublicKey `json:"To"`
-	From      *ecdsa.PublicKey `json:"From"`
-	Signature []byte           `json:"Signature"`
+	To        []byte `json:"To"`
+	From      []byte `json:"From"`
+	Signature []byte `json:"Signature"`
 
 	// Where are you getting the tokens from?
 	BlockFrom []eocrypt.Hash `json:"BlockFromHash"`
@@ -48,7 +47,7 @@ type Transaction struct {
 // This is to allow manipulation of the given / received data that then will not affect the copy in the tx until a function
 // is called to set the new value.
 
-func NewTransaction(TokenHash eocrypt.Hash, Amount *big.Int, To *ecdsa.PublicKey, From *ecdsa.PublicKey, Signature []byte,
+func NewTransaction(TokenHash eocrypt.Hash, Amount *big.Int, To []byte, From []byte, Signature []byte,
 	BlockFrom []eocrypt.Hash, TxFrom []eocrypt.Hash, ChainId *big.Int, Gas gas.Gas, GasPrice gas.GasPrice,
 	ReceivedTime time.Time) *Transaction {
 
@@ -56,8 +55,8 @@ func NewTransaction(TokenHash eocrypt.Hash, Amount *big.Int, To *ecdsa.PublicKey
 
 	t.SetTokenHash(TokenHash)
 	t.SetAmount(*Amount)
-	t.SetTo(*To)
-	t.SetFrom(*From)
+	t.SetTo(To)
+	t.SetFrom(From)
 	t.SetSignature(Signature)
 	t.SetBlockFrom(BlockFrom)
 	t.SetTxFrom(TxFrom)
@@ -79,14 +78,14 @@ func (t *Transaction) SetAmount(b big.Int) {
 	t.Amount = &b
 }
 
-func (t *Transaction) SetTo(p ecdsa.PublicKey) {
+func (t *Transaction) SetTo(p []byte) {
 
-	t.To = &p
+	t.To = p
 }
 
-func (t *Transaction) SetFrom(p ecdsa.PublicKey) {
+func (t *Transaction) SetFrom(p []byte) {
 
-	t.From = &p
+	t.From = p
 }
 
 func (t *Transaction) SetBlockFrom(h []eocrypt.Hash) {
@@ -136,8 +135,8 @@ func (t *Transaction) SetSize(s int) {
 
 func (t *Transaction) GetTokenHash() eocrypt.Hash   { return t.TokenHash }
 func (t *Transaction) GetAmount() big.Int           { return *t.Amount }
-func (t *Transaction) GetTo() ecdsa.PublicKey       { return *t.To }
-func (t *Transaction) GetFrom() ecdsa.PublicKey     { return *t.From }
+func (t *Transaction) GetTo() []byte                { return t.To }
+func (t *Transaction) GetFrom() []byte              { return t.From }
 func (t *Transaction) GetBlockFrom() []eocrypt.Hash { return t.BlockFrom }
 func (t *Transaction) GetTxFrom() []eocrypt.Hash    { return t.TxFrom }
 func (t *Transaction) GetChainId() big.Int          { return *t.ChainId }
