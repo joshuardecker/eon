@@ -141,7 +141,7 @@ func MixHashes(h1 *Hash, h2 *Hash) *Hash {
 	hBytes := make([]byte, len(h1.GetBytes()))
 
 	// Loop through all of the bytes and mix (XOR) them together.
-	for i, _ := range h1 {
+	for i := range h1 {
 
 		hBytes[i] = h1[i] ^ h2[i]
 	}
