@@ -22,11 +22,11 @@ func TestTransaction(t *testing.T) {
 	txFrom = append(txFrom, *eocrypt.HashBytes([]byte("my-cool-tx")))
 	chain := big.NewInt(100)
 	txGas := gas.Gas(1)
-	gasPrice := gas.GasPrice(big.NewInt(1))
+	gasPrice := big.NewInt(1)
 	txTime := helper.LocalTime()
 
 	tx := NewTransaction(*tokenHash, amount, to, from, sig, blockFrom,
-		txFrom, chain, txGas, gasPrice, txTime)
+		txFrom, chain, txGas, *gasPrice, txTime)
 
 	tx.Print()
 }
