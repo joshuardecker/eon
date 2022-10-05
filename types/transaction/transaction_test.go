@@ -11,6 +11,7 @@ import (
 
 func TestTransaction(t *testing.T) {
 
+	// Create the variables for the tx:
 	tokenHash := eocrypt.HashBytes([]byte("Lunch Coin!"))
 	amount := big.NewInt(1)
 	to := []byte("kaimort123")
@@ -25,8 +26,10 @@ func TestTransaction(t *testing.T) {
 	gasPrice := big.NewInt(1)
 	txTime := helper.LocalTime()
 
+	// Create the transaction.
 	tx := NewTransaction(*tokenHash, amount, to, from, sig, blockFrom,
 		txFrom, chain, txGas, *gasPrice, txTime)
 
+	// Print the transaction.
 	tx.Print()
 }
