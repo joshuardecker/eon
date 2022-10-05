@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Sucks-To-Suck/Eon/core/gas"
+	"github.com/Sucks-To-Suck/Eon/core/merkle"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
 )
 
@@ -28,9 +29,9 @@ type Transaction struct {
 	TxFrom    []eocrypt.Hash `json:"TransactionFromHash"`
 
 	// Basic but otherwise needed data.
-	ChainId  *big.Int     `json:"ChainId"`
-	Gas      gas.Gas      `json:"Gas"`
-	GasPrice gas.GasPrice `json:"GasPrice"`
+	ChainId  *big.Int `json:"ChainId"`
+	Gas      gas.Gas  `json:"Gas"`
+	GasPrice *big.Int `json:"GasPrice"`
 
 	// When did the node get this transaction?
 	ReceivedTime time.Time `json:"ReceivedTime"`
@@ -44,7 +45,7 @@ type Transaction struct {
 // is called to set the new value.
 
 func NewTransaction(TokenHash eocrypt.Hash, Amount *big.Int, To []byte, From []byte, Signature []byte,
-	BlockFrom []eocrypt.Hash, TxFrom []eocrypt.Hash, ChainId *big.Int, Gas gas.Gas, GasPrice gas.GasPrice,
+	BlockFrom []eocrypt.Hash, TxFrom []eocrypt.Hash, ChainId *big.Int, Gas gas.Gas, GasPrice big.Int,
 	ReceivedTime time.Time) *Transaction {
 
 	t := new(Transaction)
@@ -109,9 +110,9 @@ func (t *Transaction) SetGas(g gas.Gas) {
 	t.Gas = g
 }
 
-func (t *Transaction) SetGasPrice(g gas.GasPrice) {
+func (t *Transaction) SetGasPrice(g big.Int) {
 
-	t.GasPrice = g
+	t.GasPrice = &g
 }
 
 func (t *Transaction) SetReceivedTime(time time.Time) {
@@ -127,7 +128,7 @@ func (t *Transaction) GetBlockFrom() []eocrypt.Hash { return t.BlockFrom }
 func (t *Transaction) GetTxFrom() []eocrypt.Hash    { return t.TxFrom }
 func (t *Transaction) GetChainId() big.Int          { return *t.ChainId }
 func (t *Transaction) GetGas() gas.Gas              { return t.Gas }
-func (t *Transaction) GetGasPrice() gas.GasPrice    { return t.GasPrice }
+func (t *Transaction) GetGasPrice() big.Int         { return *t.GasPrice }
 func (t *Transaction) GetReceivedTime() time.Time   { return t.ReceivedTime }
 
 // Transaction basic interaction:
@@ -203,11 +204,11 @@ func (t *Transaction) Hash() *eocrypt.Hash {
 			t.Amount.Bytes(),
 			t.To,
 			t.From,
-			t.BlockFrom.GetBytes(),
-			t.TxFrom,
+			t.BlockFromRoot().GetBytes(),
+			t.TxFromRoot().GetBytes(),
 			t.ChainId.Bytes(),
 			t.Gas.Uint(),
-			t.GasPrice,
+			t.GasPrice.Bytes(),
 		},
 	)
 }
@@ -226,6 +227,28 @@ func (t *Transaction) Print() {
 		Gas: %v
 		GasPrice: %v
 	]`, t.Hash().GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ChainId, t.Gas, t.GasPrice)
+}
+
+// Gets the merkle root of the block from hashes, aka the block hashes of the blocks you are pointing
+// to in the transaction to show where the token being spent is coming from.
+func (t *Transaction) BlockFromRoot() *eocrypt.Hash {
+
+	// Create the merkle tree.
+	m := merkle.NewMerkleTree(t.GetBlockFrom())
+
+	// Return the merkle root.
+	return m.FindRoot()
+}
+
+// Get the merkle root from the tx hashes included in the tx, aka which transaction are you getting
+// the token from.
+func (t *Transaction) TxFromRoot() *eocrypt.Hash {
+
+	// Create a merkle tree.
+	m := merkle.NewMerkleTree(t.GetTxFrom())
+
+	// Return the merkle root.
+	return m.FindRoot()
 }
 
 // Transaction advanced interaction:
