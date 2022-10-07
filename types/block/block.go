@@ -56,7 +56,6 @@ func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff
 	h.SetMaxGas(MaxGas)
 	h.SetTime(Time)
 	h.SetNonce(Nonce)
-	h.SetSig(Sig)
 
 	return h
 }
