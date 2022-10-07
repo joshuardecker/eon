@@ -24,6 +24,7 @@ type Head struct {
 	MaxGas     gas.Gas      `json:"MaxGas"`
 	Time       time.Time    `json:"Time"`
 	Nonce      uint         `json:"Nonce"`
+	Signature  []byte       `json:"Signature"`
 }
 
 // Blocks store the data transactions of the network. Includes the header of the block, any uncles, the data transactions, an identifying hash,
@@ -43,7 +44,7 @@ type Block struct {
 
 // Creates and gives a Head with the given inputs.
 func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff *big.Int,
-	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint) *Head {
+	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint, Sig []byte) *Head {
 
 	h := new(Head)
 
@@ -55,6 +56,7 @@ func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff
 	h.SetMaxGas(MaxGas)
 	h.SetTime(Time)
 	h.SetNonce(Nonce)
+	h.SetSig(Sig)
 
 	return h
 }
@@ -72,6 +74,7 @@ func (h *Head) Hash() *eocrypt.Hash {
 			h.Gas.Uint(),
 			h.MaxGas.Uint(),
 			h.Nonce,
+			h.Signature,
 		},
 	)
 }
@@ -118,6 +121,11 @@ func (h *Head) SetNonce(n uint) {
 	h.Nonce = n
 }
 
+func (h *Head) SetSig(s []byte) {
+
+	h.Signature = s
+}
+
 func (h *Head) GetParentHashes() eocrypt.Hash { return h.ParentHash }
 func (h *Head) GetCoinbase() []byte           { return h.Coinbase }
 func (h *Head) GetMerkle() eocrypt.Hash       { return h.MerkleRoot }
@@ -126,6 +134,7 @@ func (h *Head) GetGas() gas.Gas               { return h.Gas }
 func (h *Head) GetMaxGas() gas.Gas            { return h.MaxGas }
 func (h *Head) GetTime() time.Time            { return h.Time }
 func (h *Head) GetNonce() uint                { return h.Nonce }
+func (h *Head) GetSig() []byte                { return h.Signature }
 
 func (h *Head) Print() {
 
