@@ -28,16 +28,16 @@ const (
 type Config struct {
 
 	// Id of the chain the threader is running on.
-	chainId *big.Int
+	ChainId *big.Int
 
 	// Type of Proof used by the chain. ("PoA", "PoB", "PoW").
-	proofType string
+	ProofType string
 
 	// The trusted IP used for syncing.
-	trustedIP *net.IP
+	TrustedIP *net.IP
 
 	// The public key of a trusted source.
-	trustedKey *ecdsa.PublicKey
+	TrustedKey *ecdsa.PublicKey
 }
 
 // Load the default configuration file. Returns any errors if they occured.
