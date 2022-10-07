@@ -33,6 +33,9 @@ type Config struct {
 	// Type of Proof used by the chain. ("PoA", "PoB", "PoW").
 	ProofType string
 
+	// The IP of the node.
+	IP *net.IP
+
 	// The trusted IP used for syncing.
 	TrustedIP *net.IP
 
