@@ -13,6 +13,8 @@ var (
 	ERR_SIGNATURE = errors.New("Couldnt create the signature of the given block.")
 )
 
+// The Authority Engine (AE) is the proof of consensus engine for proof of authority, aka listen to a trusted party.
+// The trusted party is a public key provided in the eon config. Any blocks created by the trusted party are assumed to be valid.
 type AuthorityEngine struct {
 
 	// The config used by the engine.
@@ -20,6 +22,19 @@ type AuthorityEngine struct {
 
 	// The nodes private key.
 	privateKey *ecdsa.PrivateKey
+}
+
+// Creates and returns an authority engine with the given config and private key.
+func NewAuthorityEngine(c config.Config, p ecdsa.PrivateKey) *AuthorityEngine {
+
+	// Create the engine.
+	ae := new(AuthorityEngine)
+
+	// Apply the parameters.
+	ae.config = &c
+	ae.privateKey = &p
+
+	return ae
 }
 
 // Takes the given block and signs it with the nodes private key.
@@ -46,23 +61,9 @@ func (a *AuthorityEngine) ValidateBlock(b *block.Block) error {
 // Returns true if the block is valid, false if it isnt (according to the config given for PoA Engine).
 func (a *AuthorityEngine) VerifyBlock(b *block.Block) bool {
 
-	// Uncompress the coinbase.
-	coinbase, keyErr := curve.UncompressPub(b.Head.GetCoinbase())
-
-	// If an error occured, the block is assumed invalid.
-	if keyErr != nil {
-
-		return false
-	}
-
-	// If the coinbase is not equal to the trusted key.
-	if coinbase != a.config.TrustedKey {
-
-		return false
-	}
-
+	// Get the blockhash (the message that was signed).
 	blockHash := b.GetHash()
 
-	// Returns true if the sig is valid by the coinbase, false if not.
-	return curve.VerifySign(coinbase, blockHash.GetBytes(), b.Head.GetSig())
+	// Returns true if the block was signed by the trusted key, false if not.
+	return curve.VerifySign(a.config.TrustedKey, blockHash.GetBytes(), b.Head.GetSig())
 }
