@@ -44,7 +44,7 @@ type Block struct {
 
 // Creates and gives a Head with the given inputs.
 func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff *big.Int,
-	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint, Sig []byte) *Head {
+	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint) *Head {
 
 	h := new(Head)
 

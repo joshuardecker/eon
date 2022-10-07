@@ -22,10 +22,9 @@ func TestBlock(t *testing.T) {
 	GAS_MAX := gas.Gas(1)
 	TIME := helper.LocalTime()
 	NONCE := uint(1)
-	SIG := []byte("Totally a real sig")
 
 	// The Header created.
-	h := NewHead(*HEAD_HASH, COINBASE, *MERKLE, DIFF, GAS, GAS_MAX, TIME, NONCE, SIG)
+	h := NewHead(*HEAD_HASH, COINBASE, *MERKLE, DIFF, GAS, GAS_MAX, TIME, NONCE)
 
 	// The block created.
 	b := NewBlock(h, nil, nil, TIME)
