@@ -29,12 +29,12 @@ type Transaction struct {
 	TxFrom    []eocrypt.Hash `json:"TransactionFromHash"`
 
 	// Basic but otherwise needed data.
-	ChainId  *big.Int `json:"ChainId"`
+	ThreadId *big.Int `json:"Thread"`
 	Gas      gas.Gas  `json:"Gas"`
 	GasPrice *big.Int `json:"GasPrice"`
 
 	// When did the node get this transaction?
-	ReceivedTime time.Time `json:"ReceivedTime"`
+	ReceivedTime time.Time `json:"Time"`
 }
 
 // ****
@@ -102,7 +102,7 @@ func (t *Transaction) SetSignature(sig []byte) {
 
 func (t *Transaction) SetChainId(b big.Int) {
 
-	t.ChainId = &b
+	t.ThreadId = &b
 }
 
 func (t *Transaction) SetGas(g gas.Gas) {
@@ -126,7 +126,7 @@ func (t *Transaction) GetTo() []byte                { return t.To }
 func (t *Transaction) GetFrom() []byte              { return t.From }
 func (t *Transaction) GetBlockFrom() []eocrypt.Hash { return t.BlockFrom }
 func (t *Transaction) GetTxFrom() []eocrypt.Hash    { return t.TxFrom }
-func (t *Transaction) GetChainId() big.Int          { return *t.ChainId }
+func (t *Transaction) GetChainId() big.Int          { return *t.ThreadId }
 func (t *Transaction) GetGas() gas.Gas              { return t.Gas }
 func (t *Transaction) GetGasPrice() big.Int         { return *t.GasPrice }
 func (t *Transaction) GetReceivedTime() time.Time   { return t.ReceivedTime }
@@ -206,7 +206,7 @@ func (t *Transaction) Hash() *eocrypt.Hash {
 			t.From,
 			t.BlockFromRoot().GetBytes(),
 			t.TxFromRoot().GetBytes(),
-			t.ChainId.Bytes(),
+			t.ThreadId.Bytes(),
 			t.Gas.Uint(),
 			t.GasPrice.Bytes(),
 		},
@@ -226,7 +226,7 @@ func (t *Transaction) Print() {
 		ChainId: %x
 		Gas: %v
 		GasPrice: %v
-	]`, t.Hash().GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ChainId, t.Gas, t.GasPrice)
+	]`, t.Hash().GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ThreadId, t.Gas, t.GasPrice)
 }
 
 // Gets the merkle root of the block from hashes, aka the block hashes of the blocks you are pointing
