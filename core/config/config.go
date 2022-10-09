@@ -27,8 +27,8 @@ const (
 // a trusted IP for syncing, and which signer of blocks you trust (can just be yourself).
 type Config struct {
 
-	// Id of the chain the threader is running on.
-	ChainId *big.Int
+	// Id of the network the threader is running on.
+	NetworkId *big.Int
 
 	// Type of Proof used by the chain. ("PoA", "PoB", "PoW").
 	ProofType string
