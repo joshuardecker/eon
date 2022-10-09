@@ -15,7 +15,7 @@ import (
 type Threader struct {
 
 	// The Proof Engine of the threader can be multiple types, so here we declare it as a interface for flexability.
-	proofEngine interface{}
+	engine Engine
 
 	// The threads of the threader.
 	threads *[]thread.Thread
@@ -36,13 +36,13 @@ type Threader struct {
 }
 
 // Creates a new threader with the given configuration, proofEngine, and the nodes private key.
-func NewThreader(config config.Config, proofEngine interface{}, private ecdsa.PrivateKey) *Threader {
+func NewThreader(config config.Config, proofEngine Engine, private ecdsa.PrivateKey) *Threader {
 
 	// Create the threader.
 	t := new(Threader)
 
 	// Lock in the proof engine.
-	t.proofEngine = proofEngine
+	t.engine = proofEngine
 
 	// Add a single Thread to start.
 	t.AddThread(thread.NewThread(big.NewInt(0)))
