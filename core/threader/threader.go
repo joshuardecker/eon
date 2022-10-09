@@ -18,7 +18,7 @@ type Threader struct {
 	engine Engine
 
 	// The threads of the threader.
-	threads *[]thread.Thread
+	threads map[uint64]thread.Thread
 
 	// The length of the threads.
 	// This is saved as a big int, that way we dont need to rely on the len() function to get the length of the threads array.
@@ -45,7 +45,7 @@ func NewThreader(config config.Config, proofEngine Engine, private ecdsa.Private
 	t.engine = proofEngine
 
 	// Add a single Thread to start.
-	t.AddThread(thread.NewThread(big.NewInt(0)))
+	t.threads[0] = *thread.NewThread(big.NewInt(0))
 
 	t.priv = &private
 	t.config = &config
@@ -62,14 +62,11 @@ func (t *Threader) AddThread(th *thread.Thread) {
 	// Unlock it when done.
 	defer t.threadsLock.Unlock()
 
-	// The id equals the length of the threads array, so if two threads exist, the new thread will have the id of "3".
-	th.Id = t.threadsLen
-
 	// Add 1 to the length of the threads.
 	t.threadsLen.Add(t.threadsLen, big.NewInt(1))
 
-	// Add the new thread to the array.
-	*t.threads = append(*t.threads, *th)
+	// Add the new thread to the thread map.
+	t.threads[t.threadsLen.Uint64()] = *th
 }
 
 // Loads the given thread based on id. If the thread does not exist, it will create a thread with that id.
