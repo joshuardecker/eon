@@ -22,28 +22,19 @@ var (
 // A thread is a single thread of blocks, aka a normal blockchain.
 type Thread struct {
 
-	// The id of the thread.
-	Id *big.Int
-
 	// Databases of the thread.
 	DB    *leveldb.DB
 	memDB *eondb.MemDb
 }
 
 // Creates and returns a new thread with everything generated, ready for use.
+// Uses a Big Int as the Id and not a uint64 because a Big Int can be accurately be converted to a string, which is needed for the DB save name.
 func NewThread(Id *big.Int) *Thread {
 
 	return &Thread{
-		Id:    Id,
 		DB:    eondb.NewDB(Id.String()),
 		memDB: eondb.NewMemDb(),
 	}
-}
-
-// Update the id of the thread.
-func (t *Thread) ChangeId(b big.Int) {
-
-	t.Id = &b
 }
 
 // ****
