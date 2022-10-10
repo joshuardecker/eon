@@ -5,33 +5,17 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
-	"math/big"
 	"time"
 
-	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
 	"github.com/Sucks-To-Suck/Eon/types/transaction"
 )
 
-// Heads define the parameters of a block: the parents of the block, Coinbase, merkleroot of the data transactions, difficulty of the block,
-// gas used (size of the data transactions), max size, creation time,
-type Head struct {
-	ParentHash eocrypt.Hash `json:"ParentHash"`
-	Coinbase   []byte       `json:"Coinbase"`
-	MerkleRoot eocrypt.Hash `json:"Merkle"`
-	Difficulty *big.Int     `json:"Diff"`
-	Gas        gas.Gas      `json:"GasUsed"`
-	MaxGas     gas.Gas      `json:"MaxGas"`
-	Time       time.Time    `json:"Time"`
-	Nonce      uint         `json:"Nonce"`
-	Signature  []byte       `json:"Signature"`
-}
-
 // Blocks store the data transactions of the network. Includes the header of the block, any uncles, the data transactions, an identifying hash,
 // time received, and the size of the block.
 type Block struct {
-	Head         *Head                      `json:"Head"`
-	Uncles       *[]Head                    `json:"Uncles"`
+	Head         *Header                    `json:"Head"`
+	Uncles       *[]Header                  `json:"Uncles"`
 	Transactions *[]transaction.Transaction `json:"Txs"`
 
 	BlockHash eocrypt.Hash `json:"Hash"`
@@ -40,125 +24,10 @@ type Block struct {
 }
 
 // ****
-// Head:
-
-// Creates and gives a Head with the given inputs.
-func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff *big.Int,
-	Gas gas.Gas, MaxGas gas.Gas, Time time.Time, Nonce uint) *Head {
-
-	h := new(Head)
-
-	h.SetParentHash(ParentHash)
-	h.SetCoinbase(Coinbase)
-	h.SetMerkle(Merkle)
-	h.SetDiff(*Diff)
-	h.SetGas(Gas)
-	h.SetMaxGas(MaxGas)
-	h.SetTime(Time)
-	h.SetNonce(Nonce)
-
-	return h
-}
-
-// Returns the hash of the Header.
-func (h *Head) Hash() *eocrypt.Hash {
-
-	return eocrypt.HashInterface(
-		[]interface{}{
-
-			h.ParentHash.GetBytes(),
-			h.Coinbase,
-			h.MerkleRoot.GetBytes(),
-			h.Difficulty.Bytes(),
-			h.Gas.Uint(),
-			h.MaxGas.Uint(),
-			h.Nonce,
-			h.Signature,
-		},
-	)
-}
-
-func (h *Head) SetParentHash(hash eocrypt.Hash) {
-
-	h.ParentHash = hash
-}
-
-func (h *Head) SetCoinbase(p []byte) {
-
-	h.Coinbase = p
-}
-
-func (h *Head) SetMerkle(hash eocrypt.Hash) {
-
-	h.MerkleRoot = hash
-}
-
-// Note about this function: none of these funcs use pointer inputs, that way data in them ant be changed unless specifically
-// set by a function for safety reasons, but making a copy of the Big Int may be costly in very high throughput systems.
-func (h *Head) SetDiff(b big.Int) {
-
-	h.Difficulty = &b
-}
-
-func (h *Head) SetGas(g gas.Gas) {
-
-	h.Gas = g
-}
-
-func (h *Head) SetMaxGas(g gas.Gas) {
-
-	h.MaxGas = g
-}
-
-func (h *Head) SetTime(t time.Time) {
-
-	h.Time = t
-}
-
-func (h *Head) SetNonce(n uint) {
-
-	h.Nonce = n
-}
-
-func (h *Head) SetSig(s []byte) {
-
-	h.Signature = s
-}
-
-func (h *Head) GetParentHashes() eocrypt.Hash { return h.ParentHash }
-func (h *Head) GetCoinbase() []byte           { return h.Coinbase }
-func (h *Head) GetMerkle() eocrypt.Hash       { return h.MerkleRoot }
-func (h *Head) GetDiff() *big.Int             { return h.Difficulty }
-func (h *Head) GetGas() gas.Gas               { return h.Gas }
-func (h *Head) GetMaxGas() gas.Gas            { return h.MaxGas }
-func (h *Head) GetTime() time.Time            { return h.Time }
-func (h *Head) GetNonce() uint                { return h.Nonce }
-func (h *Head) GetSig() []byte                { return h.Signature }
-
-func (h *Head) Print() {
-
-	fmt.Printf(`
-	[
-		Parent Hash: %x
-		Coinbase: %x
-		Merkle: %x
-		Difficulty: %d
-		Gas: %d
-		Max Gas: %d	
-		Time: %v
-		Nonce: %v
-	]
-	`, h.ParentHash, h.Coinbase, h.MerkleRoot, h.Difficulty.Bytes(), h.Gas, h.MaxGas, h.Time, h.Nonce)
-}
-
-// Head:
-// ****
-
-// ****
 // Block:
 
 // Create a new block with the given inputs. This does not calculate the block hash. Call CalcHash() on the block to get the hash.
-func NewBlock(Head *Head, Uncles *[]Head, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *Block {
+func NewBlock(Head *Header, Uncles *[]Header, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *Block {
 
 	b := new(Block)
 
@@ -190,12 +59,12 @@ func (b *Block) CalcHash() eocrypt.Hash {
 	return b.GetHash()
 }
 
-func (b *Block) SetHead(h Head) {
+func (b *Block) SetHead(h Header) {
 
 	b.Head = &h
 }
 
-func (b *Block) SetUncles(u []Head) {
+func (b *Block) SetUncles(u []Header) {
 
 	b.Uncles = &u
 }
@@ -215,8 +84,8 @@ func (b *Block) SetReceivedTime(t time.Time) {
 	b.Received = t
 }
 
-func (b *Block) GetHead() *Head                             { return b.Head }
-func (b *Block) GetUncles() *[]Head                         { return b.Uncles }
+func (b *Block) GetHead() *Header                           { return b.Head }
+func (b *Block) GetUncles() *[]Header                       { return b.Uncles }
 func (b *Block) GetTransactions() []transaction.Transaction { return *b.Transactions }
 func (b *Block) GetHash() eocrypt.Hash                      { return b.BlockHash }
 func (b *Block) GetReceivedTime() time.Time                 { return b.Received }
@@ -301,8 +170,8 @@ func (b *Block) Print() {
 		Time: %v
 		Nonce: %v
 	]
-	`, b.CalcHash(), b.Head.ParentHash, b.Head.Coinbase, b.Head.MerkleRoot, b.Head.Difficulty.Bytes(),
-		b.Head.Gas, b.Head.MaxGas, b.Head.Time, b.Head.Nonce)
+	`, b.CalcHash(), b.Head.ParentHash(), b.Head.Coinbase(), b.Head.MerkleRoot(), b.Head.Difficulty().Bytes(),
+		b.Head.Gas(), b.Head.GasLimit(), b.Head.Time(), b.Head.Nonce())
 }
 
 // Block:
