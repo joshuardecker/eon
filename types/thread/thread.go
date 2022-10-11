@@ -176,6 +176,12 @@ func (t *Thread) GetBlockByHashMem(h *eocrypt.Hash) (b *block.Block, e error) {
 // ****
 // Transactions:
 
+// Add the tx to the pending tx list.
+func (t *Thread) AddTx(tx *transaction.Transaction) {
+
+	*t.txs = append(*t.txs, *tx)
+}
+
 // Retrieves pending transactions until either no transactions are pending or the gas limit for the next block is hit.
 func (t *Thread) RetrieveTxs(gasLim gas.Gas) (finalTxs *[]transaction.Transaction) {
 
