@@ -41,6 +41,9 @@ type Config struct {
 
 	// The public key of a trusted source.
 	TrustedKey *ecdsa.PublicKey
+
+	// The amount of threads the node will load (Theoretically the network thread count).
+	ThreadCount *big.Int
 }
 
 // Load the default configuration file. Returns any errors if they occured.
