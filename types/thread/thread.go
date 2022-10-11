@@ -6,8 +6,10 @@ import (
 	"math/big"
 
 	eondb "github.com/Sucks-To-Suck/Eon/core/eonDB"
+	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
 	"github.com/Sucks-To-Suck/Eon/types/block"
+	"github.com/Sucks-To-Suck/Eon/types/transaction"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
@@ -25,6 +27,7 @@ type Thread struct {
 	// Databases of the thread.
 	DB    *leveldb.DB
 	memDB *eondb.MemDb
+	txs   *[]transaction.Transaction
 }
 
 // Creates and returns a new thread with everything generated, ready for use.
@@ -168,4 +171,38 @@ func (t *Thread) GetBlockByHashMem(h *eocrypt.Hash) (b *block.Block, e error) {
 }
 
 // MemDB:
+// ****
+
+// ****
+// Transactions:
+
+// Retrieves pending transactions until either no transactions are pending or the gas limit for the next block is hit.
+func (t *Thread) RetrieveTxs(gasLim gas.Gas) (finalTxs *[]transaction.Transaction) {
+
+	// If there are no txs pending.
+	if len(*t.txs) == 0 {
+
+		return nil
+	}
+
+	// Loop through adding txs to the finalTxs until gasLimit hits 0, aka the gas limit has been hit.
+	for _, tx := range *t.txs {
+
+		// Add the tx to the final tx slice.
+		*finalTxs = append(*finalTxs, tx)
+
+		// Subtract the tx gas from the gasLimit.
+		gasLim -= tx.GetGas()
+
+		// If the limit has been reached.
+		if gasLim == 0 {
+
+			return
+		}
+	}
+
+	return
+}
+
+// Transactions:
 // ****
