@@ -47,6 +47,9 @@ func NewThreader(config config.Config, proofEngine Engine, private ecdsa.Private
 	// Add a single Thread to start.
 	t.threads[0] = *thread.NewThread(big.NewInt(0))
 
+	// Set the length.
+	t.threadsLen = big.NewInt(1)
+
 	t.priv = &private
 	t.config = &config
 
