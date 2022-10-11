@@ -44,7 +44,7 @@ func NewThread(Id *big.Int) *Thread {
 func (t *Thread) AddBlock(b *block.Block) error {
 
 	// Get the hash of the block.
-	bHash := b.GetHash()
+	bHash := b.Hash()
 
 	// Store it in the db.
 	return t.DB.Put(bHash.GetBytes(), b.Bytes(), nil)
@@ -54,7 +54,7 @@ func (t *Thread) AddBlock(b *block.Block) error {
 func (t *Thread) RemoveBlock(b *block.Block) error {
 
 	// Get the hash of the block.
-	bHash := b.GetHash()
+	bHash := b.Hash()
 
 	return t.DB.Delete(bHash.GetBytes(), nil)
 }
@@ -111,7 +111,7 @@ func (t *Thread) GetBlockByHash(h *eocrypt.Hash) (b *block.Block, e error) {
 func (t *Thread) AddBlockMem(b *block.Block) error {
 
 	// Get the hash of the block.
-	bHash := b.GetHash()
+	bHash := b.Hash()
 
 	return t.memDB.Set(bHash.GetBytes(), b.Bytes())
 }
@@ -120,7 +120,7 @@ func (t *Thread) AddBlockMem(b *block.Block) error {
 func (t *Thread) RemoveBlockMem(b *block.Block) error {
 
 	// Get the hash of the block.
-	bHash := b.GetHash()
+	bHash := b.Hash()
 
 	return t.memDB.Remove(bHash.GetBytes())
 }
