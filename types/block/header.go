@@ -29,6 +29,8 @@ type Header interface {
 
 	Signature() []byte
 
+	Proof() string
+
 	// Functions that modify the in block data:
 	Sign(sig []byte)
 
