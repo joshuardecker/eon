@@ -2,104 +2,61 @@ package block
 
 import (
 	"bytes"
+	"crypto/ecdsa"
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
+	"github.com/Sucks-To-Suck/Eon/eocrypt/curve"
 	"github.com/Sucks-To-Suck/Eon/types/transaction"
 )
 
-// Blocks store the data transactions of the network. Includes the header of the block, any uncles, the data transactions, an identifying hash,
-// time received, and the size of the block.
+// A Block is a storgae of a defining Header, any uncle blocks, and the data transactions within.
 type Block struct {
-	Head         *Header                    `json:"Head"`
-	Uncles       *[]Header                  `json:"Uncles"`
-	Transactions *[]transaction.Transaction `json:"Txs"`
+	header       Header                             `json:"Head"`
+	uncles       []Header                           `json:"Uncles"`
+	transactions map[string]transaction.Transaction `json:"Txs"`
 
-	BlockHash eocrypt.Hash `json:"Hash"`
-	Received  time.Time    `json:"Received"`
-	Size      int          `json:"Size"`
+	hash     eocrypt.Hash `json:"Hash"`
+	received time.Time    `json:"Received"`
 }
 
-// ****
-// Block:
-
-// Create a new block with the given inputs. This does not calculate the block hash. Call CalcHash() on the block to get the hash.
-func NewBlock(Head *Header, Uncles *[]Header, Transactions *[]transaction.Transaction, ReceivedTime time.Time) *Block {
+// Creates and returns a new block with the given inputs.
+func NewBlock(Head Header, Uncles []Header, Transactions []transaction.Transaction, ReceivedTime time.Time) *Block {
 
 	b := new(Block)
 
-	b.SetHead(*Head)
+	// Apply the Block data (minus the transactions).
+	b.header = Head
+	b.uncles = Uncles
+	b.received = ReceivedTime
 
-	// If there are no uncles, do not set anything.
-	if Uncles != nil {
+	// Loop through and add all of the txs to the map, where the index is the tx hash as a string, and the value is the tx.
+	for _, tx := range Transactions {
 
-		b.SetUncles(*Uncles)
+		b.transactions[tx.Hash().GetString()] = tx
 	}
-
-	// If there are no transactions, do nothing.
-	if Transactions != nil {
-
-		b.SetTransactions(*Transactions)
-	}
-
-	b.SetReceivedTime(ReceivedTime)
 
 	return b
 }
 
-// This function calculates the hash of the block and saves it in the block. It also returns the hash, allowing for a copy to be
-// interacted with.
+// Calculates and stores the Hash of the block. Also returns the hash of the block.
 func (b *Block) CalcHash() eocrypt.Hash {
 
-	b.SetHash(*b.Head.Hash())
+	b.hash = b.header.Hash()
 
-	return b.GetHash()
+	return b.hash
 }
 
-func (b *Block) SetHead(h Header) {
+func (b *Block) Header() Header                                   { return b.header }
+func (b *Block) Uncles() []Header                                 { return b.uncles }
+func (b *Block) Transactions() map[string]transaction.Transaction { return b.transactions }
+func (b *Block) Time() time.Time                                  { return b.received }
 
-	b.Head = &h
-}
-
-func (b *Block) SetUncles(u []Header) {
-
-	b.Uncles = &u
-}
-
-func (b *Block) SetTransactions(t []transaction.Transaction) {
-
-	b.Transactions = &t
-}
-
-func (b *Block) SetHash(h eocrypt.Hash) {
-
-	b.BlockHash = h
-}
-
-func (b *Block) SetReceivedTime(t time.Time) {
-
-	b.Received = t
-}
-
-func (b *Block) GetHead() *Header                           { return b.Head }
-func (b *Block) GetUncles() *[]Header                       { return b.Uncles }
-func (b *Block) GetTransactions() []transaction.Transaction { return *b.Transactions }
-func (b *Block) GetHash() eocrypt.Hash                      { return b.BlockHash }
-func (b *Block) GetReceivedTime() time.Time                 { return b.Received }
-
-// Uses the gob encoder to encode and return the block as a Bytes Buffer.
-func (b *Block) EncodeToBuffer() (*bytes.Buffer, error) {
-
-	buff := new(bytes.Buffer)
-
-	// Encode the block into the Bytes Buffer.
-	encodeErr := gob.NewEncoder(buff).Encode(b)
-
-	return buff, encodeErr
-}
+// Note this does not calculate the hash, just returns the stored value.
+// Use CalcHash() to calculate and get the block hash.
+func (b *Block) Hash() eocrypt.Hash { return b.hash }
 
 // Uses the gob encoder with a provided Bytes Buffer to encode the block into that Buffer.
 func (b *Block) EncodeWithBuffer(by *bytes.Buffer) error {
@@ -108,19 +65,8 @@ func (b *Block) EncodeWithBuffer(by *bytes.Buffer) error {
 	return gob.NewEncoder(by).Encode(b)
 }
 
-// Encode the block into JSON format. Returns the encoded bytes in a Bytes Buffer.
-func (b *Block) EncodeJSON() (*bytes.Buffer, error) {
-
-	buff := new(bytes.Buffer)
-
-	// Encode the block into the Bytes Buffer.
-	encodeErr := json.NewEncoder(buff).Encode(b)
-
-	return buff, encodeErr
-}
-
 // Encode the block with the provided Bytes Buffer. The encoded bytes will reside there.
-func (b *Block) EncodeJSONwithBuff(by *bytes.Buffer) error {
+func (b *Block) EncodeJSON(by *bytes.Buffer) error {
 
 	// Encode the block into the Bytes Buffer.
 	return json.NewEncoder(by).Encode(b)
@@ -151,28 +97,30 @@ func DecodeJSON(by *bytes.Buffer) (*Block, error) {
 // Returns the encoded bytes of the block.
 func (b *Block) Bytes() []byte {
 
-	bytes, _ := b.EncodeToBuffer()
+	// Create the bytes buffer.
+	buff := new(bytes.Buffer)
 
-	return bytes.Bytes()
+	// Encode the block into the buffer.
+	b.EncodeWithBuffer(buff)
+
+	return buff.Bytes()
 }
 
+// Prints the Header of the block.
 func (b *Block) Print() {
-	fmt.Printf(`
-	[
-		Block Hash: %x
-	
-		Parent Hash: %x
-		Coinbase: %x
-		Merkle: %x
-		Difficulty: %d
-		Gas: %d
-		Max Gas: %d	
-		Time: %v
-		Nonce: %v
-	]
-	`, b.CalcHash(), b.Head.ParentHash(), b.Head.Coinbase(), b.Head.MerkleRoot(), b.Head.Difficulty().Bytes(),
-		b.Head.Gas(), b.Head.GasLimit(), b.Head.Time(), b.Head.Nonce())
+
+	b.header.PrintBlock(b.hash)
 }
 
-// Block:
-// ****
+// Signs the block with the given private key. Returns any errors.
+func (b *Block) Sign(key *ecdsa.PrivateKey) error {
+
+	// Get the signature and any errors.
+	sig, err := curve.Sign(key, b.hash.GetBytes())
+
+	// Put the signature into the header.
+	b.header.Sign(sig)
+
+	// Return any errors.
+	return err
+}
