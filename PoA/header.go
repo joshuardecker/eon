@@ -1,12 +1,17 @@
 package poa
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 	"time"
 
 	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
+)
+
+var (
+	ERR_SIGN = errors.New("Could not sign the block")
 )
 
 // The Header that Proof of Authority blocks use.
@@ -20,11 +25,12 @@ type PoAHeader struct {
 	time       time.Time    `json:"Time"`
 	signature  []byte       `json:"Signature"`
 	threadId   *big.Int     `json:"Thread"`
+	proof      string       `json:"Proof"` // Should be "a" "b" or "w" to signify an authority proof, burn proof, or work proof.
 }
 
 // Creates and gives a Head with the given inputs.
-func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff *big.Int,
-	Gas gas.Gas, GasLim gas.Gas, Time time.Time, Nonce uint) *PoAHeader {
+func NewHeader(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash,
+	Gas gas.Gas, GasLim gas.Gas, Time time.Time, ThreadId *big.Int) *PoAHeader {
 
 	return &PoAHeader{
 		parentHash: ParentHash,
@@ -33,13 +39,15 @@ func NewHead(ParentHash eocrypt.Hash, Coinbase []byte, Merkle eocrypt.Hash, Diff
 		gas:        Gas,
 		gasLim:     GasLim,
 		time:       Time,
+		threadId:   ThreadId,
+		proof:      "a",
 	}
 }
 
 // Returns the hash of the Header.
-func (h *PoAHeader) Hash() *eocrypt.Hash {
+func (h *PoAHeader) Hash() eocrypt.Hash {
 
-	return eocrypt.HashInterface(
+	return *eocrypt.HashInterface(
 		[]interface{}{
 
 			h.parentHash.GetBytes(),
@@ -59,19 +67,44 @@ func (h *PoAHeader) Gas() gas.Gas             { return h.gas }
 func (h *PoAHeader) GasLimit() gas.Gas        { return h.gasLim }
 func (h *PoAHeader) Time() time.Time          { return h.time }
 func (h *PoAHeader) Signature() []byte        { return h.signature }
+func (h *PoAHeader) Proof() string            { return h.proof }
+
+// Sets the signature of the block to the given bytes.
+// Does NOT actually sign the header, just saves the signature.
+func (h *PoAHeader) Sign(sig []byte) {
+
+	h.signature = sig
+}
 
 func (h *PoAHeader) Print() {
 
 	fmt.Printf(`
 	[
+		Type: Proof of Authority
 		Parent Hash: %x
 		Coinbase: %x
 		Merkle: %x
-		Difficulty: %d
 		Gas: %d
 		Max Gas: %d	
 		Time: %v
-		Nonce: %v
 	]
 	`, h.parentHash, h.coinbase, h.merkleRoot, h.gas, h.gasLim, h.time)
+}
+
+// Prints the header with the given block hash, aka printing the block.
+func (h *PoAHeader) PrintBlock(bHash eocrypt.Hash) {
+
+	fmt.Printf(`
+	[
+		Type: Proof of Authority
+		Block Hash: %x
+
+		Parent Hash: %x
+		Coinbase: %x
+		Merkle: %x
+		Gas: %d
+		Max Gas: %d	
+		Time: %v
+	]
+	`, bHash, h.parentHash, h.coinbase, h.merkleRoot, h.gas, h.gasLim, h.time)
 }
