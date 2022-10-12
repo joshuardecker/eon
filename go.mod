@@ -1,6 +1,6 @@
 module github.com/Sucks-To-Suck/Eon
 
-go 1.18
+go 1.19
 
 require (
 	github.com/syndtr/goleveldb v1.0.1-0.20220614013038-64ee5596c38a
