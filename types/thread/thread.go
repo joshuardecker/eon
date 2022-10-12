@@ -5,7 +5,7 @@ import (
 	"errors"
 	"math/big"
 
-	eondb "github.com/Sucks-To-Suck/Eon/core/eonDB"
+	"github.com/Sucks-To-Suck/Eon/core/eondb"
 	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
 	"github.com/Sucks-To-Suck/Eon/types/block"
