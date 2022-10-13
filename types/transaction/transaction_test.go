@@ -6,7 +6,7 @@ import (
 
 	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
-	"github.com/Sucks-To-Suck/Eon/helper"
+	"github.com/Sucks-To-Suck/Eon/tools/eotime"
 )
 
 func TestTransaction(t *testing.T) {
@@ -24,7 +24,7 @@ func TestTransaction(t *testing.T) {
 	chain := big.NewInt(100)
 	txGas := gas.Gas(1)
 	gasPrice := big.NewInt(1)
-	txTime := helper.LocalTime()
+	txTime := eotime.LocalTime()
 
 	// Create the transaction.
 	tx := NewTransaction(*tokenHash, amount, to, from, sig, blockFrom,
