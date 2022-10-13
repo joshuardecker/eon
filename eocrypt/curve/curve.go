@@ -146,7 +146,7 @@ func SavePrivateKey(p *ecdsa.PrivateKey) error {
 // Signs the given message with the private key. Returns the signature and any errors.
 func Sign(p *ecdsa.PrivateKey, msg []byte) ([]byte, error) {
 
-	return ecdsa.SignASN1(rand.Reader, p, eocrypt.HashBytes(msg).GetBytes())
+	return ecdsa.SignASN1(rand.Reader, p, eocrypt.HashBytes(msg).Bytes())
 }
 
 // Private Key Stuff:
@@ -158,7 +158,7 @@ func Sign(p *ecdsa.PrivateKey, msg []byte) ([]byte, error) {
 // Checks whether a given message was signed by the given public key. Returns true if signed by them, false otherwise.
 func VerifySign(p *ecdsa.PublicKey, msg []byte, sig []byte) bool {
 
-	return ecdsa.VerifyASN1(p, eocrypt.HashBytes(msg).GetBytes(), sig)
+	return ecdsa.VerifyASN1(p, eocrypt.HashBytes(msg).Bytes(), sig)
 }
 
 // Returns the compressed form of a public key.

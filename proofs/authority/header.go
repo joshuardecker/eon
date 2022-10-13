@@ -50,9 +50,9 @@ func (h *PoAHeader) Hash() eocrypt.Hash {
 	return *eocrypt.HashInterface(
 		[]interface{}{
 
-			h.parentHash.GetBytes(),
+			h.parentHash.Bytes(),
 			h.coinbase,
-			h.merkleRoot.GetBytes(),
+			h.merkleRoot.Bytes(),
 			h.gas.Uint(),
 			h.gasLim.Uint(),
 			h.signature,

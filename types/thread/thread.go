@@ -50,7 +50,7 @@ func (t *Thread) AddBlock(b *block.Block) error {
 	bHash := b.Hash()
 
 	// Store it in the db.
-	return t.DB.Put(bHash.GetBytes(), b.Bytes(), nil)
+	return t.DB.Put(bHash.Bytes(), b.Bytes(), nil)
 }
 
 // Removes the given block from the DB.
@@ -59,20 +59,20 @@ func (t *Thread) RemoveBlock(b *block.Block) error {
 	// Get the hash of the block.
 	bHash := b.Hash()
 
-	return t.DB.Delete(bHash.GetBytes(), nil)
+	return t.DB.Delete(bHash.Bytes(), nil)
 }
 
 // Removes a block based on its hash from the DB.
 func (t *Thread) RemoveBlockByHash(h *eocrypt.Hash) error {
 
-	return t.DB.Delete(h.GetBytes(), nil)
+	return t.DB.Delete(h.Bytes(), nil)
 }
 
 // Gets and returns the block based on the given hash from the DB.
 func (t *Thread) GetBlockByHash(h *eocrypt.Hash) (b *block.Block, e error) {
 
 	// Get the block as bytes from the DB.
-	blockBytes, e := t.DB.Get(h.GetBytes(), nil)
+	blockBytes, e := t.DB.Get(h.Bytes(), nil)
 
 	// If the block couldnt be got by the DB.
 	if e != nil {
@@ -116,7 +116,7 @@ func (t *Thread) AddBlockMem(b *block.Block) error {
 	// Get the hash of the block.
 	bHash := b.Hash()
 
-	return t.memDB.Set(bHash.GetBytes(), b.Bytes())
+	return t.memDB.Set(bHash.Bytes(), b.Bytes())
 }
 
 // Removes the given block from the memoryDB.
@@ -125,20 +125,20 @@ func (t *Thread) RemoveBlockMem(b *block.Block) error {
 	// Get the hash of the block.
 	bHash := b.Hash()
 
-	return t.memDB.Remove(bHash.GetBytes())
+	return t.memDB.Remove(bHash.Bytes())
 }
 
 // Removes the given block by the block hash given.
 func (t *Thread) RemoveBlockByHashMem(h *eocrypt.Hash) error {
 
-	return t.memDB.Remove(h.GetBytes())
+	return t.memDB.Remove(h.Bytes())
 }
 
 // Gets and returns the block based on the given hash from the memDB.
 func (t *Thread) GetBlockByHashMem(h *eocrypt.Hash) (b *block.Block, e error) {
 
 	// Get the block as bytes from the memDB.
-	blockBytes, e := t.memDB.Get(h.GetBytes())
+	blockBytes, e := t.memDB.Get(h.Bytes())
 
 	// If the block couldnt be got by the memDB.
 	if e != nil {

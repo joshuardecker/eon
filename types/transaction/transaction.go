@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/Sucks-To-Suck/Eon/core/gas"
-	"github.com/Sucks-To-Suck/Eon/core/merkle"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
+	"github.com/Sucks-To-Suck/Eon/tools/merkle"
 )
 
 // A Transaction simply represents a token being sent from one party to another (not even the native token).
@@ -200,12 +200,12 @@ func (t *Transaction) Hash() *eocrypt.Hash {
 
 	return eocrypt.HashInterface(
 		[]interface{}{
-			t.TokenHash.GetBytes(),
+			t.TokenHash.Bytes(),
 			t.Amount.Bytes(),
 			t.To,
 			t.From,
-			t.BlockFromRoot().GetBytes(),
-			t.TxFromRoot().GetBytes(),
+			t.BlockFromRoot().Bytes(),
+			t.TxFromRoot().Bytes(),
 			t.ThreadId.Bytes(),
 			t.Gas.Uint(),
 			t.GasPrice.Bytes(),
@@ -226,7 +226,7 @@ func (t *Transaction) Print() {
 		ChainId: %x
 		Gas: %v
 		GasPrice: %v
-	]`, t.Hash().GetBytes(), t.TokenHash.GetBytes(), t.Amount.Bytes()[:], t.To, t.ThreadId, t.Gas, t.GasPrice)
+	]`, t.Hash().Bytes(), t.TokenHash.Bytes(), t.Amount.Bytes()[:], t.To, t.ThreadId, t.Gas, t.GasPrice)
 }
 
 // Gets the merkle root of the block from hashes, aka the block hashes of the blocks you are pointing

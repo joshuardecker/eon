@@ -28,7 +28,7 @@ func (t *Threader) SubmitBlock(b *block.Block, threadId *big.Int) error {
 
 		// Store the valid block in the given threads DB.
 		bHash := b.Hash()
-		err := t.threads[threadId.Uint64()].DB.Put(bHash.GetBytes(), b.Bytes(), nil)
+		err := t.threads[threadId.Uint64()].DB.Put(bHash.Bytes(), b.Bytes(), nil)
 
 		return err
 	}

@@ -52,5 +52,5 @@ func (a *AuthorityEngine) VerifyBlock(b *block.Block) bool {
 	bHash := b.Hash()
 
 	// Returns true if the block was signed by the trusted key, false if not.
-	return curve.VerifySign(a.config.TrustedKey, bHash.GetBytes(), b.Header().Signature())
+	return curve.VerifySign(a.config.TrustedKey, bHash.Bytes(), b.Header().Signature())
 }

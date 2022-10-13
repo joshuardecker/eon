@@ -4,17 +4,13 @@ import "testing"
 
 func TestLogger(t *testing.T) {
 
-	log1 := NewLogger("Tester")
-	log2 := NewLogger("Miner")
-	log3 := NewLogger("Node")
+	LogGreen("Tester", "All good!")
 
-	log1.LogGreen("Tester Logs Green!")
+	LogYellow("Fake Miner", "Miner Logs some Basic Data!")
+	LogYellow("Fake Miner", "Hashing... || Time: Now")
+	LogGreen("Fake Miner", "Solution Found!")
 
-	log2.LogYellow("Miner Logs some Basic Data!")
-	log2.LogYellow("Hashing... || Time: Now")
-	log2.LogGreen("Solution Found!")
-
-	log3.LogBlue("Loading Node...")
-	log3.LogRed("Loading failed, rebooting...")
-	log3.LogGreen("Node Online!")
+	LogBlue("Fake Node", "Loading Node...")
+	LogRed("Fake Node", "Loading failed, rebooting...")
+	LogGreen("Fake Node", "Node Online!")
 }

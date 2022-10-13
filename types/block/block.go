@@ -35,7 +35,7 @@ func NewBlock(Head Header, Uncles []Header, Transactions []transaction.Transacti
 	// Loop through and add all of the txs to the map, where the index is the tx hash as a string, and the value is the tx.
 	for _, tx := range Transactions {
 
-		b.transactions[tx.Hash().GetString()] = tx
+		b.transactions[tx.Hash().String()] = tx
 	}
 
 	return b
@@ -116,7 +116,7 @@ func (b *Block) Print() {
 func (b *Block) Sign(key *ecdsa.PrivateKey) error {
 
 	// Get the signature and any errors.
-	sig, err := curve.Sign(key, b.hash.GetBytes())
+	sig, err := curve.Sign(key, b.hash.Bytes())
 
 	// Put the signature into the header.
 	b.header.Sign(sig)
