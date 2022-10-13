@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
-	"github.com/Sucks-To-Suck/Eon/helper/logger"
 )
 
 func TestNoSavedKeys(t *testing.T) {
@@ -51,11 +50,4 @@ func TestSignatures(t *testing.T) {
 
 	// Should Print 'False'. If so, Verifying false sigs works.
 	fmt.Println(VerifySign(&p.PublicKey, msg2, sig))
-}
-
-func ErrorLog(e error) {
-
-	logger := logger.NewLogger("Test")
-
-	logger.LogRed(e.Error())
 }
