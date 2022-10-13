@@ -1,6 +1,6 @@
 package logger
 
-// Console Colors
+// Console Colors:
 const (
 	DEFAULT = "\x1b[39m"
 	RED     = "\x1b[31m"
