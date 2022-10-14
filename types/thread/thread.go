@@ -5,9 +5,9 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/Sucks-To-Suck/Eon/core/eondb"
 	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
+	"github.com/Sucks-To-Suck/Eon/tools/eondb"
 	"github.com/Sucks-To-Suck/Eon/types/block"
 	"github.com/Sucks-To-Suck/Eon/types/transaction"
 	"github.com/syndtr/goleveldb/leveldb"

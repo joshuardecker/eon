@@ -11,7 +11,7 @@ import (
 	"os"
 
 	"github.com/Sucks-To-Suck/Eon/eocrypt"
-	"github.com/Sucks-To-Suck/Eon/helper/logger"
+	"github.com/Sucks-To-Suck/Eon/tools/logger"
 )
 
 var (
@@ -35,9 +35,7 @@ func LoadPrivateKey() (*ecdsa.PrivateKey, error) {
 	// If the file could not be opened.
 	if openErr != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_LOAD.Error() + openErr.Error())
+		logger.LogRed("Ellip Curve", ERR_LOAD.Error()+openErr.Error())
 
 		return nil, ERR_LOAD
 	}
@@ -49,9 +47,7 @@ func LoadPrivateKey() (*ecdsa.PrivateKey, error) {
 	// If an error occured by reading the file.
 	if readErr != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_LOAD.Error() + readErr.Error())
+		logger.LogRed("Ellip Curve", ERR_LOAD.Error()+readErr.Error())
 
 		return nil, ERR_LOAD
 	}
@@ -65,9 +61,7 @@ func LoadPrivateKey() (*ecdsa.PrivateKey, error) {
 	// If the private key could not be decoded.
 	if decodeErr != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_DECODE.Error() + readErr.Error())
+		logger.LogRed("Ellip Curve", ERR_DECODE.Error()+readErr.Error())
 
 		return nil, ERR_DECODE
 	}
@@ -85,9 +79,7 @@ func GenerateKeys() (*ecdsa.PrivateKey, error) {
 	// If an error occured, log it and return the error.
 	if err != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_GENERATE.Error() + err.Error())
+		logger.LogRed("Ellip Curve", ERR_GENERATE.Error()+err.Error())
 
 		return nil, ERR_GENERATE
 	}
@@ -98,9 +90,7 @@ func GenerateKeys() (*ecdsa.PrivateKey, error) {
 	// If the keys have been generated but couldnt be saved.
 	if err != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_SAVE.Error() + err.Error())
+		logger.LogRed("Ellip Curve", ERR_SAVE.Error()+err.Error())
 
 		return private, ERR_SAVE
 	}
@@ -118,9 +108,7 @@ func SavePrivateKey(p *ecdsa.PrivateKey) error {
 	// If an error occurs creating the save.
 	if err != nil {
 
-		logger := logger.NewLogger("Curve")
-
-		logger.LogRed(ERR_SAVE.Error() + err.Error())
+		logger.LogRed("Ellip Curve", ERR_SAVE.Error()+err.Error())
 
 		return ERR_SAVE
 	}
