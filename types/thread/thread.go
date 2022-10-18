@@ -19,6 +19,8 @@ var (
 	DB_ERR     = errors.New("Database error")
 	MEMDB_ERR  = errors.New("MemDatabase error")
 	BUFF_ERR   = errors.New("Buffer error")
+
+	RECENT_BLOCK = []byte("Most Recent Block") // The byte key used to get the most recent block.
 )
 
 // A thread is a single thread of blocks, aka a normal blockchain.
@@ -49,7 +51,16 @@ func (t *Thread) AddBlock(b *block.Block) error {
 	// Get the hash of the block.
 	bHash := b.Hash()
 
-	// Store it in the db.
+	// Store this block as the most recent block in the DB.
+	recentBlockErr := t.DB.Put(RECENT_BLOCK, b.Bytes(), nil)
+
+	// If an error occured.
+	if recentBlockErr != nil {
+
+		return recentBlockErr
+	}
+
+	// Store it normally in the db as well.
 	return t.DB.Put(bHash.Bytes(), b.Bytes(), nil)
 }
 
@@ -73,6 +84,42 @@ func (t *Thread) GetBlockByHash(h *eocrypt.Hash) (b *block.Block, e error) {
 
 	// Get the block as bytes from the DB.
 	blockBytes, e := t.DB.Get(h.Bytes(), nil)
+
+	// If the block couldnt be got by the DB.
+	if e != nil {
+
+		return nil, DB_ERR
+	}
+
+	// Create a bytes buffer for the block bytes.
+	buff := new(bytes.Buffer)
+
+	// Write the block into the bytes buffer.
+	_, e = buff.Write(blockBytes)
+
+	// If the block couldnt be written into the buffer.
+	if e != nil {
+
+		return nil, BUFF_ERR
+	}
+
+	// Decode the block bytes into a block.
+	b, e = block.Decode(buff)
+
+	// If the block could not be decoded.
+	if e != nil {
+
+		return nil, DECODE_ERR
+	}
+
+	return b, nil
+}
+
+// Gets and returns the most recent block from the DB.
+func (t *Thread) GetRecentBlock() (b *block.Block, e error) {
+
+	// Get the block as bytes from the DB.
+	blockBytes, e := t.DB.Get(RECENT_BLOCK, nil)
 
 	// If the block couldnt be got by the DB.
 	if e != nil {
