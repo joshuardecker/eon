@@ -5,8 +5,10 @@ import (
 	"errors"
 
 	"github.com/Sucks-To-Suck/Eon/core/config"
+	"github.com/Sucks-To-Suck/Eon/core/gas"
 	"github.com/Sucks-To-Suck/Eon/eocrypt/curve"
 	"github.com/Sucks-To-Suck/Eon/types/block"
+	"github.com/Sucks-To-Suck/Eon/types/thread"
 )
 
 var (
@@ -53,4 +55,19 @@ func (a *AuthorityEngine) VerifyBlock(b *block.Block) bool {
 
 	// Returns true if the block was signed by the trusted key, false if not.
 	return curve.VerifySign(a.config.TrustedKey, bHash.Bytes(), b.Header().Signature())
+}
+
+func (a *AuthorityEngine) ProposeBlock(gasLim gas.Gas, thread *thread.Thread) (*block.Block, error) {
+
+	// Get the most recent block.
+	lastBlock, lastBlockErr := thread.GetRecentBlock()
+
+	// Any errors getting it?
+	if lastBlockErr != nil {
+
+		return nil, lastBlockErr
+	}
+
+	// Lets create the header of the block:
+	header := NewHeader(lastBlock.Hash(), curve.CompressPub(&a.privateKey.PublicKey))
 }
