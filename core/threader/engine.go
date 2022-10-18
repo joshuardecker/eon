@@ -14,5 +14,5 @@ type Engine interface {
 	// Checks whether the block is valid or not.
 	VerifyBlock(b *block.Block) bool
 
-	ProposeBlock(gasLim gas.Gas) *block.Block
+	ProposeBlock(gasLim gas.Gas) (*block.Block, error)
 }
