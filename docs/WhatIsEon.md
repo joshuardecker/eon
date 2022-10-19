@@ -6,7 +6,8 @@ What is Eon on a nice basic level?
 ---
 Eon is a program that allows two different parties (two different entities, whether that be you and a server, two companies, and ect.) to securely communicate data transactions (sent and received data of any kind) knowing that the data has not been messed with, currupted, or hijacked. How does it do this? Lets use the following diagram of a block:
 
-```------------------
+```
+------------------
 | Data: ...      |
 |                |
 | Signature: ... |
