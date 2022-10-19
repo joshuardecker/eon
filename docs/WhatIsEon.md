@@ -1,6 +1,6 @@
 What is Eon?
 ---
-Eon is an engine that handles consensus between parties, and the detail we dive into that definition will be seperated in the following sections. That way those new to the project, general cryptographic consensus, or just computer science can still understand this beautiful project!
+Eon is an engine that handles consensus between parties, and the detail we dive into that definition will be seperated in the following sections. That way those new to the project, general cryptographic consensus, or just computer science can still understand this beautiful project! The following sections will also build upon each other, so for a full view of the project, I would recommend reading them all in order.
 
 What is Eon on a nice basic level?
 ---
@@ -42,3 +42,31 @@ Verify Signature <- (Alice) Public Key + Data <- Bob
 - As the diagram shows, Bob only knowing the data sent by Alice and her public key is able to verify whether she actually sent it or not. Verifying the data will return false results if the data has been modified, whether by a malicious party, or a curruption of the data.
 
 That concludes the basic level of Eon, so lets sum things up. Eon is a program that allows parties to send blocks of data with each other, and each block is signed by the sender. This signature allows for verification on whether the data has changed since the block was signed, giving all parties involved extra security when making data transactions.
+
+A Deeper Dive into Eon Consensus:
+---
+
+First, what is consensus? Consensus is an agreed state of information. Consensus is achieved when the majority agrees with the information. Lets take an example: If 5 people all go to a pizza place together, consensus is achieved when the majority (here that is 3/5 people) agree upon a pizza to split. Same idea is applied in eon, consensus is achieved when the majority of Eon Nodes (the computers running the eon software) agree upon a state of the information. 
+
+Lets take an example in Eon. An online shopping service and a shipping company are exchanging logistical information of the orders received to the online store. The online store sorts the orders from most to least important to ship. This data is packed into blocks, and in this example lets say that the most important orders are in ```block 1```, then less important orders are sorted into ```block 2```, and finally the least important orders into ```block 3```. Consensus is achieved when both the online shop and the shipping company agree that block 1 is first, followed by block 2, and finally the least important block 3.
+
+This is where the utility of Eon lies: Establishing consensus between parties in any situtation. 
+
+How does Eon establish consensus between different parties?
+---
+This is the million dollar question and Eon has multiple solutions to this complicated problem. First, we need to define some basic rules that these consensus algorithms must follow:
+
+- Must be Byzantine Fault Tolerant (see https://en.wikipedia.org/wiki/Byzantine_fault for more info on Byzantine Fault Tolerance).
+
+- Must be scalable to handle many computers at once.
+
+- Must be simplistic on a basic level to avoid complicated code hiding bugs and security vulnerabilities.
+
+Lets talk about the three mechanisms Eon will include to solve these three requirements:
+
+Proof of Authority:
+- Proof of Authority (PoA) is the most simple of the consensus mechanisms used by Eon. All this proof is, is a trusted source signs data. If any data is signed by the trusted source, then it is viewed as true. Thats it. This mechanism is used in the first section 'What is Eon on a nice basic level?'. The Eon node operator in a config file specifies who is trusted. If the node receives data from the trusted source, it will assume that it is valid.
+
+- The benifit of this system is that it is the most light weight of the consensus systems. Proof of authority will be configurable, where the node still checks whether the data is consistant with past data, but even with this on, PoA is still the lightest weight consensus protocol.
+
+- PoA benifits end however when trying to be used on a public network, where the majority maintain consensus rather than a singular private entity. Thats where the next two consensus options come in handy.
