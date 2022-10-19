@@ -4,7 +4,7 @@ Eon is an engine that handles consensus between parties, and the detail we dive 
 
 What is Eon on a nice basic level?
 ---
-Eon is a program that allows two different parties (two different entities, whether that be you and a server, two companies, and ect.) to securely communicate data transactions (sent and received data of any kind) knowing that the data has not been messed with, currupted, or hijacked. How does it do this? Lets use the following diagram of a block:
+Eon is a program that allows two different parties (two different entities, whether that be you and a server, two companies, and ect.) to securely communicate data transactions (sent and received data of any kind) knowing that the data has not been messed with, corrupted, or hijacked. How does it do this? Lets use the following diagram of a block:
 
 ```
 ------------------
@@ -27,15 +27,15 @@ Public Key -> Share to the World -> Verify's Signatures
 
 Bob:
 Private Key -> Keep to yourself -> Makes signatures
-Public Key -> Share to the World -> Verify's Signatures
+Public Key -> Share to the World -> Verifies Signatures
 ```
 
 - As the diamgram shows, the two parties here (Alice and Bob) each have a public and private key. Private keys as the name suggests, should not be shared with others, as it is what allows you to sign data with your name on it. You can however give out your public key, as it has no ability to sign data. It can be used to verify signatures however. 
 
 ```
-Alice -> (Alice) Private Key + Data -> Signature -|
-                                                  |
-                                                  v
+Alice -> (Alice) Private Key + Data -> Signature
+                                           |       
+                                           v       
 Verify Signature <- (Alice) Public Key + Data <- Bob
 ```
 
