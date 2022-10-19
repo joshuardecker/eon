@@ -18,20 +18,24 @@ How does signing and verification work?
 
 - I will not go into how they work on an algorithmic level, but we can talk about their application. Lets use the following diagram to ade in this explanation:
 
-```Alice:
+```
+Alice:
 Private Key -> Keep to yourself -> Makes signatures
 Public Key -> Share to the World -> Verify's Signatures
 
 Bob:
 Private Key -> Keep to yourself -> Makes signatures
-Public Key -> Share to the World -> Verify's Signatures```
+Public Key -> Share to the World -> Verify's Signatures
+```
 
 - As the diamgram shows, the two parties here (Alice and Bob) each have a public and private key. Private keys as the name suggests, should not be shared with others, as it is what allows you to sign data with your name on it. You can however give out your public key, as it has no ability to sign data. It can be used to verify signatures however. 
 
-```Alice -> (Alice) Private Key + Data -> Signature -|
+```
+Alice -> (Alice) Private Key + Data -> Signature -|
                                                   |
                                                   v
-Verify Signature <- (Alice) Public Key + Data <- Bob```
+Verify Signature <- (Alice) Public Key + Data <- Bob
+```
 
 - As the diagram shows, Bob only knowing the data sent by Alice and her public key is able to verify whether she actually sent it or not. Verifying the data will return false results if the data has been modified, whether by a malicious party, or a curruption of the data.
 
