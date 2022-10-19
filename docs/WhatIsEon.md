@@ -10,7 +10,8 @@ Eon is a program that allows two different parties (two different entities, whet
 | Data: ...      |
 |                |
 | Signature: ... |
-------------------```
+------------------
+```
 
 - This structure is called a block. Why is it called that? It is a chunk of information, a literal block of information, thats it. Also note that the (...) isnt whats literally stored in the Block, it is just a placeholder for data in this diagram. Speaking of data, I will make it clear that the data section can be any type of data. Whether that be a website, payment information, chat between two servers, or anything sent via the internet. Now to ensure that this data is not currupted or tampered with, we can have the sender of the data sign the block with their signature, similar to how you can sign a contract to prove you agreed to the information signed. Same idea applies here, but the cool thing about a signature is that if the data is changed, the signature is no longer valid! That means two parties can talk to each other using this system, and not have to worry about the data failing. 
 
