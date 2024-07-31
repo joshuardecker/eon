@@ -1,4 +1,4 @@
-The Go version of this project has been archived in favor for a rust based project, which will fit much better with the new goals of this project. 
-
-For updates on whats going on / questions, heres the discord:
-https://discord.gg/tW5qPk7kyK
+This project has been abandoned. I ran out of time, and if I ever attempt another cryptocurrency project from scratch again, 
+I would likely just start over from scratch. Go is a sweet language, but I may prefer to start fresh in a lower level
+language like rust, c, or zig. I made this repo public again mostly for resume purposes, to show I was attempting
+interesting stuff years ago now.
